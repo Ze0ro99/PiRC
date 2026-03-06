@@ -180,3 +180,183 @@ Interior equilibrium exists.
 ---------------------------------------
 END OF FILE
 ---------------------------------------
+
+---------------------------------------
+SECTION 11 - SECURITY MODEL
+---------------------------------------
+
+We assume the following threat model:
+
+Adversary capabilities:
+
+1. Users may attempt to manipulate engagement metrics.
+2. Users may attempt to coordinate activity bursts.
+3. Backend operator may be partially trusted.
+4. Network observers can access public data.
+
+Security goals:
+
+G1 - Allocation integrity  
+G2 - Public verifiability  
+G3 - Manipulation resistance  
+G4 - Deterministic reproducibility
+
+Assumptions:
+
+A1: SHA256 is collision resistant.
+A2: Signature scheme is EUF-CMA secure.
+A3: Merkle tree construction is correct.
+A4: Epoch progression is strictly monotonic.
+
+Under these assumptions:
+
+The allocation result A(u,E) cannot be modified
+without breaking either:
+
+• signature verification
+• Merkle inclusion
+• deterministic recomputation
+
+---------------------------------------
+SECTION 12 - ADVERSARIAL STRATEGIES
+---------------------------------------
+
+Attack 1 — Engagement Burst
+
+Adversary rapidly increases e_i in a single epoch.
+
+Defense:
+
+Time decay and gradient bound enforce:
+
+| W(E) - W(E-1) | <= delta_max
+
+Therefore burst impact limited.
+
+------------------------------------------------
+
+Attack 2 — Metric Concentration
+
+User concentrates activity in one metric.
+
+Defense:
+
+Weight cap:
+
+w_i <= 0.4
+
+Prevents dominance of a single engagement dimension.
+
+------------------------------------------------
+
+Attack 3 — Backend Manipulation
+
+Backend attempts to alter allocation values.
+
+Defense:
+
+User verifies:
+
+1. signature validity
+2. Merkle inclusion proof
+3. deterministic recomputation
+
+Forgery requires breaking signature security.
+
+------------------------------------------------
+
+Attack 4 — Replay Attack
+
+Adversary reuses allocation proof.
+
+Defense:
+
+Epoch binding inside message:
+
+message = encode(user || epoch || W_int || A_int)
+
+Proof invalid for different epochs.
+
+---------------------------------------
+SECTION 13 - COMPUTATIONAL COMPLEXITY
+---------------------------------------
+
+Per-user computation:
+
+Weighted engagement:     O(n)
+Smoothing function:      O(1)
+Allocation computation:  O(1)
+
+Merkle tree construction:
+
+O(N)
+
+Merkle verification:
+
+O(log N)
+
+Where N = number of users per epoch.
+
+All operations use integer arithmetic.
+
+No floating point operations required.
+
+Suitable for deterministic smart contracts.
+
+---------------------------------------
+SECTION 14 - SIMULATION FRAMEWORK
+---------------------------------------
+import random
+
+S = 1_000_000
+
+def smoothing(W):
+    if W <= S/2:
+        return (2 * W * W) // S
+    else:
+        diff = S - W
+        return S - (2 * diff * diff) // S
+
+def allocation(W, p_floor):
+    S_int = smoothing(W)
+    return p_floor + ((S - p_floor) * S_int) // S
+
+def simulate_users(num_users=10000):
+
+    allocations = []
+
+    for _ in range(num_users):
+
+        e = [random.random() for _ in range(3)]
+
+        w = [0.4, 0.3, 0.3]
+
+        W = sum(e[i]*w[i] for i in range(3))
+
+        W_int = int(W*S)
+
+        A = allocation(W_int, int(0.1*S))
+
+        allocations.append(A)
+
+    return allocations
+
+if __name__ == "__main__":
+
+    results = simulate_users()
+
+    print("Users simulated:", len(results))
+    print("Average allocation:", sum(results)/len(results))
+
+    ---------------------------------------
+SECTION 15 - FUTURE EXTENSIONS
+---------------------------------------
+
+Possible extensions:
+
+1. Zero-knowledge engagement proofs
+2. zk-SNARK verification for allocation
+3. on-chain allocation verification
+4. multi-epoch smoothing
+5. governance controlled weight updates
+
