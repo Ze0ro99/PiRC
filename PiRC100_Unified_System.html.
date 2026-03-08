@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PiRC-101 | Protocol State Simulator (Value Coordination Spec)</title>
+    <title>PiRC-101 | Unified Network Hub Simulator (Hybrid Spec V3)</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000;
+            --bg: #010101;
             --card: #08080a;
-            --border: #1a1a1e;
-            --text-main: #ffffff;
-            --text-dim: #71717a;
-            --mono: 'JetBrains Mono', monospace;
-            /* Protocol Colors */
+            --border: #16161a;
             --pi-purple: #9333ea; /* External Oracle Feed */
             --pi-gold: #fbbf24;   /* Internal Fixed Parity */
             --success: #10b981;  /* Eco-Unit REF standard */
             --error: #ef4444;    /* Volatility Warning */
+            --text-main: #ffffff;
+            --text-dim: #71717a;
+            --mono: 'JetBrains Mono', monospace;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -50,7 +49,7 @@
 
         .section-title { font-size: 11px; text-transform: uppercase; color: var(--pi-gold); letter-spacing: 1.5px; margin: 30px 0 10px 5px; font-weight: 700; }
 
-        /* 🛡️ STATE LAYER GRID */
+        /* 🛡️ STATE CARDS LAYERS GRID */
         .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
 
         .token-card {
@@ -88,7 +87,7 @@
 
         .bridge-ui { display: flex; flex-direction: column; gap: 15px; }
         .input-group { background: #000; padding: 18px; border-radius: 12px; border: 1px solid #222; }
-        .input-group label { display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; font-weight: 700;}
+        .input-label { font-size: 10px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; font-weight: 700; display: block; }
         
         .input-row { display: flex; align-items: center; gap: 10px; }
         .input-group select, .input-group input {
@@ -134,14 +133,14 @@
     <div class="protocol-bar">
         <div class="protocol-status">
             <div class="dot"></div>
-            PiRC-101 Deterministic State Simulator
+            PiRC-101 Network Hub Simulator
         </div>
         <div class="block-height">BLOCK HEIGHT: <span id="blockHeight">18,245,102</span></div>
     </div>
 
     <header>
         <h1>PiRC <span>Justice</span> Engine V2</h1>
-        <p style="color:var(--text-dim)">Protocol Architect: <strong>EslaM-X</strong> | Supply Transformation Spec Simulator</p>
+        <p style="color:var(--text-dim)">Protocol Architect: <strong>EslaM-X</strong> | Verified Multi-Symbol Tract Simulator</p>
     </header>
 
     <div class="container">
@@ -151,14 +150,36 @@
         <div class="token-grid">
             
             <div class="token-card">
+                <span style="font-size: 9px; text-transform: uppercase; color: var(--error); font-weight: 800; background: rgba(239, 68, 68, 0.1); padding: 4px 8px; border-radius: 4px; position: absolute; top: 22px; right: 22px; border: 1px solid rgba(239,68,68,0.2);">Non-Normative Feed</span>
+                <div class="token-header">
+                    <div class="pi-logo" style="background:var(--pi-purple)">π</div>
+                    <div class="token-name">External Pi ($Pi)</div>
+                </div>
+                <span class="token-price" id="cardCexPrice">$0.3140</span>
+                <span class="token-spec">Simulated OKX/MEXC Drift Index</span>
+                <span class="utility-desc">External speculative asset. Captured by protocol entry-oracles. The source of economic asymmetry.</span>
+            </div>
+
+            <div class="token-card">
                 <div class="layer-type" style="color:var(--success); background:rgba(16,185,129,0.1);">Protocol REF Anchor</div>
                 <div class="token-header">
                     <div class="pi-logo" style="background:var(--success)">$</div>
                     <div class="token-name">Ecosystem Reference ($REF)</div>
                 </div>
                 <span class="token-price">$1.0000</span>
-                <span class="token-spec">Protocol Standard REF Unit</span>
-                <span class="utility-desc">Implicit underlying Unit of Account. Backed by locked reserve assets (Captured USD). Immutable state parity.</span>
+                <span class="token-spec">Implicit Protocol REF Unit</span>
+                <span class="utility-desc">Non-Redeemable Unit of Account. All stable utility classes are fixed derivatives of $REF. Immutable state parity.</span>
+            </div>
+
+            <div class="token-card">
+                <div class="layer-type">Fixed Parity derivative</div>
+                <div class="token-header">
+                    <div class="pi-logo" style="background:var(--pi-gold)">π</div>
+                    <div class="token-name">Retail Commerce Pi ($π)</div>
+                </div>
+                <span class="token-price">1 REF</span>
+                <span class="token-spec">STATE PARITY RETAIL = 1$REF</span>
+                <span class="utility-desc">Standard unit for consumer goods and daily services. Immute to external CEX volatility.</span>
             </div>
 
             <div class="token-card">
@@ -169,19 +190,31 @@
                 </div>
                 <span class="token-price">314,159 REF</span>
                 <span class="token-spec">STATE PARITY GCV = 314,159$REF</span>
-                <span class="utility-desc">Anchors Total Value Locked (TVL). Stable within walled garden. Immunity to External Oracle.</span>
+                <span class="utility-desc">Anchors Total Value Locked (TVL). stable within walled garden. Immunity to External Oracle.</span>
+            </div>
+            
+            <div class="token-card">
+                <div class="layer-type">Fixed Parity derivative</div>
+                <div class="token-header">
+                    <div class="pi-logo" style="background:var(--pi-gold)">π</div>
+                    <div class="token-name">Logistics/Banking Pi ($π)</div>
+                </div>
+                <span class="token-price">314 REF</span>
+                <span class="token-spec">STATE PARITY LOGS = 314$REF</span>
+                <span class="utility-desc"> Enterprise supply chain contracts, freight settlement, and banking reserves.</span>
+            </div>
+            
+            <div class="token-card">
+                <div class="layer-type">Fixed Parity derivative</div>
+                <div class="token-header">
+                    <div class="pi-logo" style="background:var(--pi-gold)">π</div>
+                    <div class="token-name">Governance Pi ($π)</div>
+                </div>
+                <span class="token-price">3.14 REF</span>
+                <span class="token-spec">STATE PARITY GOV = 3.14$REF</span>
+                <span class="utility-desc">DAO voting power. Acquired via community utility milestones (Proof-of-Utility).</span>
             </div>
 
-            <div class="token-card">
-                <span style="font-size: 9px; text-transform: uppercase; color: var(--error); font-weight: 800; background: rgba(239, 68, 68, 0.1); padding: 4px 8px; border-radius: 4px; position: absolute; top: 22px; right: 22px; border: 1px solid rgba(239,68,68,0.2);">Non-Normative Feed</span>
-                <div class="token-header">
-                    <div class="pi-logo" style="background:var(--pi-purple)">π</div>
-                    <div class="token-name">External CEX Pi ($Pi)</div>
-                </div>
-                <span class="token-price" id="cardCexPrice">$0.3140</span>
-                <span class="token-spec">Simulated OKX/MEXC Drift Index</span>
-                <span class="utility-desc">External speculative asset. Captured by protocol entry-oracles. The source of economic asymmetry.</span>
-            </div>
         </div>
 
         <div class="section-title">State-Shift Transition Simulator (Hybrid Minting)</div>
@@ -222,7 +255,7 @@
             <div class="result-box">
                 <div class="label" style="font-size:11px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px;">Protocol State Update: Total Minted GCV π</div>
                 <div class="result-amount" id="finalResult">0.0001 π</div>
-                <div style="font-size:11px; color:var(--success); margin-top:8px; font-weight:600;">✔ Deterministic | One-Way Walled Garden State Shift</div>
+                <div style="font-size:11px; color:var(--success); margin-top:8px; font-weight:600;">✔ Deterministic | Hybrid X10 Quantity Minting Active</div>
             </div>
         </div>
 
@@ -237,7 +270,7 @@
     </footer>
 
     <script>
-        // --- Formal Track V2: Simulate Deterministic State Data ---
+        // --- Formal Track V3: Simulate Deterministic State Data ---
         let baseCexPrice = 0.3140; // The target index requested by the user.
         let currentBlock = 18245102;
         
