@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PiRC | Unified Enterprise Monetary Terminal (Hybrid Spec)</title>
+    <title>PiRC-101 | Protocol State Simulator (Value Coordination Spec)</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #030303;
-            --card: #0a0a0c;
+            --bg: #000000;
+            --card: #08080a;
             --border: #1a1a1e;
             --text-main: #ffffff;
-            --text-dim: #88888e;
-            /* Token Colors */
-            --pi-purple: #9333ea; /* External */
-            --pi-green: #10b981;  /* Retail */
-            --pi-blue: #3b82f6;   /* Logistics */
-            --pi-red: #ef4444;    /* Governance */
-            --pi-gold: #fbbf24;   /* GCV Anchor */
-            --pi-orange: #f97316; /* Liquidity */
+            --text-dim: #71717a;
+            --mono: 'JetBrains Mono', monospace;
+            /* Protocol Colors */
+            --pi-purple: #9333ea; /* External Oracle Feed */
+            --pi-gold: #fbbf24;   /* Internal Fixed Parity */
+            --success: #10b981;  /* Eco-Unit REF standard */
+            --error: #ef4444;    /* Volatility Warning */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -30,17 +29,20 @@
             font-size: 14px;
         }
 
-        /* 📡 LIVE MARKET STATUS */
-        .market-status {
-            background: #000; border-bottom: 1px solid var(--border);
-            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
+        /* 📡 LIVE PROTOCOL BAR */
+        .protocol-bar {
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border);
             position: sticky; top: 0; z-index: 100;
         }
-        .network-state { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--pi-purple); font-size: 11px; text-transform: uppercase;}
+        .protocol-status { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--pi-purple); font-size: 10px; text-transform: uppercase; letter-spacing: 1px;}
         .dot { width: 8px; height: 8px; background: var(--pi-purple); border-radius: 50%; box-shadow: 0 0 10px var(--pi-purple); animation: pulse 2s infinite; }
-        .cex-feed { font-family: 'JetBrains Mono'; font-size: 11px; color: white; }
+        .block-height { font-family: var(--mono); font-size: 11px; color: white; }
 
-        header { padding: 40px 20px 20px; text-align: left; background: linear-gradient(to bottom, #0a0a0c, var(--bg)); }
+        header { padding: 40px 20px 20px; text-align: left; background: linear-gradient(to bottom, #08080a, var(--bg)); }
         header h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -1px; }
         header span { color: var(--pi-purple); }
 
@@ -48,12 +50,13 @@
 
         .section-title { font-size: 11px; text-transform: uppercase; color: var(--pi-gold); letter-spacing: 1.5px; margin: 30px 0 10px 5px; font-weight: 700; }
 
-        /* 💎 TOKEN GRID */
+        /* 🛡️ STATE LAYER GRID */
         .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
 
         .token-card {
             background: var(--card); border: 1px solid var(--border);
             border-radius: 20px; padding: 22px; transition: 0.3s;
+            position: relative;
         }
         .token-card:hover { border-color: #333; transform: translateY(-3px); }
 
@@ -65,14 +68,19 @@
         }
 
         .token-name { font-weight: 700; font-size: 16px; color: white; }
-        .token-price { font-family: 'JetBrains Mono'; font-size: 24px; font-weight: 700; color: white; display: block; }
-        .token-spec { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--pi-green); margin-top: 5px; display:block; }
+        .token-price { font-family: var(--mono); font-size: 24px; font-weight: 700; color: white; display: block; }
+        .token-spec { font-family: var(--mono); font-size: 10px; color: var(--pi-gold); margin-top: 5px; display:block; }
         .utility-desc { font-size: 12px; color: var(--text-dim); margin-top: 10px; line-height: 1.5; }
-        .stability-source { font-size: 10px; text-transform: uppercase; color: var(--pi-green); margin-top: 15px; font-weight: 700;}
+        
+        .layer-type {
+            font-size: 9px; text-transform: uppercase; color: var(--pi-gold); font-weight: 800;
+            background: rgba(251, 191, 36, 0.1); padding: 4px 8px; border-radius: 4px;
+            position: absolute; top: 22px; right: 22px; border: 1px solid rgba(251,191,36,0.2);
+        }
 
-        /* ⇌ INERACTIVE BRIDGE (Justice Engine Logic) */
+        /* ⇌ Bridge State Simulator (Justice Engine Logic V2) */
         .bridge-section {
-            background: linear-gradient(160deg, #0a0a0c 0%, #030303 100%);
+            background: linear-gradient(160deg, #08080a 0%, #000000 100%);
             border: 1px solid var(--pi-purple); border-radius: 24px;
             padding: 25px; margin-top: 30px;
         }
@@ -82,20 +90,23 @@
         .input-group { background: #000; padding: 18px; border-radius: 12px; border: 1px solid #222; }
         .input-group label { display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; font-weight: 700;}
         
-        .input-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .input-row { display: flex; align-items: center; gap: 10px; }
         .input-group select, .input-group input {
             background: transparent; border: none; color: white; width: 100%;
-            font-size: 18px; font-family: 'JetBrains Mono'; outline: none; font-weight: 700;
+            font-size: 18px; font-family: var(--mono); outline: none; font-weight: 700;
         }
 
         .swap-icon { font-size: 20px; text-align: center; color: var(--text-dim); }
 
-        .result-box {
-            background: rgba(147, 51, 234, 0.05); border: 1px dashed rgba(147, 51, 234, 0.3);
-            padding: 20px; border-radius: 12px; text-align: center; margin-top: 15px;
+        /* Consensus Math Box */
+        .consensus-math {
+            background: #000; border: 1px solid #1a1a1c;
+            border-radius: 12px; padding: 15px; margin-top: 15px;
+            font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+            text-align: center; line-height: 1.6;
         }
-        .result-amount { font-size: 32px; font-weight: 900; color: var(--pi-gold); font-family: 'JetBrains Mono'; }
-        .conversion-note { font-size: 11px; color: var(--pi-green); margin-top: 8px; font-weight: 600;}
+        .math-val { color: var(--pi-gold); font-weight: 700; }
+        .mint-quantity { color: var(--success); font-weight: 700; }
 
         /* Final Action Button */
         .btn-confirm {
@@ -107,7 +118,7 @@
         }
         .btn-confirm:active { transform: scale(0.98); opacity: 0.9; }
 
-        footer { text-align: center; color: #333; font-size: 10px; padding: 20px 0; line-height: 1.6; }
+        footer { text-align: center; color: #444; font-size: 10px; padding: 20px 0; line-height: 1.6; }
 
         @media (min-width: 768px) {
             .bridge-ui { flex-direction: row; align-items: center; }
@@ -120,181 +131,175 @@
 </head>
 <body>
 
-    <div class="market-status">
-        <div class="network-state">
+    <div class="protocol-bar">
+        <div class="protocol-status">
             <div class="dot"></div>
-            PiRC Justice Engine (Hybrid X10 Logic) Active
+            PiRC-101 Deterministic State Simulator
         </div>
-        <div class="cex-feed">OKX/MEXC PI Index: $<span id="liveCexPrice">0.3140</span></div>
+        <div class="block-height">BLOCK HEIGHT: <span id="blockHeight">18,245,102</span></div>
     </div>
 
     <header>
-        <h1>PiRC <span>Hybrid</span> Monetary Hub</h1>
-        <p style="color:var(--text-dim)">Architect: <strong>EslaM-X</strong> | Verified Stable & Split Assets</p>
+        <h1>PiRC <span>Justice</span> Engine V2</h1>
+        <p style="color:var(--text-dim)">Protocol Architect: <strong>EslaM-X</strong> | Supply Transformation Spec Simulator</p>
     </header>
 
     <div class="container">
         
-        <div class="section-title">Ecosystem Assets (Hybrid Valuation)</div>
+        <div class="section-title">Verified Monetary State (Deterministic Parities)</div>
 
         <div class="token-grid">
             
             <div class="token-card">
+                <div class="layer-type" style="color:var(--success); background:rgba(16,185,129,0.1);">Protocol REF Anchor</div>
+                <div class="token-header">
+                    <div class="pi-logo" style="background:var(--success)">$</div>
+                    <div class="token-name">Ecosystem Reference ($REF)</div>
+                </div>
+                <span class="token-price">$1.0000</span>
+                <span class="token-spec">Protocol Standard REF Unit</span>
+                <span class="utility-desc">Implicit underlying Unit of Account. Backed by locked reserve assets (Captured USD). Immutable state parity.</span>
+            </div>
+
+            <div class="token-card">
+                <div class="layer-type">Fixed Parity derivative</div>
+                <div class="token-header">
+                    <div class="pi-logo" style="background:var(--pi-gold)">π</div>
+                    <div class="token-name">GCV Utility Pi ($π)</div>
+                </div>
+                <span class="token-price">314,159 REF</span>
+                <span class="token-spec">STATE PARITY GCV = 314,159$REF</span>
+                <span class="utility-desc">Anchors Total Value Locked (TVL). Stable within walled garden. Immunity to External Oracle.</span>
+            </div>
+
+            <div class="token-card">
+                <span style="font-size: 9px; text-transform: uppercase; color: var(--error); font-weight: 800; background: rgba(239, 68, 68, 0.1); padding: 4px 8px; border-radius: 4px; position: absolute; top: 22px; right: 22px; border: 1px solid rgba(239,68,68,0.2);">Non-Normative Feed</span>
                 <div class="token-header">
                     <div class="pi-logo" style="background:var(--pi-purple)">π</div>
                     <div class="token-name">External CEX Pi ($Pi)</div>
                 </div>
                 <span class="token-price" id="cardCexPrice">$0.3140</span>
-                <span class="token-spec">Reference Speculation Price</span>
-                <span class="utility-desc">Speculative asset traded on global exchanges. External liquidity entry point. High volatility.</span>
-                <span class="stability-source" style="color:var(--pi-red)">❌ Stability: Market Speculation</span>
-            </div>
-
-            <div class="token-card">
-                <div class="token-header">
-                    <div class="pi-logo" style="background:var(--pi-green)">π</div>
-                    <div class="token-name">Retail Pi (Daily)</div>
-                </div>
-                <span class="token-price">$1.0000</span>
-                <span class="token-spec">INTERNAL UNIT FIXED</span>
-                <span class="utility-desc">Standard unit for consumer goods, retail payments. immune to external CEX volatility.</span>
-                <span class="stability-source">✔ Stability: Goods & Services</span>
-            </div>
-
-            <div class="token-card">
-                <div class="token-header">
-                    <div class="pi-logo" style="background:var(--pi-blue)">π</div>
-                    <div class="token-name">Logistics & Banking Pi</div>
-                </div>
-                <span class="token-price">$314.00</span>
-                <span class="token-spec">INTERNAL UNIT FIXED</span>
-                <span class="utility-desc">Enterprise supply chain contracts, freight, cross-border settlement, banking reserves.</span>
-                <span class="stability-source">✔ Stability: Enterprise Assets</span>
-            </div>
-
-            <div class="token-card">
-                <div class="token-header">
-                    <div class="pi-logo" style="background:var(--pi-red)">π</div>
-                    <div class="token-name">Governance Pi</div>
-                </div>
-                <span class="token-price">$3.1400</span>
-                <span class="token-spec">INTERNAL UNIT FIXED</span>
-                <span class="utility-desc">DAO voting power. Ratifies protocol changes and WEF allocation scoring.</span>
-                <span class="stability-source">✔ Stability: Protocol Consensus</span>
-            </div>
-
-            <div class="token-card">
-                <div class="token-header">
-                    <div class="pi-logo" style="background:var(--pi-gold)">π</div>
-                    <div class="token-name">GCV Pi (TVL Anchor)</div>
-                </div>
-                <span class="token-price">$314,159</span>
-                <span class="token-spec">INTERNAL UNIT FIXED</span>
-                <span class="utility-desc">Global Consensus Value. Anchors total utility value locked (TVL). Asset-backed stable pool.</span>
-                <span class="stability-source">✔ Stability: Global Consensus Pool</span>
-            </div>
-
-            <div class="token-card">
-                <div class="token-header">
-                    <div class="pi-logo" style="background:var(--pi-orange)">π</div>
-                    <div class="token-name">CEX Liquidity Pi</div>
-                </div>
-                <span class="token-price">$3,141.00</span>
-                <span class="token-spec">INTERNAL UNIT FIXED</span>
-                <span class="utility-desc">Internal counterweight to volatile CEX entry. Stabilizes the Bridge Engine asset pools.</span>
-                <span class="stability-source">✔ Stability: AMM Asset Reserves</span>
+                <span class="token-spec">Simulated OKX/MEXC Drift Index</span>
+                <span class="utility-desc">External speculative asset. Captured by protocol entry-oracles. The source of economic asymmetry.</span>
             </div>
         </div>
 
-        <div class="section-title">Justice Engine (Hybrid X10 Logic)</div>
+        <div class="section-title">State-Shift Transition Simulator (Hybrid Minting)</div>
 
         <div class="bridge-section">
-            <div class="bridge-title">1 External π ⇌ 10 Stable Micro-Units π</div>
+            <div class="bridge-title">1 Volatile $Pi Entry Unit ⇌ 10 Stable $REF Utility Units</div>
             <div class="bridge-ui">
                 <div class="input-group">
-                    <label>Swap From: External Pi Unit ($Pi)</label>
+                    <label>Swap From: Captured Volatile External Pi ($Pi)</label>
                     <div class="input-row">
                         <input type="number" id="inputAmount" value="1" oninput="calculate()">
-                        <span style="font-family:'JetBrains Mono'; font-weight:700;">$Pi</span>
+                        <span style="font-family:var(--mono); font-weight:700;">$Pi</span>
                     </div>
-                    <div style="font-size:10px; color:var(--pi-purple); margin-top:5px; font-weight:700;">CEX RATE (Oracle): $<span id="bridgeCexRate">0.3140</span></div>
+                    <div style="font-size:10px; color:var(--pi-purple); margin-top:5px; font-weight:700;">ORACLE FEED: $<span id="bridgeCexRate">0.3140</span></div>
                 </div>
 
                 <div class="swap-icon">⇌</div>
 
                 <div class="input-group">
-                    <label>Swap To: Internal Stable Denomination ($π)</label>
+                    <label>State-Shift To: Stable Utility Class ($π)</label>
                     <select id="targetToken" onchange="calculate()">
-                        <option value="1">Retail Pi ($1)</option>
-                        <option value="314">Logistics Pi ($314)</option>
-                        <option value="3.14">Governance Pi ($3.14)</option>
-                        <option value="314159" selected>GCV Pi ($314,159)</option>
-                        <option value="3141">Liquidity Pi ($3,141)</option>
+                        <option value="1">Retail Pi ($REF 1.00)</option>
+                        <option value="3.14">Governance Pi ($REF 3.14)</option>
+                        <option value="314">Logistics Pi ($REF 314.00)</option>
+                        <option value="314159" selected>GCV Utility Pi ($REF 314,159.00)</option>
+                        <option value="3141">AMM Liquidity Pi ($REF 3,141.00)</option>
                     </select>
                 </div>
             </div>
 
+            <div class="consensus-math">
+                CONSENSUS MINTING IDENTITY<br>
+                Captured USD Value: $<span class="math-val" id="usdCapturedVal">0.3140</span> ⇌ EcoReference (REF) State Anchor<br>
+                <div style="margin: 8px 0; color:var(--pi-purple);">× [Quantity Weighting Factor QWF = 10]</div>
+                Minted Reference ($REF) Supply Expansion: <span class="mint-quantity" id="refMintedSupply">3.1400</span> $REF
+            </div>
+
             <div class="result-box">
-                <div class="label" style="font-size:11px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px;">You Receive (Stable Internal Asset)</div>
-                <div class="result-amount" id="finalResult">-- π</div>
-                <div class="conversion-note">✔ Value Anchored | Hybrid X10 Quantity Split Enabled</div>
+                <div class="label" style="font-size:11px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px;">Protocol State Update: Total Minted GCV π</div>
+                <div class="result-amount" id="finalResult">0.0001 π</div>
+                <div style="font-size:11px; color:var(--success); margin-top:8px; font-weight:600;">✔ Deterministic | One-Way Walled Garden State Shift</div>
             </div>
         </div>
 
     </div>
 
-    <button class="btn-confirm" onclick="confirmSwap()">Initialize Secure Hybrid State Swap</button>
+    <button class="btn-confirm" onclick="confirmSwap()">Commit State Transition</button>
 
     <footer>
-        PiRC Ecosystem Standards | X10 Hybrid Deterministic Protocol<br>
+        PiRC Formal Specification Tract | Deterministic Economic Protocol<br>
         Contributors: EslaM-X (Architecture), Ze0ro99 (Integrity), Clawue884 (Liquidity)<br>
-        CEX Oracle Index active | V2 Mainnet Compliant &copy; 2026
+        CEX Nodes: MEXC, OKX Sync Active | V2 Mainnet Compliant &copy; 2026
     </footer>
 
     <script>
-        // --- Logic: Simulated CEX Price & X10 Split ---
+        // --- Formal Track V2: Simulate Deterministic State Data ---
         let baseCexPrice = 0.3140; // The target index requested by the user.
+        let currentBlock = 18245102;
+        
+        // Protocol Constants (Formal Spec Draft)
+        const REF_UNIT = 1.00; // Ecoystem Reference Unit $REF = $1.00 USD
+        const QWF = 10;        // Quantity Weighting Factor (Entry expansion multiplier)
 
-        // Simulate Oracle Drift around the index
-        function updatePrices() {
-            // Very minimal drift to keep simulation focused on the logic
-            let drift = (Math.random() * 0.0004) - 0.0002; 
+        // Update Live Clock & Block Height (Deterministic Simulation)
+        function updateProtocolState() {
+            // Minimal drift around the target index to keep simulation focused on logic
+            let drift = (Math.random() * 0.0006) - 0.0003; 
             baseCexPrice = +(baseCexPrice + drift).toFixed(4);
             
-            // Update all price displays
+            currentBlock++;
+            document.getElementById('blockHeight').innerText = currentBlock.toLocaleString();
+            
+            // Update all price displays anchored to oracle
             document.getElementById('liveCexPrice').innerText = baseCexPrice.toFixed(4);
             document.getElementById('cardCexPrice').innerText = `$${baseCexPrice.toFixed(4)}`;
             document.getElementById('bridgeCexRate').innerText = baseCexPrice.toFixed(4);
             calculate();
         }
-        setInterval(updatePrices, 3000); // Transitions occur every 3 seconds
+        setInterval(updateProtocolState, 3000); // Transitions occur every 3 seconds
 
-        // Justice Engine Calculator (Value Preservation Logic with X10 quantity split)
+        // V2 Justice Engine: Deterministic State Calculator (Hybrid Minting Spec)
         function calculate() {
             const externalUnitAmount = parseFloat(document.getElementById('inputAmount').value);
-            const internalStablePrice = parseFloat(document.getElementById('targetToken').value);
+            // Internal State parities are anchored in EcoReferenceUnits (REF)
+            const internalStateParityREF = parseFloat(document.getElementById('targetToken').value);
             
-            // Hybrid X10 Equation:
-            // ( (Amount * ExternalPrice) / InternalPrice ) * 10
-            // This ensures 1 volatile unit creates 10 micro-units of the stable asset value.
-            const totalUSDValue = externalUnitAmount * baseCexPrice;
-            const finalInternalAmount = (totalUSDValue / internalStablePrice) * 10;
+            // 1. Capture External Value ⇌ Import into $REF standard
+            const capturedUSDValue = externalUnitAmount * baseCexPrice;
+            const refCapturedValue = capturedUSDValue / REF_UNIT; // $1 USD = 1 REF Initial state
+
+            // 2. Apply Deterministic Expansion: Quantity Weighting Factor (QWF)
+            const refMintedSupply = refCapturedValue * QWF;
+
+            // 3. Coordinate State-Shift ⇌ Mint Utility Denomination
+            const finalInternalAmount = refMintedSupply / internalStateParityREF;
             
-            // Format result with high precision (at least 8 decimal places)
+            // Update Consensus Math Viz
+            document.getElementById('usdCapturedVal').innerText = capturedUSDValue.toFixed(4);
+            document.getElementById('refMintedSupply').innerText = refMintedSupply.toFixed(4);
+
+            // Format result with high precision (at least 8 decimal places for utility micro-transactions)
             let displayAmount = finalInternalAmount < 0.000001 ? finalInternalAmount.toFixed(10) : finalInternalAmount.toFixed(8);
             
             document.getElementById('finalResult').innerText = displayAmount + " π";
         }
 
-        // Action Feedback
+        // Action Feedback (Simulated Smart Contract Consensus Commitment)
         function confirmSwap() {
             const final = document.getElementById('finalResult').innerText;
+            const block = document.getElementById('blockHeight').innerText;
             const targetName = document.getElementById('targetToken').options[document.getElementById('targetToken').selectedIndex].text;
+            
             alert(
-`[PiRC Hybrid X10 Protocol Activation]\n\n`+
-`Conversion: Confirmed.\n`+
-`Internal Target Asset: ${targetName}.\n\n`+
-`Logic: Verified input asset against Oracle Index. \nResult: ${final} minted to internal wallet (including X10 quantity split). Stability backed by asset pools.`
+`[PiRC-101 Formal State Commitment committed at block: ${block}]\n\n`+
+`STATE UPDATE:\n`+
+`Target Utility Class: ${targetName}.\n\n`+
+`CONSENSUS LOGIC:\n`+
+`External input verified by Oracle Feed. Asset has been LOCKED in protocol reserves. \nResult: ${final} minted to your internal walled-garden wallet. Stability anchored by Proof-of-Utility consensus.`
             );
         }
 
@@ -303,154 +308,3 @@
     </script>
 </body>
 </html>
-        }
-        .hash { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--info); word-break: break-all; opacity: 0.8; margin-top: 8px;}
-
-        /* Action Button */
-        .btn-primary {
-            background: linear-gradient(180deg, var(--pi-gold) 0%, #e6c300 100%);
-            color: #000;
-            border: none;
-            width: 100%;
-            padding: 20px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 16px;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-            transition: all 0.2s;
-            position: fixed;
-            bottom: 20px;
-            left: 15px;
-            right: 15px;
-            max-width: 470px;
-            margin: auto;
-            z-index: 90;
-        }
-
-        .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
-
-        footer { text-align: center; color: #444; font-size: 10px; padding: 20px 0; line-height: 1.6; }
-
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        @keyframes convertPulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.5; } }
-
-    </style>
-</head>
-<body>
-
-    <div class="status-bar">
-        <div class="network-status">
-            <div class="dot"></div>
-            PiRC-100 Justice Engine Live
-        </div>
-    </div>
-
-    <header>
-        <h1>Unified Monetary System</h1>
-        <p>Strategic Architecture by <strong>EslaM-X</strong></p>
-    </header>
-
-    <div class="container">
-        
-        <div class="section-title">Valuation Split</div>
-
-        <div class="valuation-card">
-            
-            <div class="exchange-row">
-                <div class="price-type">Exchange Unit Price (Speculative $Pi)</div>
-                <div class="price-ex-val">$<span id="priceExVal">3.141</span><span style="font-size:18px;">/M</span></div>
-                <div style="font-size:12px; color:var(--text-dim); margin-top:5px;">Price per 1 Million Units on External Exchanges</div>
-            </div>
-
-            <div class="internal-row">
-                <div class="price-type" style="color:var(--pi-gold);">Internal Utility Pi ($<span style="font-family:serif;">π</span>)</div>
-                <div class="price-in-val">$<span id="priceInVal">0.314</span> <span class="utility-tag">PiRC-100 Native</span></div>
-                <div style="font-size:12px; color:var(--success); margin-top:8px;">▲ Utility-First Real-World Value</div>
-            </div>
-        </div>
-
-        <div class="section-title">Justice Engine Mechanism</div>
-
-        <div class="formula-card">
-            <div class="formula-text">
-                THE CONVERSION TRUTH:<br><br>
-                A <span class="highlight-ex">10 Million</span> Unit Weighted Pool of Exchange $Pi<br>
-                <div class="formula-icon">⇌</div>
-                Creates <span class="highlight-in">1 Internal Utility Pi</span>
-            </div>
-        </div>
-
-        <div class="integrity-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700;">
-                <span style="color:var(--info);">PiRC-45 Metadata Hash</span>
-                <span style="color: var(--warning);">LIVE_SYNC</span>
-            </div>
-            <div class="hash" id="liveHash">
-                af8a9b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f12
-            </div>
-        </div>
-
-        <button class="btn-primary" onclick="initializeTransaction()">Synchronize & Execute</button>
-
-        <footer>
-            PiRC Ecosystem Standards #2 | Total Unified Structure<br>
-            Contributors: EslaM-X (Architecture), Ze0ro99 (Integrity), Clawue884 (Liquidity)<br>
-            A sovereign deterministic framework &copy; 2026
-        </footer>
-    </div>
-
-    <script>
-        // Simulate Price Fluctuations
-        function updatePrices() {
-            // Internal Price (Base: 0.314159)
-            const internalBase = 0.314159;
-            const inDrift = (Math.random() * 0.0002) - 0.0001;
-            const finalInternal = (internalBase + inDrift).toFixed(6);
-            document.getElementById('priceInVal').innerText = finalInternal;
-
-            // Exchange Price (Base: 3.141592)
-            const exchangeBase = 3.141592;
-            const exDrift = (Math.random() * 0.01) - 0.005; // More speculative drift
-            const finalExchange = (exchangeBase + exDrift).toFixed(6);
-            document.getElementById('priceExVal').innerText = finalExchange;
-        }
-        setInterval(updatePrices, 2500);
-
-        // Regenerate Hash (PiRC-45 Logic)
-        function updateHash() {
-            const chars = 'abcdef0123456789';
-            let newHash = '';
-            for (let i = 0; i < 64; i++) {
-                newHash += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            document.getElementById('liveHash').innerText = newHash;
-        }
-        setInterval(updateHash, 4000);
-
-        // Interaction Feedback
-        function initializeTransaction() {
-            const btn = document.querySelector('.btn-primary');
-            btn.innerText = "VERIFYING CONVERSION...";
-            btn.style.background = "white";
-            btn.style.color = "black";
-            
-            setTimeout(() => {
-                const exPrice = document.getElementById('priceExVal').innerText;
-                const inPrice = document.getElementById('priceInVal').innerText;
-                btn.innerText = "SYNCHRONIZED ✔";
-                btn.style.background = "var(--success)";
-                btn.style.color = "white";
-                
-                alert(`PiRC-100 Justice Engine Activated.\n\n`+
-                      `Current Exchange Rate: $${exPrice}/M (Speculative)\n`+
-                      `Current Internal Rate: $${inPrice} (Utility-First)\n\n`+
-                      `Weighted Split (WCF): Verifying 10,000,000 unit pool against active engagement.`);
-            }, 1800);
-        }
-
-    </script>
-</body>
-</html>
-
