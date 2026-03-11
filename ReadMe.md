@@ -20,3 +20,9 @@ engagement measurement, and protocol security in the Pi ecosystem.
 • engagement verification  
 • sybil-resistant participation metrics  
 • protocol-level incentive modeling
+
+
+## PiRC Proposals
+
+- PiRC-101: Adaptive Utility Allocation
+- PiRC-102: Engagement Oracle Protocol
