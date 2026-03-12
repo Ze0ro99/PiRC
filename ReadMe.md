@@ -116,7 +116,7 @@ PiRC (Pi Requests for Comment) menggabungkan ekosistem token, treasury, governan
 ### Dokumen Pendukung
 Untuk penjelasan lebih lengkap mengenai tiap modul dan interaksi kontrak, lihat dokumen arsitektur:
 
-[PiRC Architecture Overview](https://github.com/Clawue884/PiRC/blob/main/diagrams/pirc_architecture_overview.md)
+[PiRC Architecture Overview](pirc_architecture_overview.md)
 ---
 
 ┌─────────────┐
