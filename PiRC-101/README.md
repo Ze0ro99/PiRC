@@ -1,25 +1,28 @@
 # PiRC-101: Sovereign Monetary Standard Framework
 
-The official repository for the **PiRC-101 protocol**, a reflexive monetary controller designed to stabilize the Pi Network ecosystem through algorithmic credit expansion.
+This repository documents the PiRC-101 economic control framework and its reference implementation. It defines a reflexive monetary controller designed to stabilize the Pi Network ecosystem through algorithmic credit expansion and utility gating.
 
-## 💎 Core Valuation
-The system utilizes a **Sovereign Multiplier (QWF)** of $10^7$ to protect Pioneer effort. 
-- **Current Internal Power:** ~$2,248,000 USD per 1 Mined Pi.
-- **Mechanism:** The Justice Engine.
+## 💎 Core Valuation & The Sovereign Multiplier
 
-## 🛠 Project Components
-- **`/contracts`**: Solidity/Soroban smart contracts for the Core Vault.
-- **`/simulator`**: Python & JS tools for stress-testing economic stability.
-- **`/security`**: Threat models and risk mitigation strategies.
-- **`/docs`**: Formal technical standards and integration guides.
+The economic design of PiRC-101 is anchored by the **QWF (Quantum Wealth Factor / Sovereign Multiplier)**. 
 
-## 🚀 Roadmap
-1. [x] Architectural Design & Justice Engine Logic.
-2. [x] Live Oracle Dashboard & USD-Equivalent Visualization.
-3. [ ] Soroban (Rust) Porting & Optimization.
-4. [ ] Global Merchant Pilot Program.
+* **QWF Definition:** A governance-controlled economic multiplier. It is not static; it is dynamically adjusted through protocol governance proposals based on network velocity, Total Value Locked (TVL), and macro-economic indicators.
+* **Current Base Value:** `10,000,000` (10^7)
+* **Internal Purchasing Power Reference (IPPR):** ~$2,248,000 USD per 1 mined Pi within the PiRC-101 economic framework. 
 
-**The future is sovereign. Join the revolution.**
+*Note: The IPPR represents a mathematically backed internal credit valuation for merchants and ecosystem settlement, completely distinct from external exchange market pricing.*
+
+## ⚙️ Justice Engine Architecture
+
+The "Justice Engine" acts as the algorithmic core of the protocol, isolating internal ecosystem solvency from external market volatility. Its architecture is structured as follows:
+
+```text
+Justice Engine
+│
+├── Oracle Layer (Market Data Input & Desync Protection)
+├── Multiplier Engine (Dynamic QWF Logic & WCF Gating)
+├── Credit Issuance Controller (Phi Φ Reflexive Guardrail)
+└── Settlement Ledger Interface (Merchant/User Balances)
 
 ## ⚙️ Execution Environment & Architecture Note
 **Important implementation clarification:** Pi Network utilizes a Stellar-based consensus architecture and does not natively execute Ethereum Virtual Machine (EVM) bytecode. 
