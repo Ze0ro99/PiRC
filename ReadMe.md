@@ -166,3 +166,16 @@ Diagram ini menggambarkan alur modul PiRC:
 
   
 ## Ekosistem Loop Ekonomi
+
+
+## Research Extensions
+
+This fork expands the PiRC framework with additional research components:
+
+• Economic Coordination Whitepaper  
+• Governance Parameter Bounds  
+• Agent-Based Economic Simulation  
+• Liquidity Coordination Protocol  
+• Engagement Oracle Model
+
+These extensions explore mechanisms for improving long-term economic stability within the Pi ecosystem.
