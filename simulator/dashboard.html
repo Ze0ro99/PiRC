@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PiRC-101 Dashboard</title>
+    <style>
+        body { background: #1a1a2e; color: #fff; font-family: sans-serif; text-align: center; padding: 50px; }
+        .box { border: 2px solid #e94560; padding: 30px; display: inline-block; border-radius: 15px; background: #16213e; }
+        h1 { color: #e94560; }
+        .usd { font-size: 3em; color: #0f3460; background: #00d4ff; padding: 10px 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Justice Engine Live Valuation</h1>
+        <p>Market Price: <strong id="price">$0.2248</strong></p>
+        <div class="usd" id="val">$2,248,000.00 USD</div>
+        <p>Purchasing Power per 1 Mined Pi</p>
+    </div>
+    <script>
+        setInterval(() => {
+            let p = 0.2248 + (Math.random() * 0.001);
+            document.getElementById('price').innerText = "$" + p.toFixed(4);
+            document.getElementById('val').innerText = "$" + (p * 10000000).toLocaleString() + ".00 USD";
+        }, 2000);
+    </script>
+</body>
+</html>
+
