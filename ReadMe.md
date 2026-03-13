@@ -1,3 +1,42 @@
+# PiRC-101 | Justice Explorer (Mainnet Edition) ⚖️
+
+The official real-time data transparency engine for the **PiRC-101 Protocol**. This explorer bridges the gap between external CEX liquidity and internal economic parity using the proprietary **Justice Engine** and **Weighted Contribution Factor (WCF)**.
+
+🔗 **Live Explorer:** [https://ze0ro99.github.io/PiRC/](https://ze0ro99.github.io/PiRC/)
+
+---
+
+## 🚀 Key Features
+* **Live Mainnet Stream:** Real-time data synchronization with Pi Network Mainnet nodes.
+* **WCF Multiplier:** Dynamic calculation of internal Pi value based on the $1:10,000,000$ Justice Factor.
+* **PiScan Ledger:** Transparent transaction tracking for $REF (Equity Reserve) and $WPI (Wrapped Pi).
+* **Dual-Market Analysis:** Integrated price feeds from OKX and MEXC for external market benchmarking.
+* **Multi-Currency Support:** Seamless toggling between **USD** and **JOD** (Jordanian Dinar) for local economic assessment.
+
+## 🛠️ Technical Architecture
+This explorer is built on a high-performance frontend stack designed for low-latency data streaming:
+- **Framework:** Vanilla JavaScript (ES6+) with Fetch API integration.
+- **Charts:** Lightweight Charts (Financial Standard) for real-time candlestick rendering.
+- **Protocol:** Soroban-based smart contract logic integration (Justice Engine).
+- **Styling:** CSS3 Grid & Flexbox for a responsive, dark-themed pro UI.
+
+## 📊 Core Indicators
+| Metric | Description |
+| :--- | :--- |
+| **WCF** | Weighted Contribution Factor protecting long-term pioneers. |
+| **Φ (Phi)** | System Efficiency Factor measuring network liquidity health. |
+| **$REF** | Circulating Equity generated through Justice-Mined transactions. |
+| **πUSD** | Fixed Consensus Stability reference pegged at $3.14. |
+
+---
+![1000097094](https://github.com/user-attachments/assets/fc5e6f7a-a9af-4038-abee-af6fb2b731f4)
+
+
+---
+*Disclaimer: This tool is part of the PiRC ecosystem. All data streams reflect live mainnet conditions and internal protocol parity metrics.*
+
+
+
 See [PiRC1: Pi Ecosystem Token Design](./PiRC1/ReadMe.md)
 
 
