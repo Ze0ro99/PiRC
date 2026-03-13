@@ -1,160 +1,9 @@
 See [PiRC1: Pi Ecosystem Token Design](./PiRC1/ReadMe.md)
 
 
-# PiRC Research Extensions
-
-This repository contains experimental proposals and research
-extensions for the Pi Requests for Comment (PiRC) framework.
-
-## Research Proposals
-
-- PiRC-101 — Adaptive Utility Allocation
-- PiRC-102 — Engagement Oracle Protocol
-
-These proposals explore mechanisms for improving reward allocation,
-engagement measurement, and protocol security in the Pi ecosystem.
-
-## Goals
-
-• deterministic reward allocation  
-• engagement verification  
-• sybil-resistant participation metrics  
-• protocol-level incentive modeling
-
-
-## PiRC Proposals
-
-- PiRC-101: Adaptive Utility Allocation
-- PiRC-102: Engagement Oracle Protocol
-
-
-# PiRC Economic Architecture
-
-Research and simulation framework for the PiRC reward coordination system.
-
-This repository explores the economic structure behind PiRC including liquidity incentives, reward distribution models, and long-term ecosystem stability.
-
----
-
-# Overview
-
-PiRC introduces a liquidity-aware reward system connecting:
-
-• Pioneer mining supply  
-• External liquidity providers  
-• Utility-driven transactions  
-• Fee generation  
-
-These components create a reflexive economic loop designed to stabilize the Pi ecosystem.
-
----
-
-# Architecture
-
-Pioneer Supply  
-↓  
-Liquidity Contribution Engine  
-↓  
-Economic Activity  
-↓  
-Fee Generation  
-↓  
-Reward Distribution  
-
----
-
-# Repository Structure
-
-contracts/  
-Prototype contracts modeling reward and liquidity logic.
-
-economics/  
-Mathematical models of the PiRC economic system.
-
-simulations/  
-Agent-based simulations of ecosystem behavior.
-
-docs/  
-Protocol architecture and system design.
-
-automation/  
-Automated simulation runs using GitHub Actions.
-
----
-
-# Research Goals
-
-• Simulate liquidity growth  
-• Analyze reward fairness  
-• Test economic stability  
-• Evaluate governance parameter bounds
-
----
-
-# License
-
-MIT License
-
-## PiRC Architecture Overview
-
-PiRC (Pi Requests for Comment) menggabungkan ekosistem token, treasury, governance, DEX executor, reward engine, dan liquidity controller dalam satu loop ekonomi terintegrasi.
-
 ### Diagram Arsitektur
 ![PiRC Architecture]![PiRC Architecture](file_00000000694471fa81c2a3a9c9367998.png)
 )
-> Diagram di atas menggambarkan alur interaksi antara:
-> - **PiRC Token** (mint-on-demand)
-> - **Treasury Vault**
-> - **Governance Contract**
-> - **Liquidity Controller**
-> - **DEX Executor** (Free-Fault DEX)
-> - **Reward Engine**
-> - **Bootstrapper & GitHub Actions**
->
-> Setiap modul berkontribusi pada loop ekonomi yang reflexive dan sybil-resistant.
-
-### Dokumen Pendukung
-Untuk penjelasan lebih lengkap mengenai tiap modul dan interaksi kontrak, lihat dokumen arsitektur:
-
-[PiRC Architecture Overview](pirc_architecture_overview.md)
----
-
-┌─────────────┐
-                 │  PiRC Token │
-                 │ (pi_token)  │
-                 └─────┬──────┘
-                       │
-                       ▼
-               ┌───────────────┐
-               │ Treasury Vault│
-               │ (treasury_vault) │
-               └─────┬─────────┘
-        ┌────────────┼─────────────┐
-        ▼            ▼             ▼
- ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
- │Liquidity    │ │DEX Executor │ │Reward Engine│
- │Controller   │ │(dex_executor)│ │(reward_engine)│
- └─────┬───────┘ └─────┬───────┘ └─────┬───────┘
-       │               │               │
-       └───────┬───────┴───────┬───────┘
-               ▼               ▼
-           Bootstrapper & GitHub Actions
-           (bootstrap + automation)
-
-
-       # PiRC Architecture Overview
-
-
-Diagram ini menggambarkan alur modul PiRC:
-- **PiRC Token** → Mint-on-demand token utama
-- **Treasury Vault** → Menyimpan cadangan dan alokasi token
-- **Governance Contract** → Protokol tata kelola & voting
-- **Liquidity Controller** → Mengelola likuiditas dan insentif
-- **DEX Executor** → Free-Fault DEX untuk eksekusi trading
-- **Reward Engine** → Menyalurkan reward ke pengguna & pionir
-- **Bootstrapper & GitHub Actions** → Deployment, setup awal, simulasi otomatis
-
-## Modul Klik Langsung ke Kontrak
 
 - [PiRC Token](pi_token.rs)
 - [Treasury Vault](treasury_vault.rs)
@@ -165,17 +14,158 @@ Diagram ini menggambarkan alur modul PiRC:
 - [Bootstrapper & Automation](bootstrap.rs)
 
   
-## Ekosistem Loop Ekonomi
+PiRC Research Extensions
 
+Experimental research extensions for the Pi Requests for Comment (PiRC) framework.
 
-## Research Extensions
+This repository explores economic coordination mechanisms designed to support long-term sustainability within the Pi ecosystem. The project focuses on reward allocation, liquidity coordination, governance parameter design, and economic simulation models.
 
-This fork expands the PiRC framework with additional research components:
+---
 
-• Economic Coordination Whitepaper  
-• Governance Parameter Bounds  
-• Agent-Based Economic Simulation  
-• Liquidity Coordination Protocol  
-• Engagement Oracle Model
+Overview
 
-These extensions explore mechanisms for improving long-term economic stability within the Pi ecosystem.
+PiRC proposes a reflexive economic coordination loop connecting token supply, liquidity provision, economic activity, and reward distribution.
+
+Core economic cycle:
+
+Pioneer Supply
+↓
+Liquidity Contribution
+↓
+Economic Activity
+↓
+Fee Generation
+↓
+Reward Distribution
+
+This structure attempts to align incentives between ecosystem participants while ensuring that rewards are linked to real activity within the network.
+
+---
+
+Objectives
+
+The repository explores several research directions:
+
+• deterministic reward allocation
+• liquidity-aware incentive mechanisms
+• sybil-resistant participation metrics
+• governance parameter modeling
+• long-term economic sustainability
+
+These components aim to simulate and evaluate possible improvements to incentive coordination in decentralized ecosystems.
+
+---
+
+Architecture
+
+The PiRC protocol is organized around several conceptual modules:
+
+Token Layer
+Defines token supply logic and minting constraints.
+
+Treasury Layer
+Manages protocol reserves and funding for incentives.
+
+Liquidity Layer
+Coordinates liquidity incentives and trading infrastructure.
+
+Reward Engine
+Distributes rewards based on activity and liquidity participation.
+
+Governance Module
+Allows controlled updates to economic parameters.
+
+Simulation Engine
+Models long-term economic behavior of the system.
+
+These components form a reflexive economic coordination framework.
+
+---
+
+Repository Structure
+
+contracts/      Reference protocol contracts
+economics/      Mathematical economic models
+simulations/    Agent-based economic simulations
+docs/           Protocol documentation
+automation/     GitHub Actions for simulation runs
+diagrams/       Economic architecture diagrams
+results/        Simulation output and projections
+
+Each directory focuses on a specific research aspect of the protocol.
+
+---
+
+Research Components
+
+Economic Modeling
+
+Mathematical models describing token supply, liquidity growth, and reward emissions.
+
+Agent-Based Simulation
+
+Simulation environments modeling participant behavior and protocol incentives.
+
+Governance Parameter Studies
+
+Exploration of safe bounds for protocol parameters such as reward multipliers and treasury allocation ratios.
+
+Liquidity Coordination
+
+Mechanisms designed to align liquidity incentives with ecosystem activity.
+
+---
+
+Simulation Goals
+
+The simulation framework allows experimentation with different economic scenarios.
+
+Example scenarios include:
+
+• high participation growth
+• liquidity expansion
+• reward emission constraints
+• economic downturn conditions
+
+These simulations help evaluate long-term stability of incentive systems.
+
+---
+
+Documentation
+
+Additional protocol documentation is available in the "docs/" directory:
+
+Protocol Specification
+Economic Model
+Governance Parameters
+Architecture Overview
+Whitepaper Draft
+
+These documents provide deeper explanations of the economic mechanisms explored in this repository.
+
+---
+
+Status
+
+This repository represents an experimental research environment for studying economic coordination mechanisms in decentralized ecosystems.
+
+The models and contracts included here are prototype implementations intended for experimentation and simulation.
+
+---
+
+Contributing
+
+Contributions are welcome in the following areas:
+
+• economic modeling
+• simulation improvements
+• protocol documentation
+• governance parameter analysis
+
+Researchers and developers interested in decentralized economic systems are encouraged to participate.
+
+---
+
+License
+
+MIT License
