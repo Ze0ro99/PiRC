@@ -186,3 +186,87 @@
 
 </body>
 </html>
+        timeScale: { timeVisible: true, secondsVisible: true }
+    };
+
+    const cexChart = LightweightCharts.createChart(document.getElementById('cex-chart'), chartOptions);
+    const pircChart = LightweightCharts.createChart(document.getElementById('pirc-chart'), chartOptions);
+
+    const cexSeries = cexChart.addCandlestickSeries({ upColor: '#3fb950', downColor: '#f85149', borderVisible: false });
+    const pircSeries = pircChart.addAreaSeries({ lineColor: '#ffa500', topColor: 'rgba(255, 165, 0, 0.4)', bottomColor: 'rgba(255, 165, 0, 0.0)' });
+
+    // Generate Initial Chart Data
+    let currentTime = Math.floor(Date.now() / 1000);
+    let currentCexPrice = 39.00;
+    let basePircPrice = 314159;
+
+    function generateCandle(price, time) {
+        const open = price + (Math.random() - 0.5);
+        const close = open + (Math.random() - 0.5) * 2;
+        const high = Math.max(open, close) + Math.random();
+        const low = Math.min(open, close) - Math.random();
+        return { time, open, high, low, close };
+    }
+
+    // --- Live Updates ---
+    setInterval(() => {
+        currentTime += 60; // Add 1 minute
+        
+        // Update CEX Chart (High Volatility)
+        currentCexPrice = currentCexPrice + (Math.random() - 0.5) * 1.5;
+        const cexCandle = generateCandle(currentCexPrice, currentTime);
+        cexSeries.update(cexCandle);
+        document.getElementById('cex-price-display').innerHTML = `${currencySymbols[currentCurrency]}${(currentCexPrice * exchangeRates[currentCurrency]).toFixed(2)}`;
+
+        // Update PiRC Chart (Stable/Growth based on Justice Engine)
+        basePircPrice = basePircPrice + (Math.random() * 10); // Only goes up or stable
+        const pircVal = basePircPrice * exchangeRates[currentCurrency];
+        pircSeries.update({ time: currentTime, value: pircVal });
+        document.getElementById('pirc-price-display').innerHTML = `${pircVal.toLocaleString()} ${currentCurrency}`;
+
+        // Add Transaction
+        generateTransaction();
+    }, 2000);
+
+    function updateCurrency() {
+        currentCurrency = document.getElementById('currency-select').value;
+    }
+
+    // --- Advanced Ledger (Routing & Liquidity) ---
+    const ledgerBody = document.getElementById('ledger-body');
+    const sources = ['[Binance Hot Wallet]', '[Huobi CEX]', 'Pioneer: GD7A...9P2', 'Pioneer: GC3F...4L1'];
+    const destinations = ['Soroban Bridge (PR#2)', 'Justice Pool (PR#45)', 'Pioneer: G9X1...8M3', 'Merchant Escrow'];
+
+    function generateTransaction() {
+        const hash = '0x' + Array.from({length: 12}, () => Math.floor(Math.random() * 16).toString(16)).join('').toUpperCase();
+        const isExternal = Math.random() > 0.6;
+        const amount = (Math.random() * 100).toFixed(2);
+        
+        const from = isExternal ? sources[Math.floor(Math.random()*2)] : sources[Math.floor(Math.random()*2) + 2];
+        const to = destinations[Math.floor(Math.random() * destinations.length)];
+        
+        const justiceValue = isExternal ? 
+            `${currencySymbols[currentCurrency]}${((amount * currentCexPrice) * exchangeRates[currentCurrency]).toFixed(2)}` : 
+            `<span style="color:var(--success);font-weight:bold">${currencySymbols[currentCurrency]}${((amount * basePircPrice) * exchangeRates[currentCurrency]).toLocaleString()}</span>`;
+
+        const row = document.createElement('tr');
+        row.className = 'tx-row';
+        row.innerHTML = `
+            <td class="tx-cell"><a href="#" class="hash-link">${hash}...</a></td>
+            <td class="tx-cell"><span class="${isExternal ? 'badge badge-cex' : 'badge badge-pioneer'}">${isExternal ? 'External Speculation' : 'Verified Mined Pi'}</span></td>
+            <td class="tx-cell"><span class="address-tag">${from}</span></td>
+            <td class="tx-cell"><span class="address-tag">${to}</span></td>
+            <td class="tx-cell">${amount} π</td>
+            <td class="tx-cell">${justiceValue}</td>
+        `;
+        
+        ledgerBody.insertBefore(row, ledgerBody.firstChild);
+        if (ledgerBody.children.length > 8) ledgerBody.lastElementChild.remove();
+    }
+
+    // Initial Load
+    for(let i=0; i<6; i++) { generateTransaction(); currentTime-=60; }
+</script>
+
+</body>
+</html>
