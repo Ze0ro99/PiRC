@@ -3,88 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PiRC-101 | Advanced Justice Bridge</title>
+    <title>PiRC-101 | Justice Engine v5.0 (Full Architecture)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
-        :root { --pi-gold: #ffa500; --bg: #0d1117; --card: #161b22; --border: #30363d; --success: #3fb950; --danger: #f85149; }
-        body { background: var(--bg); color: #c9d1d9; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; }
-        
-        /* Navigation */
+        :root { 
+            --pi-gold: #ffa500; --bg: #0d1117; --card: #161b22; --border: #30363d; 
+            --stable: #3fb950; --danger: #f85149; --bridge: #a371f7; --text: #c9d1d9;
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; }
         .navbar { background: var(--card); padding: 15px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { color: var(--pi-gold); font-weight: bold; font-size: 1.2rem; }
-        .controls select { background: #21262d; color: white; border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; margin-left: 10px; }
+        .logo { color: var(--pi-gold); font-weight: bold; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .container { max-width: 1550px; margin: 20px auto; padding: 0 20px; }
 
-        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
+        /* --- NEW: Justice Indicators Bar (WCF, Phi, REF) --- */
+        .indicators-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .indicator-box { background: linear-gradient(145deg, #1c2128, #161b22); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .indicator-label { color: #8b949e; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .indicator-value { font-size: 1.4rem; font-weight: bold; color: white; font-family: 'Courier New', monospace; }
 
-        /* Charts Section */
-        .charts-container { display: grid; grid-template-rows: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-        .chart-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; height: 350px; position: relative; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .chart-title { font-weight: bold; font-size: 1.1rem; }
-        .chart-price { font-size: 1.3rem; font-weight: bold; color: var(--success); }
-        .chart-container-div { width: 100%; height: 280px; }
-
-        /* Ledger Section */
-        .explorer-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; }
-        .tx-list { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        .tx-row { border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-        .tx-cell { padding: 12px 15px; text-align: left; }
-        .hash-link { color: #58a6ff; text-decoration: none; font-family: monospace; }
-        .badge { padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
-        .badge-pioneer { background: rgba(255, 165, 0, 0.15); color: var(--pi-gold); }
-        .badge-cex { background: rgba(248, 81, 73, 0.15); color: var(--danger); }
+        /* Charts & Tokens Layout */
+        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .chart-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; height: 380px; }
+        .token-stack { display: flex; flex-direction: column; gap: 15px; }
+        .token-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; border-left: 5px solid transparent; }
         
-        .address-tag { background: #21262d; padding: 3px 6px; border-radius: 4px; border: 1px solid #30363d; font-family: monospace; }
+        /* Ledger */
+        .explorer-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; margin-top: 20px; }
+        .tx-table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        .tx-cell { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; }
+        .tag { background: #21262d; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); font-size: 0.75rem; font-family: monospace; }
     </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <div class="logo"><i class="fas fa-chart-line"></i> PiRC-101 | Real-Time Market & Justice Engine</div>
+    <div class="logo"><i class="fas fa-shield-alt"></i> PiRC-101 | JUSTICE EXPLORER v5.0</div>
     <div class="controls">
-        <select id="currency-select" onchange="updateCurrency()">
+        <select id="currency-select" onchange="updateUI()" style="background:#21262d; color:white; border:1px solid #30363d; padding:5px; border-radius:5px;">
             <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
             <option value="JOD">JOD (د.أ)</option>
-            <option value="CNY">CNY (¥)</option>
+            <option value="EUR">EUR (€)</option>
         </select>
-        <span style="color: var(--success); font-size: 0.8rem; margin-left: 15px;"><i class="fas fa-circle"></i> Live API</span>
     </div>
 </nav>
 
 <div class="container">
-    <div class="charts-container">
-        <div class="chart-box">
-            <div class="chart-header">
-                <div class="chart-title"><i class="fas fa-globe"></i> External CEX Price (Speculative Market)</div>
-                <div class="chart-price" id="cex-price-display">$39.45 <span style="font-size: 0.8rem; color: var(--danger);">-1.2%</span></div>
+    <div class="indicators-grid">
+        <div class="indicator-box" style="border-top: 3px solid var(--pi-gold);">
+            <div class="indicator-label"><i class="fas fa-weight-hanging"></i> Justice Multiplier (WCF)</div>
+            <div class="indicator-value">1 : 10,000,000</div>
+        </div>
+        <div class="indicator-box" style="border-top: 3px solid var(--bridge);">
+            <div class="indicator-label"><i class="fas fa-bolt"></i> Efficiency Factor (Φ)</div>
+            <div class="indicator-value" id="phi-val">0.999912</div>
+        </div>
+        <div class="indicator-box" style="border-top: 3px solid var(--stable);">
+            <div class="indicator-label"><i class="fas fa-users"></i> Pioneer Equity ($REF)</div>
+            <div class="indicator-value" id="ref-total">---</div>
+        </div>
+        <div class="indicator-box">
+            <div class="indicator-label"><i class="fas fa-microchip"></i> Real-Time Transactions</div>
+            <div class="indicator-value" id="tx-total">0</div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div class="chart-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-weight:bold;"><i class="fas fa-chart-area"></i> Speculative Market (CEX)</span>
+                    <span id="cex-price" style="color:var(--danger); font-weight:bold;">---</span>
+                </div>
+                <div id="cex-chart" style="height:310px;"></div>
             </div>
-            <div id="cex-chart" class="chart-container-div"></div>
+            <div class="chart-box" style="border-bottom: 4px solid var(--pi-gold);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-weight:bold;"><i class="fas fa-balance-scale"></i> Justice Purchasing Power</span>
+                    <span id="pirc-price" style="color:var(--pi-gold); font-weight:bold;">---</span>
+                </div>
+                <div id="pirc-chart" style="height:310px;"></div>
+            </div>
         </div>
 
-        <div class="chart-box" style="border-left: 4px solid var(--pi-gold);">
-            <div class="chart-header">
-                <div class="chart-title"><i class="fas fa-shield-alt" style="color: var(--pi-gold);"></i> Pioneer Purchasing Power (PiRC Justice Value)</div>
-                <div class="chart-price" id="pirc-price-display" style="color: var(--pi-gold);">314,159 USD</div>
+        <div class="token-stack">
+            <div class="token-card" style="border-left-color: var(--pi-gold);">
+                <div style="font-weight:bold; margin-bottom:10px;"><i class="fas fa-coins" style="color:var(--pi-gold)"></i> Pi (Native Justice)</div>
+                <div id="t-pi" style="font-size:1.4rem; font-weight:bold;">---</div>
+                <div style="font-size:0.75rem; color:#8b949e;">Weighted by WCF Factor</div>
             </div>
-            <div id="pirc-chart" class="chart-container-div"></div>
+            <div class="token-card" style="border-left-color: var(--stable);">
+                <div style="font-weight:bold; margin-bottom:10px;"><i class="fas fa-dollar-sign" style="color:var(--stable)"></i> Pi Stable (πUSD)</div>
+                <div id="t-pusd" style="font-size:1.4rem; font-weight:bold;">---</div>
+                <div style="font-size:0.75rem; color:#8b949e;">Fixed Liquidity Peg: 3.14</div>
+            </div>
+            <div class="token-card" style="border-left-color: var(--bridge);">
+                <div style="font-weight:bold; margin-bottom:10px;"><i class="fas fa-link" style="color:var(--bridge)"></i> Wrapped Pi (WPI)</div>
+                <div id="t-wpi" style="font-size:1.4rem; font-weight:bold;">---</div>
+                <div style="font-size:0.75rem; color:#8b949e;">Soroban Bridge (PR#2)</div>
+            </div>
         </div>
     </div>
 
     <div class="explorer-card">
-        <div class="chart-header" style="padding: 15px; margin: 0;">
-            <span style="font-weight: bold;"><i class="fas fa-list-alt"></i> Blockchain Transparent Ledger (PR #45 & #2 Architecture)</span>
+        <div style="padding:15px; font-weight:bold; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02)">
+            <i class="fas fa-database"></i> Live Justice Ledger (Real-Time Transparency)
         </div>
-        <table class="tx-list">
+        <table class="tx-table">
             <thead>
-                <tr style="color: #8b949e; border-bottom: 1px solid var(--border);">
+                <tr style="color: #8b949e; font-size: 0.75rem; text-align: left;">
                     <th class="tx-cell">TX HASH</th>
-                    <th class="tx-cell">TYPE</th>
-                    <th class="tx-cell">FROM (ORIGIN)</th>
-                    <th class="tx-cell">TO (DESTINATION)</th>
-                    <th class="tx-cell">AMOUNT (π)</th>
-                    <th class="tx-cell">JUSTICE VALUE</th>
+                    <th class="tx-cell">CLASSIFICATION</th>
+                    <th class="tx-cell">FROM</th>
+                    <th class="tx-cell">TO</th>
+                    <th class="tx-cell">AMOUNT</th>
+                    <th class="tx-cell">JUSTICE VALUE ($REF)</th>
                 </tr>
             </thead>
             <tbody id="ledger-body"></tbody>
@@ -93,15 +127,76 @@
 </div>
 
 <script>
-    // --- Data Simulation & Currencies ---
-    const exchangeRates = { USD: 1, EUR: 0.92, JOD: 0.71, CNY: 7.23 };
-    const currencySymbols = { USD: '$', EUR: '€', JOD: 'د.أ ', CNY: '¥' };
-    let currentCurrency = 'USD';
+    const rates = { USD: 1, JOD: 0.71, EUR: 0.92 };
+    let cur = 'USD';
+    let pircBase = 314159, cexBase = 39.4, totalRef = 0, txCount = 0;
 
-    // --- Chart Initialization (TradingView) ---
-    const chartOptions = {
-        layout: { background: { color: 'transparent' }, textColor: '#c9d1d9' },
-        grid: { vertLines: { color: '#30363d' }, horzLines: { color: '#30363d' } },
+    // Charts
+    const conf = { layout: { background: { color: 'transparent' }, textColor: '#c9d1d9' }, grid: { vertLines: { color: '#30363d' }, horzLines: { color: '#30363d' } } };
+    const cexChart = LightweightCharts.createChart(document.getElementById('cex-chart'), conf);
+    const pircChart = LightweightCharts.createChart(document.getElementById('pirc-chart'), conf);
+    const cexSeries = cexChart.addCandlestickSeries({ upColor: '#3fb950', downColor: '#f85149' });
+    const pircSeries = pircChart.addAreaSeries({ lineColor: '#ffa500', topColor: 'rgba(255,165,0,0.3)', bottomColor: 'transparent' });
+
+    let time = Math.floor(Date.now() / 1000);
+
+    function updateUI() {
+        cur = document.getElementById('currency-select').value;
+        const r = rates[cur];
+        document.getElementById('cex-price').innerText = `$${(cexBase * r).toFixed(2)}`;
+        document.getElementById('pirc-price').innerText = `${(pircBase * r).toLocaleString()} ${cur}`;
+        document.getElementById('t-pi').innerText = `${(pircBase * r).toLocaleString()} ${cur}`;
+        document.getElementById('t-pusd').innerText = `${(3.14 * r).toFixed(2)} ${cur}`;
+        document.getElementById('t-wpi').innerText = `$${(cexBase * r).toFixed(2)}`;
+        document.getElementById('ref-total').innerText = (totalRef * 10).toLocaleString() + ' $REF';
+    }
+
+    setInterval(() => {
+        time += 60;
+        cexBase += (Math.random() - 0.5);
+        pircBase += Math.random() * 5;
+        cexSeries.update({ time, open: cexBase, high: cexBase+0.5, low: cexBase-0.5, close: cexBase });
+        pircSeries.update({ time, value: pircBase * rates[cur] });
+        
+        document.getElementById('phi-val').innerText = (0.999900 + Math.random()*0.000099).toFixed(6);
+        addTx();
+        updateUI();
+    }, 3000);
+
+    function addTx() {
+        const hash = '0x' + Math.random().toString(16).substr(2, 10).toUpperCase();
+        const isMined = Math.random() > 0.4;
+        const amount = (Math.random() * 100 + 1).toFixed(2);
+        txCount++;
+        document.getElementById('tx-total').innerText = txCount;
+        
+        let type = isMined ? 'Mined Justice' : 'External Swap';
+        let color = isMined ? 'var(--pi-gold)' : 'var(--danger)';
+        let from = isMined ? 'Pioneer Wallet' : 'Binance Exchange';
+        let to = isMined ? 'Justice Pool (PR#45)' : 'Soroban Bridge (PR#2)';
+        
+        let refVal = isMined ? (amount * pircBase * rates[cur]) : (amount * cexBase * rates[cur]);
+        totalRef += parseFloat(amount);
+
+        const row = document.createElement('tr');
+        row.className = 'tx-row';
+        row.innerHTML = `
+            <td class="tx-cell"><span class="tag" style="color:#58a6ff">${hash}</span></td>
+            <td class="tx-cell"><span class="badge" style="background:rgba(255,255,255,0.05); color:${color}">${type}</span></td>
+            <td class="tx-cell"><span class="tag">${from}</span></td>
+            <td class="tx-cell"><span class="tag">${to}</span></td>
+            <td class="tx-cell"><b>${amount} π</b></td>
+            <td class="tx-cell" style="font-weight:bold; color:${isMined ? 'var(--stable)' : 'white'}">${refVal.toLocaleString()} $REF</td>
+        `;
+        const b = document.getElementById('ledger-body');
+        b.insertBefore(row, b.firstChild);
+        if(b.children.length > 10) b.lastElementChild.remove();
+    }
+
+    updateUI();
+</script>
+</body>
+</html>
         timeScale: { timeVisible: true, secondsVisible: true }
     };
 
