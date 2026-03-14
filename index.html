@@ -3,90 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Bridge - Technical Telemetry Explorer (Prototype)</title>
-    <link rel="stylesheet" href="assets/css/nexus-design.css">
-    <link rel="icon" type="image/png" href="assets/images/vanguard-bridge-logo.png">
+    <title>PiRC-101 | Universal Justice & Tokenized Economy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        /* Core Dark Theme */
+        :root { 
+            --pi-gold: #ffa500; /* Pi & Pioneers */
+            --bg: #0d1117; 
+            --card: #161b22; 
+            --border: #30363d; 
+            --text: #c9d1d9;
+            --text-muted: #8b949e;
+            /* Asset Class Colors */
+            --stable: #3fb950; /* Green (Stablecoins) */
+            --danger: #f85149; /* Red (Speculation) */
+            --bridge: #a371f7; /* Purple (Cross-chain Bridge - PR#2) */
+            --utility: #58a6ff; /* Blue (Gaming/Services) */
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; margin: 0; }
+        
+        /* Navigation */
+        .navbar { background: var(--card); padding: 15px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { color: var(--pi-gold); font-weight: bold; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .controls select { background: #21262d; color: white; border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; margin-left: 10px; }
+
+        .container { max-width: 1500px; margin: 20px auto; padding: 0 20px; }
+
+        /* General UI Elements */
+        .section-header { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+
+        /* Charts Section */
+        .charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .chart-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; height: 380px; }
+        .chart-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .chart-title { font-weight: bold; }
+        .chart-price { font-size: 1.4rem; font-weight: bold; }
+        .chart-container-div { width: 100%; height: 310px; }
+
+        /* --- NEW: Token Dashboard Section --- */
+        .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .token-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; position: relative; transition: 0.3s; cursor: pointer; }
+        .token-card:hover { border-color: var(--pi-gold); transform: translateY(-3px); }
+        .token-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .token-info { display: flex; align-items: center; gap: 10px; }
+        .token-icon-placeholder { width: 20px; height: 20px; border-radius: 50%; }
+        .token-name { font-weight: bold; font-size: 1rem; }
+        .token-symbol { color: var(--text-muted); font-size: 0.8rem; font-family: monospace; }
+        .token-price { font-size: 1.3rem; font-weight: bold; color: white; margin-bottom: 5px; }
+        .token-tvl { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Explorer Section */
+        .explorer-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 30px; }
+        .tx-list { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        .tx-row { border-bottom: 1px solid var(--border); font-size: 0.85rem; transition: 0.2s; }
+        .tx-row:hover { background: rgba(255, 255, 255, 0.02); }
+        .tx-cell { padding: 12px 15px; text-align: left; }
+        .hash-link { color: #58a6ff; text-decoration: none; font-family: monospace; }
+        
+        .badge { padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+        .badge-pioneer { background: rgba(255, 165, 0, 0.15); color: var(--pi-gold); }
+        .badge-cex { background: rgba(248, 81, 73, 0.15); color: var(--danger); }
+        .badge-bridge { background: rgba(163, 113, 247, 0.15); color: var(--bridge); }
+        
+        .address-tag { background: #21262d; padding: 3px 6px; border-radius: 4px; border: 1px solid #30363d; font-family: monospace; font-size: 0.8rem;}
+    </style>
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="assets/images/app-logo.png" alt="Vanguard Bridge Logo" class="app-logo">
-            <h1>Vanguard Bridge Dashboard</h1>
-        </div>
-    </header>
 
-    <main>
-        <div class="mode-badge">
-            Status: <span class="badge conceptual">Conceptual Simulation</span>
-        </div>
+<nav class="navbar">
+    <div class="logo"><i class="fas fa-microchip"></i> PiRC-101 | Unified Token Economy</div>
+    <div class="controls">
+        <select id="currency-select" onchange="updateCurrency()">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="JOD">JOD (د.أ)</option>
+            <option value="CNY">CNY (¥)</option>
+        </select>
+        <span style="color: var(--stable); font-size: 0.8rem; margin-left: 15px;"><i class="fas fa-circle"></i> Connected</span>
+    </div>
+</nav>
 
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <h3 data-i18n="metrics_iou_price">IOU Speculative Parity</h3>
-                <p id="ext-price-val">$ 0.17</p> </div>
-            
-            <div class="metric-card">
-                <h3 data-i18n="metrics_wcf_price">Vanguard Bridge Backed Parity ($WCF)</h3>
-                <p id="parity-price">$ 0.00</p>
-            </div>
-
-            <div class="metric-card">
-                <h3 data-i18n="metrics_wcf_ref">Pioneer Equity ($REF)</h3>
-                <p id="wcf-ref-val">0 REF</p>
-            </div>
-        </div>
-
-        <div class="selectors-container">
-            <div class="language-selector">
-                <button onclick="changeLanguage('en')">EN</button>
-                <button onclick="changeLanguage('ar')">AR</button>
-                <button onclick="changeLanguage('zh')">ZH</button>
-                <button onclick="changeLanguage('id')">ID</button>
-                <button onclick="changeLanguage('fr')">FR</button>
-                <button onclick="changeLanguage('ms')">MS</button>
-            </div>
-            
-            <div class="currency-selector">
-                <select id="currency-select" onchange="handleCurrencyChange(event)">
-                    <option value="USD">USD ($)</option>
-                    <option value="JOD">JOD (د.أ)</option>
-                    <option value="EGP">EGP (ج.م)</option>
-                    <option value="SAR">SAR (ر.س)</option>
-                    <option value="TND">TND (د.ت)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="JPY">JPY (¥)</option>
-                </select>
-            </div>
-        </div>
-
+<div class="container">
+    <div class="charts-container">
         <div class="chart-box">
-            <h2 data-i18n="chart_title">IOU Price Visualization (Simulation)</h2>
-            <div id="main-chart"></div>
+            <div class="chart-meta">
+                <div class="chart-title"><i class="fas fa-globe-americas"></i> External CEX Price (Speculative Market)</div>
+                <div class="chart-price" id="cex-price-display" style="color: var(--danger);">$39.00</div>
+            </div>
+            <div id="cex-chart" class="chart-container-div"></div>
+        </div>
+        <div class="chart-box" style="border-left: 4px solid var(--pi-gold);">
+            <div class="chart-meta">
+                <div class="chart-title"><i class="fas fa-shield-alt" style="color: var(--pi-gold);"></i> Pioneer Purchasing Power (PiRC Justice Value)</div>
+                <div class="chart-price" id="pirc-price-display" style="color: var(--pi-gold);">---</div>
+            </div>
+            <div id="pirc-chart" class="chart-container-div"></div>
+        </div>
+    </div>
+
+    <div class="section-header"><i class="fas fa-coins" style="color: var(--pi-gold);"></i> Strategic Tokenized Assets (Ecosystem GDP)</div>
+    <div class="token-grid" id="token-grid">
+        <div class="token-card" style="border-left-color: var(--pi-gold);">
+            <div class="token-header">
+                <div class="token-info"><i class="fas fa-coins" style="color: var(--pi-gold); font-size: 1.2rem;"></i> <span class="token-name">Pi (Justice)</span></div>
+                <span class="token-symbol">PI</span>
+            </div>
+            <div class="token-price" id="t-pi-price">---</div>
+            <div class="token-tvl" id="t-pi-tvl">TVL: 2.1B USD (Locked)</div>
         </div>
 
-        <div class="ledger-box">
-            <h2 data-i18n="ledger_title">Vanguard Bridge Telemetry Ledger</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th data-i18n="col_hash">TX HASH</th>
-                        <th data-i18n="col_class">CLASSIFICATION</th>
-                        <th data-i18n="col_micros">CEX MICROS (e.g. PiScan view)</th>
-                        <th data-i18n="col_macro">MACRO PI (e.g. ExplorePi view)</th>
-                        <th data-i18n="col_ref">WEIGHTED (REF)</th>
-                    </tr>
-                </thead>
-                <tbody id="ledger-body">
-                    </tbody>
-            </table>
+        <div class="token-card" style="border-left-color: var(--bridge);">
+            <div class="token-header">
+                <div class="token-info"><i class="fas fa-link" style="color: var(--bridge);"></i> <span class="token-name">Wrapped Pi (Soroban Bridge)</span></div>
+                <span class="token-symbol">WPI</span>
+            </div>
+            <div class="token-price" id="t-wpi-price">---</div>
+            <div class="token-tvl" id="t-wpi-tvl">Bridge Cap: 500M USD</div>
         </div>
-    </main>
 
-    <footer>
-        <p data-i18n="footer_disclaimer">This interface is a research prototype visualizing PiRC-101 conceptual modeling. It is NOT an official Pi Network utility.</p>
-    </footer>
+        <div class="token-card" style="border-left-color: var(--stable);">
+            <div class="token-header">
+                <div class="token-info"><i class="fas fa-dollar-sign" style="color: var(--stable);"></i> <span class="token-name">Pi USD (Stablepeg)</span></div>
+                <span class="token-symbol">πUSD</span>
+            </div>
+            <div class="token-price" id="t-usd-price">1.00 USD</div>
+            <div class="token-tvl" id="t-usd-tvl">Pool Liquidity: 850M USD</div>
+        </div>
 
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.production.js"></script>
-    <script type="module" src="assets/js/explorer-core.js"></script>
+        <div class="token-card" style="border-left-color: var(--danger);">
+            <div class="token-header">
+                <div class="token-info"><i class="fas fa-chart-line" style="color: var(--danger);"></i> <span class="token-name">External Pi (Speculative)</span></div>
+                <span class="token-symbol">CPI</span>
+            </div>
+            <div class="token-price" id="t-cpi-price">---</div>
+            <div class="token-tvl" id="t-cpi-tvl">24h Vol: 1.2B USD</div>
+        </div>
+    </div>
+
+    <div class="explorer-card">
+        <div class="section-header" style="background: transparent; border: none; margin: 0; padding: 15px;">
+            <i class="fas fa-list-alt"></i> Blockchain Transparent Ledger (v3.0 - Soroban & Pool Integration)
+        </div>
+        <table class="tx-list">
+            <thead>
+                <tr style="color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 0.75rem;">
+                    <th class="tx-cell">TX HASH</th>
+                    <th class="tx-cell">CLASSIFICATION</th>
+                    <th class="tx-cell">FROM (ORIGIN)</th>
+                    <th class="tx-cell">TO (DESTINATION)</th>
+                    <th class="tx-cell">AMOUNT (π)</th>
+                    <th class="tx-cell">JUSTICE VAL (REF)</th>
+                </tr>
+            </thead>
+            <tbody id="ledger-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // --- Data Simulation & Currencies ---
+    const exchangeRates = { USD: 1, EUR: 0.92, JOD: 0.71, CNY: 7.23 };
+    const currencySymbols = { USD: '$', EUR: '€', JOD: 'د.أ ', CNY: '¥' };
+    let currentCurrency = 'USD';
+
+    const baseTVL = { PI: 2100000000, WPI: 500000000, USD: 850000000, CPI: 1200000000 };
+
+    // --- Chart Initialization (TradingView) ---
+    const chartOptions = {
+        layout: { background: { color: 'transparent' }, textColor: '#c9d1d9' },
+        grid: { vertLines: { color: '#30363d' }, horzLines: { color: '#30363d' } },
+        timeScale: { timeVisible: true, secondsVisible: true }
+    };
+
+    const cexChart = LightweightCharts.createChart(document.getElementById('cex-chart'), chartOptions);
+    const pircChart = LightweightCharts.createChart(document.getElementById('pirc-chart'), chartOptions);
+
+    const cexSeries = cexChart.addCandlestickSeries({ upColor: '#3fb950', downColor: '#f85149', borderVisible: false });
+    const pircSeries = pircChart.addAreaSeries({ lineColor: '#ffa500', topColor: 'rgba(255, 165, 0, 0.4)', bottomColor: 'rgba(255, 165, 0, 0.0)' });
+
+    // Generate Initial Chart Data
+    let currentTime = Math.floor(Date.now() / 1000);
+    let currentCexPrice = 39.00;
+    let basePircPrice = 314159;
+
+    function generateCandle(price, time) {
+        const open = price + (Math.random() - 0.5);
+        const close = open + (Math.random() - 0.5) * 2;
+        const high = Math.max(open, close) + Math.random();
+        const low = Math.min(open, close) - Math.random();
+        return { time, open, high, low, close };
+    }
+
+    // --- Live Updates & Token Dashboard Logic ---
+    setInterval(() => {
+        currentTime += 60; // Add 1 minute
+        
+        // Update CEX Chart (Volatility)
+        currentCexPrice = currentCexPrice + (Math.random() - 0.5) * 1.5;
+        cexSeries.update(generateCandle(currentCexPrice, currentTime));
+
+        // Update PiRC Chart (Stability/Growth)
+        basePircPrice = basePircPrice + (Math.random() * 10); // Growth model
+        pircSeries.update({ time: currentTime, value: basePircPrice * exchangeRates[currentCurrency] });
+
+        // Update UI Displays
+        updateDisplayElements();
+
+        // Add Ledger Transaction
+        generateTransaction();
+    }, 2000);
+
+    function updateDisplayElements() {
+        const rate = exchangeRates[currentCurrency];
+        const symbol = currencySymbols[currentCurrency];
+
+        // Chart Header Displays
+        document.getElementById('cex-price-display').innerText = `${symbol}${(currentCexPrice * rate).toFixed(2)}`;
+        document.getElementById('pirc-price-display').innerText = `${(basePircPrice * rate).toLocaleString()} ${currentCurrency}`;
+
+        // --- Update Token Dashboard ---
+        // Pi (Justice)
+        document.getElementById('t-pi-price').innerText = `${(basePircPrice * rate).toLocaleString()} ${currentCurrency}`;
+        document.getElementById('t-pi-tvl').innerText = `Locked Value: ${symbol}${(baseTVL.PI * rate).toLocaleString()}`;
+        
+        // Wrapped Pi (Matches CEX price in this simulation)
+        document.getElementById('t-wpi-price').innerText = `${symbol}${(currentCexPrice * rate).toFixed(2)}`;
+        document.getElementById('t-wpi-tvl').innerText = `Bridge Cap: ${symbol}${(baseTVL.WPI * rate).toLocaleString()}`;
+        
+        // Stable USD (Pegged, only currency changes)
+        document.getElementById('t-usd-price').innerText = `${(1.00 * rate).toFixed(2)} ${currentCurrency}`;
+        document.getElementById('t-usd-tvl').innerText = `Pool Liquidity: ${symbol}${(baseTVL.USD * rate).toLocaleString()}`;
+        
+        // External Pi (Matches CEX chart)
+        document.getElementById('t-cpi-price').innerText = `${symbol}${(currentCexPrice * rate).toFixed(2)}`;
+        document.getElementById('t-cpi-tvl').innerText = `24h Vol: ${symbol}${(baseTVL.CPI * rate).toLocaleString()}`;
+    }
+
+    function updateCurrency() {
+        currentCurrency = document.getElementById('currency-select').value;
+        updateDisplayElements(); // Instant update
+    }
+
+    // --- Advanced Ledger (Routing & Liquidity - PR#45 & #2 Integration) ---
+    const ledgerBody = document.getElementById('ledger-body');
+    const sources = ['[Binance CEX Wallet]', '[Soroban Bridge Bridge Out]', 'Pioneer: GD7A...9P2', 'Justice Pool (PR#45)'];
+    const destinations = ['[Soroban Bridge Bridge In]', 'Justice Pool (PR#45)', 'Pioneer: GC3F...4L1', 'Merchant Payment Escrow'];
+
+    function generateTransaction() {
+        const hash = '0x' + Array.from({length: 12}, () => Math.floor(Math.random() * 16).toString(16)).join('').toUpperCase();
+        
+        // Classify Type: CEX (speculation), Bridge (WPI), Pioneer (Justice)
+        const rand = Math.random();
+        let type, from, to, badgeClass, icon;
+        let amount = (Math.random() * 150 + 1).toFixed(2);
+        let val;
+
+        const rate = exchangeRates[currentCurrency];
+        const symbol = currencySymbols[currentCurrency];
+
+        if(rand < 0.3) {
+            type = 'External Speculation'; from = sources[0]; to = destinations[1]; badgeClass = 'badge-cex'; icon = 'fa-chart-line';
+            val = `${symbol}${((amount * currentCexPrice) * rate).toFixed(2)}`;
+        } else if (rand < 0.6) {
+            type = 'Cross-Chain WPI'; from = sources[1]; to = destinations[0]; badgeClass = 'badge-bridge'; icon = 'fa-link';
+            val = `${symbol}${((amount * currentCexPrice) * rate).toFixed(2)}`; // WPI follows CEX price
+        } else {
+            type = 'Verified Mined Pi'; from = sources[2]; to = destinations[3]; badgeClass = 'badge-pioneer'; icon = 'fa-user-shield';
+            val = `<span style="color:var(--stable);font-weight:bold">${symbol}${((amount * basePircPrice) * rate).toLocaleString()}</span>`;
+        }
+        
+        const row = document.createElement('tr');
+        row.className = 'tx-row';
+        row.innerHTML = `
+            <td class="tx-cell"><a href="#" class="hash-link">${hash}...</a></td>
+            <td class="tx-cell"><span class="badge ${badgeClass}"><i class="fas ${icon}"></i> ${type}</span></td>
+            <td class="tx-cell"><span class="address-tag">${from}</span></td>
+            <td class="tx-cell"><span class="address-tag">${to}</span></td>
+            <td class="tx-cell" style="font-weight:500">${amount} π</td>
+            <td class="tx-cell">${val}</td>
+        `;
+        
+        ledgerBody.insertBefore(row, ledgerBody.firstChild);
+        if (ledgerBody.children.length > 9) ledgerBody.lastElementChild.remove();
+    }
+
+    // Initial Load
+    for(let i=0; i<8; i++) { generateTransaction(); currentTime-=60; }
+    updateDisplayElements();
+</script>
+
 </body>
 </html>
