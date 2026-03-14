@@ -29,7 +29,7 @@ This explorer is built on a high-performance frontend stack designed for low-lat
 | **πUSD** | Fixed Consensus Stability reference pegged at $3.14. |
 
 ---
-![1000097094](https://github.com/user-attachments/assets/fc5e6f7a-a9af-4038-abee-af6fb2b731f4)
+
 
 
 ---
