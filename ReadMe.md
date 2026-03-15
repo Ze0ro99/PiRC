@@ -78,23 +78,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-
-
-Repository Structure
-
-contracts/   → smart contract prototypes
-economics/   → economic simulation engines
-docs/        → research documentation
-notebooks/   → data analysis notebooks
-scripts/     → simulation runners
-
-Core Contracts
-PiRC Token
-Treasury Vault
-Governance Contract
-Liquidity Controller
-DEX Executor
-Reward Engine
-Bootstrapper & Automation
-License
-MIT License
