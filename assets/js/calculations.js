@@ -3,7 +3,7 @@
  * Optimized for the PIRC-101 Weight Protocol.
  */
 
-// 10 Million Micros = 1 Macro Pi
+// Global constant definition: 10 Million Micros = 1 Macro Pi
 const MICROS_PER_MACRO_PI = 10000000; 
 
 /**
@@ -25,7 +25,6 @@ export function normalizeMicrosToMacro(microAmount) {
  */
 export function calculateWcfParity(macroPiAmount, refWeightMultiplier) {
     // Conceptual realization of 1 Pi having fixed utility heft protecting miners.
-    // If Macro Pi price shows as 0.17$ parity internally, the WCF value is calibrated.
-    return macroPiAmount * 10000000 * refWeightMultiplier; // 10M as base backing weight multiplier.
+    // Note: This multiplier (10M) is a conceptual baseline based on refWeight analysis.
+    return macroPiAmount * 10000000 * refWeightMultiplier;
 }
-
