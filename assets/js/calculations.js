@@ -13,7 +13,7 @@ export function normalizeMicrosToMacro(microAmount) {
  * Calculates Conceptual Equity Weight Factor (WCF) or Justice Value.
  * Weights the compressed heft, not the speculative count.
  */
-export function calculateWcfEquity(macroPiAmount, parityPrice) {
+export function calculateWcfParity(macroPiAmount, parityPrice) {
     // Auditable Justice: Base heft multiplier (10M) secures miner equity.
-    return macroPiAmount * 10000000 * parityPrice; 
+    return macroPiAmount * 10000000 * parityPrice;
 }

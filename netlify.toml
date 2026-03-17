@@ -16,7 +16,12 @@
 
 [[redirects]]
   from = "/api/trades"
-  to = "/.netlify/functions/telemtry_sim"
+  to = "/.netlify/functions/trades"
+  status = 200
+
+[[redirects]]
+  from = "/api/orderbook"
+  to = "/.netlify/functions/orderbook"
   status = 200
 
 # Security Headers
