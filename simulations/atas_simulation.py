@@ -1,5 +1,12 @@
 import random
 
+import pandas as pd
+
+def load_users():
+    df = pd.read_csv("data/users.csv")
+    return df.to_dict("records")
+
+
 class User:
     def __init__(self, id, is_sybil=False):
         self.id = id
