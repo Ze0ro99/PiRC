@@ -60,3 +60,4 @@ Oracle Layer Resilience
 ​/simulator: Python & JS stress-testing tools proving protocol solvency.
 ​/security: Threat models (Sybil, Wash Trading, Oracle Manipulation).
 ​/docs: Formal technical standards (PI-STANDARD-101) and Integration guides.
+MSAFIRI MZIRAY (pioneer mdogo)
