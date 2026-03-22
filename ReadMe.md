@@ -27,6 +27,26 @@ Create a non-inflationary “Walled Garden” where external speculative IOU pri
 ---
 
 ## 📊 Core Indicators (Vanguard Bridge)
+![1000097918](https://github.com/user-attachments/assets/2da73897-d73d-49c8-ae94-aa77d59b17ec)
+
+PiRC Vanguard Bridge — NOW WITH REAL BUY/SELL DATA!
+
+Live Order Book + Recent Trades from OKX (PI-USDT), MEXC (PIUSDT) & Kraken (PIUSD)
+Professional Warehouse Mechanism — full transparency + formulas
+Real-time indicators: Spread %, Mid Price, Buy/Sell Imbalance
+All formulas displayed:
+  Mid Price = (Best Bid + Best Ask) / 2
+  Spread % = ((Best Ask - Best Bid) / Mid Price) × 100
+  Buy Imbalance = Buy Volume / Total Volume × 100
+  WCF Parity = Macro Pi × 10,000,000 × IOU Price
+
+Live Demo (100% free, no registration):
+https://c5d0b78a-8ece-460f-b8b4-64709c799a5e-00-3ag91petmaehl.pike.replit.dev
+
+GitHub (full source + warehouse data):
+https://github.com/Ze0ro99/PiRC
+
+One click — everything works. Fully professional. Zero cost.
 
 | Metric          | Description                                      | Purpose |
 |-----------------|--------------------------------------------------|--------|
