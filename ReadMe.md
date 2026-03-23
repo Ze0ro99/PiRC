@@ -58,6 +58,8 @@ One click — everything works. Fully professional. Zero cost.
 **Micro-Pi Compression Logic**  
 External CEX IOUs show raw Micro-Pi (1 Pi = 10,000,000 Micros).  
 Internal ecosystem compresses to 1 Macro Pi → prevents hyper-inflation while maintaining utility parity.
+This design allows for a better understanding of the mechanism for developers and pioneers, making it simpler both inside and outside the system. 
+![1000098014](https://github.com/user-attachments/assets/460a53c7-422a-477c-b839-ebfa4d6f3b4d)
 
 ---
 
