@@ -1,0 +1,15 @@
+{
+  "productIdentity": {
+    "productId": "string (UUID or SKU)",
+    "authenticityHash": "string (SHA-256)",
+    "manufacturer": "string",
+    "certificationDate": "ISO 8601",
+    "metadata": {
+      "serialNumber": "string",
+      "materialProof": "string",
+      "nftReference": "optional string (future)"
+    },
+    "verificationTier": "Tier1 | Tier2 | Tier3",
+    "piNetworkCompatible": true
+  }
+}
