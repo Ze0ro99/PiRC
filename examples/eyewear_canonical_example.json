@@ -1,0 +1,7 @@
+{
+  "schema_version": "0.3",
+  "pid": "eyewear-test-001",
+  "category": "eyewear",
+  "verification": { "method": "NFC", "security_level": "high" },
+  "auth": { "chip_uid": "04:AB:CD:EF", "signed_payload": "mock_signature" }
+}
