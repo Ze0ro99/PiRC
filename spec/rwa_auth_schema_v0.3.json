@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.3",
+  "pid": "string (required, hash-based ID)",
+  "category": "string (required, e.g. eyewear, luxury, electronics)",
+  "product_name": "string (required)",
+  "manufacturer": { "id": "string", "name": "string", "country": "string" },
+  "timestamp_registered": "ISO8601",
+  "verification": { "method": "QR | NFC | HYBRID", "security_level": "low | medium | high" },
+  "auth": {
+    "signature": "string (ECDSA/Ed25519)",
+    "public_key_ref": "string",
+    "chip_uid": "string (NFC only)",
+    "signed_payload": "sign(pid + chip_uid)"
+  },
+  "notes": "Bilingual Note: All symbols ≡ 1 Pi CEX parity per Design 2 visual rules."
+}
