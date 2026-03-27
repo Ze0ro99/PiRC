@@ -1,0 +1,103 @@
+name: 🚀 Deploy ALL PiRC Smart Contracts + Automatic Test on Stellar Testnet
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-and-test-all-contracts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # تم الرفع لضمان كتابة النتائج
+
+    steps:
+      - name: Checkout rwa-conceptual-auth-extension branch
+        uses: actions/checkout@v4
+        with:
+          ref: rwa-conceptual-auth-extension
+          fetch-depth: 0
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      # الخطوة المصححة: تثبيت الأداة يدوياً
+      - name: Install Stellar CLI (Soroban)
+        run: |
+          cargo install --locked stellar-cli --version 21.5.0
+          echo "✅ Stellar CLI installed successfully"
+
+      - name: Configure Stellar Testnet account
+        run: |
+          # تأكد من وجود السر STELLAR_TESTNET_SECRET_KEY في إعدادات المستودع
+          if [ -z "${{ secrets.STELLAR_TESTNET_SECRET_KEY }}" ]; then
+            echo "⚠️ Secret key not found, generating a new funded account..."
+            stellar keys generate test-deployer --network testnet --fund
+          else
+            stellar keys import test-deployer --secret-key ${{ secrets.STELLAR_TESTNET_SECRET_KEY }} --network testnet || true
+          fi
+          echo "✅ Testnet account ready"
+
+      - name: 🔍 Discover, Build, & Deploy ALL Contracts
+        run: |
+          RESULTS=""
+          
+          # البحث عن كل مجلد يحتوي على Cargo.toml لبناء العقود
+          for cargo_toml in $(find . -name "Cargo.toml" -not -path "*/target/*"); do
+            contract_dir=$(dirname "$cargo_toml")
+            CONTRACT_NAME=$(basename "$contract_dir")
+            
+            echo "📦 Processing: $CONTRACT_NAME in $contract_dir"
+            cd "$contract_dir"
+
+            # 1. بناء العقد
+            cargo build --target wasm32-unknown-unknown --release
+
+            # 2. تحسين العقد (Optimize)
+            WASM_PATH="target/wasm32-unknown-unknown/release/*.wasm"
+            if ls $WASM_PATH >/dev/null 2>&1; then
+              stellar contract optimize --wasm $WASM_PATH --output optimized.wasm
+              
+              # 3. النشر (Deploy)
+              echo "🚀 Deploying $CONTRACT_NAME..."
+              CONTRACT_ID=$(stellar contract deploy \
+                --wasm optimized.wasm \
+                --source test-deployer \
+                --network testnet)
+              
+              if [ $? -eq 0 ]; then
+                echo "✅ Deployed: $CONTRACT_ID"
+                
+                # 4. محاولة الفحص التلقائي (Smoke Test)
+                # نحاول استدعاء وظائف شائعة إذا كانت موجودة
+                TEST_LOG="No common functions found"
+                for fn in version get_id status hello ping; do
+                   INVOKE=$(stellar contract invoke --id "$CONTRACT_ID" --source test-deployer --network testnet --function "$fn" 2>&1 || true)
+                   if [[ ! "$INVOKE" == *"error"* ]]; then
+                      TEST_LOG="✅ Successfully invoked '$fn'"
+                      break
+                   fi
+                done
+
+                RESULTS="$RESULTS\n- **$CONTRACT_NAME**: \`$CONTRACT_ID\` ($TEST_LOG)"
+              else
+                echo "❌ Deployment failed for $CONTRACT_NAME"
+              fi
+            fi
+            cd - > /dev/null
+          done
+
+          echo -e "$RESULTS" > ALL_DEPLOYED_CONTRACTS.md
+
+      - name: 📋 Final Summary (Job Summary)
+        run: |
+          echo "## 🚀 Soroban Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          cat ALL_DEPLOYED_CONTRACTS.md >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📍 Network: Stellar Testnet" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Deployment Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: stellar-deployment-report
+          path: ALL_DEPLOYED_CONTRACTS.md
