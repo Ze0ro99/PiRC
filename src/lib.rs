@@ -14,12 +14,10 @@ impl RwaVerify {
         signature: BytesN<64>,
     ) -> bool {
 
-        let is_valid = env.crypto().ed25519_verify(
+        env.crypto().ed25519_verify(
             &issuer_pubkey,
             &pid,
             &signature,
-        );
-
-        is_valid
+        )
     }
 }
