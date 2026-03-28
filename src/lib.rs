@@ -1,7 +1,8 @@
 #![no_std]
 
-use soroban_sdk::{contractimpl, Env, Bytes, BytesN};
+use soroban_sdk::{contract, contractimpl, Env, BytesN};
 
+#[contract]
 pub struct RwaVerify;
 
 #[contractimpl]
@@ -10,12 +11,15 @@ impl RwaVerify {
         env: Env,
         pid: BytesN<32>,
         issuer_pubkey: BytesN<32>,
-        signature: Bytes,
+        signature: BytesN<64>,
     ) -> bool {
-        env.crypto().ed25519_verify(
+
+        let is_valid = env.crypto().ed25519_verify(
             &issuer_pubkey,
-            &pid.into(),
+            &pid,
             &signature,
-        )
+        );
+
+        is_valid
     }
 }
