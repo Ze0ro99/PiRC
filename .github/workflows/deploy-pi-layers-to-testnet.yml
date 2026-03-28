@@ -1,7 +1,7 @@
 name: Deploy PiRC-207 7 Layers to Stellar Testnet
 
 on:
-  workflow_dispatch:   # Run manually from phone
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -12,20 +12,10 @@ jobs:
 
       - name: Install Rust + Soroban CLI (Final Fixed Version)
         run: |
-          # Install ALL required system dependencies to prevent libdbus, libudev, hidapi errors
           sudo apt-get update
-          sudo apt-get install -y \
-            pkg-config \
-            libdbus-1-dev \
-            libudev-dev \
-            libssl-dev \
-            build-essential
-
-          # Install Rust
+          sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source "$HOME/.cargo/env"
-
-          # Install Soroban CLI
           cargo install --locked soroban-cli
 
       - name: Deploy all 7 PiRC-207 layers
@@ -39,6 +29,19 @@ jobs:
             echo "🔨 Deploying $color layer..."
 
             cd "$dir"
+
+            # === FIX: Add required Soroban release profile (fixes overflow-checks error) ===
+            echo "" >> Cargo.toml
+            echo "[profile.release]" >> Cargo.toml
+            echo "opt-level = \"z\"" >> Cargo.toml
+            echo "overflow-checks = true" >> Cargo.toml
+            echo "debug = false" >> Cargo.toml
+            echo "strip = \"symbols\"" >> Cargo.toml
+            echo "debug-assertions = false" >> Cargo.toml
+            echo "panic = \"abort\"" >> Cargo.toml
+            echo "codegen-units = 1" >> Cargo.toml
+            echo "lto = true" >> Cargo.toml
+
             soroban contract build
 
             CONTRACT_ID=$(soroban contract deploy \
@@ -48,7 +51,7 @@ jobs:
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
-            # Initialize the contract
+            # Initialize
             soroban contract invoke \
               --id "$CONTRACT_ID" \
               --source "$STELLAR_SECRET" \
@@ -56,7 +59,7 @@ jobs:
               -- initialize \
               --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
 
-            # Show the layer value on-chain
+            # Show get_value()
             VALUE=$(soroban contract invoke \
               --id "$CONTRACT_ID" \
               --network testnet \
