@@ -44,11 +44,11 @@ jobs:
 
             soroban contract build
 
-            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32v1-none/release/*.wasm --source "$STELLAR_SECRET" --network testnet)
+            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32v1-none/release/*.wasm --secret-key "$STELLAR_SECRET" --network testnet)
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
-            soroban contract invoke --id "$CONTRACT_ID" --source "$STELLAR_SECRET" --network testnet -- initialize --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
+            soroban contract invoke --id "$CONTRACT_ID" --secret-key "$STELLAR_SECRET" --network testnet -- initialize --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
 
             VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value)
             echo "📊 $color get_value() = $VALUE"
