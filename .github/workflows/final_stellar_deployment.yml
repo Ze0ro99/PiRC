@@ -22,16 +22,17 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: 3. Install Stellar Tooling (Soroban)
+      - name: 3. Install Stellar Tooling (with Optimization Support)
         run: |
-          cargo install --locked stellar-cli --version 21.5.0
-          echo "✅ Stellar CLI Ready"
+          # The '--features opt' is mandatory for the 'optimize' command to work
+          cargo install --locked stellar-cli --version 21.5.0 --features opt
+          echo "✅ Stellar CLI with OPT features ready"
 
       - name: 4. Configure Testnet Credentials
         run: |
           stellar keys generate --network testnet deployer
           stellar keys fund --network testnet deployer
-          echo "✅ Deployer Account Funded & Active on Testnet"
+          echo "✅ Deployer Account Funded"
 
       - name: 5. Professional Build & Deployment Factory
         run: |
@@ -39,7 +40,6 @@ jobs:
           echo "Generated on: $(date)" >> DEPLOYMENT_REPORT.md
           echo "" >> DEPLOYMENT_REPORT.md
           
-          # Search for all Smart Contract projects
           for toml in $(find . -name "Cargo.toml" -not -path "*/target/*"); do
             dir=$(dirname "$toml")
             name=$(basename "$dir")
@@ -47,20 +47,20 @@ jobs:
             echo "🛠️ Compiling Contract: $name"
             cd "$dir"
             
-            # 1. Build WASM
+            # 1. Build
             cargo build --target wasm32-unknown-unknown --release
             
-            # 2. Get the path of the generated WASM
+            # 2. Identify WASM
             WASM_FILE=$(ls target/wasm32-unknown-unknown/release/*.wasm | grep -v "optimized" | head -n 1)
             
-            # 3. Optimize (New Syntax: removed --output)
+            # 3. Optimize (This will now work with the 'opt' feature)
             echo "✨ Optimizing $WASM_FILE..."
             stellar contract optimize --wasm "$WASM_FILE"
             
-            # 4. Locate the optimized file (usually named [name].optimized.wasm)
+            # 4. Identify Optimized WASM
             OPTIMIZED_WASM=$(ls target/wasm32-unknown-unknown/release/*.optimized.wasm | head -n 1)
             
-            # 5. Deploy to Testnet
+            # 5. Deploy
             echo "🚀 Deploying $name to Stellar Testnet..."
             ID=$(stellar contract deploy --wasm "$OPTIMIZED_WASM" --source deployer --network testnet)
             
