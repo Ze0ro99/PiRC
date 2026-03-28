@@ -16,7 +16,7 @@ jobs:
           sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source "$HOME/.cargo/env"
-          rustup target add wasm32-unknown-unknown
+          rustup target add wasm32v1-none
           cargo install --locked soroban-cli
 
       - name: Deploy all 7 PiRC-207 layers
@@ -44,7 +44,7 @@ jobs:
 
             soroban contract build
 
-            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32-unknown-unknown/release/*.wasm --source "$STELLAR_SECRET" --network testnet)
+            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32v1-none/release/*.wasm --source "$STELLAR_SECRET" --network testnet)
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
