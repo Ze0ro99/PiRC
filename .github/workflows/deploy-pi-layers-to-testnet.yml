@@ -29,6 +29,10 @@ jobs:
             color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
             echo "🔨 Deploying $color layer..."
 
+      - name: Deploy contract
+        run: |
+         soroban contract deploy --source-account $SOURCE --wasm $WASM --resource-fee $RESOURCE_FEE
+
             cd "$dir"
 
             echo "" >> Cargo.toml
