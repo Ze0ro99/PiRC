@@ -1,22 +1,13 @@
 #![no_std]
 
-use soroban_sdk::{contract, contractimpl, Env, BytesN};
+use soroban_sdk::{contract, contractimpl, Env, Symbol};
 
 #[contract]
 pub struct RwaVerify;
 
 #[contractimpl]
 impl RwaVerify {
-    pub fn verify(
-        env: Env,
-        pid: BytesN<32>,
-        issuer_pubkey: BytesN<32>,
-        signature: BytesN<64>,
-    ) -> bool {
-        env.crypto().ed25519_verify(
-            &issuer_pubkey,
-            &pid,
-            &signature,
-        )
+    pub fn hello(env: Env) -> Symbol {
+        Symbol::short("RWA_OK")
     }
 }
