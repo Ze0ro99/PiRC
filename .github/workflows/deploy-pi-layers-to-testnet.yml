@@ -1,0 +1,59 @@
+name: Deploy PiRC-207 7 Layers to Stellar Testnet
+
+on:
+  workflow_dispatch:   # Run manually from phone
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust + Soroban CLI
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source "$HOME/.cargo/env"
+          cargo install --locked soroban-cli
+
+      - name: Deploy all 7 PiRC-207 layers
+        env:
+          STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
+        run: |
+          echo "🚀 Starting full deployment of 7 PiRC-207 Colored Token Layers..."
+
+          for dir in contracts/soroban/pirc-207-*-token; do
+            color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
+            echo "🔨 Deploying $color layer..."
+
+            cd "$dir"
+            soroban contract build
+
+            CONTRACT_ID=$(soroban contract deploy \
+              --wasm target/wasm32-unknown-unknown/release/*.wasm \
+              --source "$STELLAR_SECRET" \
+              --network testnet)
+
+            echo "✅ Deployed $color → $CONTRACT_ID"
+
+            # Initialize
+            soroban contract invoke \
+              --id "$CONTRACT_ID" \
+              --source "$STELLAR_SECRET" \
+              --network testnet \
+              -- initialize \
+              --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
+
+            # Show get_value()
+            VALUE=$(soroban contract invoke \
+              --id "$CONTRACT_ID" \
+              --network testnet \
+              -- get_value)
+            echo "📊 $color get_value() = $VALUE"
+
+            cd - > /dev/null
+          done
+
+          echo ""
+          echo "🎉 DEPLOYMENT COMPLETE! All 7 contracts are now LIVE on Stellar Testnet."
+          echo "Copy the contract IDs above and use them in your PiNetwo #72 post."
