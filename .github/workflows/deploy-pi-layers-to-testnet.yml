@@ -10,31 +10,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Rust and Soroban (High Speed)
-        run: |
-          # 1. Install WASM target (Fixes the 'core' crate error)
-          rustup target add wasm32-unknown-unknown
-          
-          # 2. Fast-install Soroban CLI (Download binary instead of compiling)
-          echo "📥 Downloading Soroban CLI..."
-          curl -L https://github.com/stellar/soroban-cli/releases/latest/download/soroban-cli-x86_64-unknown-linux-gnu.tar.gz | tar xz
-          chmod +x soroban
-          sudo mv soroban /usr/local/bin/soroban
-          
-          # Verify install
-          soroban --version
+      - name: Setup Rust (Fixes 'core' crate error)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
 
-      - name: Cache Rust Dependencies
+      - name: Install Stellar CLI (Official Professional Method)
+        uses: stellar/setup-stellar-cli@v1
+        with:
+          version: latest
+
+      - name: Cache Rust Dependencies (High Speed)
         uses: swatinem/rust-cache@v2
 
       - name: Deploy all 7 PiRC-207 layers
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
-          echo "🚀 Starting high-speed deployment of 7 layers..."
+          echo "🚀 Starting professional deployment..."
           
-          # Pre-calculate admin address to save time
-          ADMIN_ADDR=$(soroban keys address --secret-key "$STELLAR_SECRET")
+          # Get admin address once to save time
+          ADMIN_ADDR=$(stellar keys address --secret-key "$STELLAR_SECRET")
 
           for dir in contracts/soroban/pirc-207-*-token; do
             [ -d "$dir" ] || continue
@@ -48,19 +45,19 @@ jobs:
             printf "\n[profile.release]\nopt-level = 'z'\noverflow-checks = true\ndebug = false\nstrip = 'symbols'\ndebug-assertions = false\npanic = 'abort'\ncodegen-units = 1\nlto = true\n" >> Cargo.toml
 
             echo "📦 Building $color..."
-            soroban contract build
+            stellar contract build
 
-            # Locate the generated WASM file robustly
+            # Robustly find the compiled WASM
             WASM_PATH=$(find target/wasm32-unknown-unknown/release/ -name "*.wasm" | head -n 1)
             
             if [ -z "$WASM_PATH" ]; then
-              echo "❌ Error: WASM file not found for $color. Skipping..."
+              echo "❌ Error: WASM not found for $color. Skipping..."
               cd - > /dev/null
               continue
             fi
 
             echo "🚀 Deploying $color to Testnet..."
-            CONTRACT_ID=$(soroban contract deploy \
+            CONTRACT_ID=$(stellar contract deploy \
               --wasm "$WASM_PATH" \
               --source "$STELLAR_SECRET" \
               --network testnet)
@@ -68,16 +65,16 @@ jobs:
             echo "✅ Success! ID: $CONTRACT_ID"
 
             echo "⚙️ Initializing..."
-            soroban contract invoke \
+            stellar contract invoke \
               --id "$CONTRACT_ID" \
               --source "$STELLAR_SECRET" \
               --network testnet \
               -- initialize \
-              --admin "$ADMIN_ADDR" || echo "⚠️ Note: Initialization skipped/already done."
+              --admin "$ADMIN_ADDR" || echo "⚠️ Already initialized or skipped."
 
-            # Quick verification
-            VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value 2>/dev/null || echo "Error reading value")
-            echo "📊 $color get_value() = $VALUE"
+            # Verify value
+            VALUE=$(stellar contract invoke --id "$CONTRACT_ID" --network testnet -- get_value 2>/dev/null || echo "N/A")
+            echo "📊 $color current value = $VALUE"
 
             cd - > /dev/null
           done
