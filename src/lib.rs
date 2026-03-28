@@ -13,7 +13,6 @@ impl RwaVerify {
         issuer_pubkey: BytesN<32>,
         signature: BytesN<64>,
     ) -> bool {
-
         env.crypto().ed25519_verify(
             &issuer_pubkey,
             &pid,
