@@ -30,17 +30,19 @@ jobs:
 
             cd "$dir"
 
-            # === FIX: Add required Soroban release profile (fixes overflow-checks error) ===
-            echo "" >> Cargo.toml
-            echo "[profile.release]" >> Cargo.toml
-            echo "opt-level = \"z\"" >> Cargo.toml
-            echo "overflow-checks = true" >> Cargo.toml
-            echo "debug = false" >> Cargo.toml
-            echo "strip = \"symbols\"" >> Cargo.toml
-            echo "debug-assertions = false" >> Cargo.toml
-            echo "panic = \"abort\"" >> Cargo.toml
-            echo "codegen-units = 1" >> Cargo.toml
-            echo "lto = true" >> Cargo.toml
+            # === CRITICAL FIX: Add required Soroban release profile ===
+            cat << 'EOF' >> Cargo.toml
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = false
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+EOF
 
             soroban contract build
 
