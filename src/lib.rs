@@ -7,7 +7,7 @@ pub struct RwaVerify;
 
 #[contractimpl]
 impl RwaVerify {
-    pub fn hello(env: Env) -> Symbol {
-        Symbol::short("RWA_OK")
+    pub fn hello(_env: Env) -> Symbol {
+        Symbol::short("OK")
     }
 }
