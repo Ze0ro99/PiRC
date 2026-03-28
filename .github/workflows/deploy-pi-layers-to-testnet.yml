@@ -12,10 +12,15 @@ jobs:
 
       - name: Setup Toolchain (High Speed)
         run: |
+          # 1. Install specific WASM target required for your contracts
           rustup target add wasm32v1-none
+          
+          # 2. Fast-install Soroban CLI (Download binary instead of compiling)
           echo "📥 Downloading Soroban CLI..."
           curl -L https://github.com/stellar/soroban-cli/releases/latest/download/soroban-cli-x86_64-unknown-linux-gnu.tar.gz | tar xz
           sudo mv soroban /usr/local/bin/soroban
+          
+          # Verify install
           soroban --version
 
       - name: Deploy all 7 PiRC-207 layers
@@ -23,22 +28,34 @@ jobs:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
           echo "🚀 Starting high-speed deployment..."
+          
+          # Pre-calculate admin address once using the secret key
           ADMIN_ADDR=$(soroban keys address --secret-key "$STELLAR_SECRET")
+
           for dir in contracts/soroban/pirc-207-*-token; do
             [ -d "$dir" ] || continue
             color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
+            
             echo "------------------------------------------------------"
             echo "🔨 Processing $color layer..."
             cd "$dir"
+
+            # Inject optimized release profile
             printf "\n[profile.release]\nopt-level = 'z'\noverflow-checks = true\ndebug = false\nstrip = 'symbols'\ndebug-assertions = false\npanic = 'abort'\ncodegen-units = 1\nlto = true\n" >> Cargo.toml
+
             echo "📦 Building $color..."
             soroban contract build
+
+            # FIXED: Use --source with the SECRET KEY ($STELLAR_SECRET) so it can sign.
+            # ADDED: --network testnet is required for deployment.
             echo "🚀 Deploying $color to Testnet..."
             CONTRACT_ID=$(soroban contract deploy \
               --wasm target/wasm32v1-none/release/*.wasm \
               --source "$STELLAR_SECRET" \
               --network testnet)
+
             echo "✅ Success! Contract ID: $CONTRACT_ID"
+
             echo "⚙️ Initializing..."
             soroban contract invoke \
               --id "$CONTRACT_ID" \
@@ -46,9 +63,13 @@ jobs:
               --network testnet \
               -- initialize \
               --admin "$ADMIN_ADDR" || echo "⚠️ Already initialized or skipped."
+
+            # Verification
             VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value 2>/dev/null || echo "N/A")
             echo "📊 $color layer value: $VALUE"
+
             cd - > /dev/null
           done
+
           echo "------------------------------------------------------"
           echo "🎉 ALL 7 LAYERS DEPLOYED SUCCESSFULLY TO TESTNET!"
