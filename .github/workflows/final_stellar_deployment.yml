@@ -1,7 +1,7 @@
 name: "🚀 PI-STANDARD: Final Soroban Deployment & Audit"
 
 on:
-  workflow_dispatch: # Allows manual trigger from the Actions tab
+  workflow_dispatch: 
 
 jobs:
   stellar-production-deploy:
@@ -29,7 +29,6 @@ jobs:
 
       - name: 4. Configure Testnet Credentials
         run: |
-          # Automatically generate and fund a new deployer account for auditing
           stellar keys generate --network testnet deployer
           stellar keys fund --network testnet deployer
           echo "✅ Deployer Account Funded & Active on Testnet"
@@ -40,7 +39,7 @@ jobs:
           echo "Generated on: $(date)" >> DEPLOYMENT_REPORT.md
           echo "" >> DEPLOYMENT_REPORT.md
           
-          # Search for all Smart Contract projects (Cargo.toml) in the repository
+          # Search for all Smart Contract projects
           for toml in $(find . -name "Cargo.toml" -not -path "*/target/*"); do
             dir=$(dirname "$toml")
             name=$(basename "$dir")
@@ -48,15 +47,22 @@ jobs:
             echo "🛠️ Compiling Contract: $name"
             cd "$dir"
             
-            # Build and compile to WASM
+            # 1. Build WASM
             cargo build --target wasm32-unknown-unknown --release
             
-            # Optimize the WASM binary size for production
-            stellar contract optimize --wasm target/wasm32-unknown-unknown/release/*.wasm --output optimized.wasm
+            # 2. Get the path of the generated WASM
+            WASM_FILE=$(ls target/wasm32-unknown-unknown/release/*.wasm | grep -v "optimized" | head -n 1)
             
-            # Execute Live On-Chain Deployment
+            # 3. Optimize (New Syntax: removed --output)
+            echo "✨ Optimizing $WASM_FILE..."
+            stellar contract optimize --wasm "$WASM_FILE"
+            
+            # 4. Locate the optimized file (usually named [name].optimized.wasm)
+            OPTIMIZED_WASM=$(ls target/wasm32-unknown-unknown/release/*.optimized.wasm | head -n 1)
+            
+            # 5. Deploy to Testnet
             echo "🚀 Deploying $name to Stellar Testnet..."
-            ID=$(stellar contract deploy --wasm optimized.wasm --source deployer --network testnet)
+            ID=$(stellar contract deploy --wasm "$OPTIMIZED_WASM" --source deployer --network testnet)
             
             if [ $? -eq 0 ]; then
               echo "✅ SUCCESS: $ID"
