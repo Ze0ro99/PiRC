@@ -22,6 +22,7 @@ jobs:
       - name: Deploy all 7 PiRC-207 layers
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
+          STELLAR_ACCOUNT: GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6  # <-- Use your public key here!
         run: |
           echo "🚀 Starting FINAL deployment of 7 PiRC-207 Colored Token Layers..."
 
@@ -44,11 +45,12 @@ jobs:
 
             soroban contract build
 
-            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32v1-none/release/*.wasm --secret-key "$STELLAR_SECRET" --network testnet)
+            # --secret-key REMOVED -- use --source-account and the CLI will pick up secrets via config/env if needed
+            CONTRACT_ID=$(soroban contract deploy --source-account "$STELLAR_ACCOUNT" --wasm target/wasm32v1-none/release/*.wasm --resource-fee 100000)
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
-            soroban contract invoke --id "$CONTRACT_ID" --secret-key "$STELLAR_SECRET" --network testnet -- initialize --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
+            soroban contract invoke --id "$CONTRACT_ID" --source-account "$STELLAR_ACCOUNT" --network testnet -- initialize --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
 
             VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value)
             echo "📊 $color get_value() = $VALUE"
