@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Rust + Soroban CLI (Final Fixed Version)
+      - name: Install Rust + Soroban CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
@@ -22,30 +22,22 @@ jobs:
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
-          echo "🚀 Starting full deployment of 7 PiRC-207 Colored Token Layers..."
+          source "$HOME/.cargo/env"
+          echo "🚀 Starting full deployment..."
 
           for dir in contracts/soroban/pirc-207-*-token; do
+            [ -d "$dir" ] || continue
             color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
             echo "🔨 Deploying $color layer..."
-
             cd "$dir"
 
-            # === CRITICAL FIX: Add required Soroban release profile ===
-            cat << 'EOF' >> Cargo.toml
+            # This single-line command adds the profile without breaking YAML indentation
+            printf "\n[profile.release]\nopt-level = \"z\"\noverflow-checks = true\ndebug = false\nstrip = \"symbols\"\ndebug-assertions = false\npanic = \"abort\"\ncodegen-units = 1\nlto = true\n" >> Cargo.toml
 
-[profile.release]
-opt-level = "z"
-overflow-checks = true
-debug = false
-strip = "symbols"
-debug-assertions = false
-panic = "abort"
-codegen-units = 1
-lto = true
-EOF
-
+            echo "📦 Building..."
             soroban contract build
 
+            echo "🚀 Deploying..."
             CONTRACT_ID=$(soroban contract deploy \
               --wasm target/wasm32-unknown-unknown/release/*.wasm \
               --source "$STELLAR_SECRET" \
@@ -53,24 +45,17 @@ EOF
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
-            # Initialize
+            echo "⚙️ Initializing..."
             soroban contract invoke \
               --id "$CONTRACT_ID" \
               --source "$STELLAR_SECRET" \
               --network testnet \
               -- initialize \
-              --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
+              --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || echo "Skip init"
 
-            # Show get_value()
-            VALUE=$(soroban contract invoke \
-              --id "$CONTRACT_ID" \
-              --network testnet \
-              -- get_value)
+            VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value)
             echo "📊 $color get_value() = $VALUE"
 
             cd - > /dev/null
           done
-
-          echo ""
-          echo "🎉 DEPLOYMENT COMPLETE! All 7 contracts are now LIVE on Stellar Testnet."
-          echo "Copy the contract IDs above and use them in your PiNetwo #72 post."
+          echo "🎉 DEPLOYMENT COMPLETE!"
