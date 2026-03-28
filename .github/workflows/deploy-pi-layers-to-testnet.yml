@@ -10,11 +10,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Rust + Soroban CLI (Fixed)
+      - name: Install Rust + Soroban CLI (Final Fixed Version)
         run: |
-          # Fix for libdbus-sys error
+          # Install ALL required system dependencies to prevent libdbus, libudev, hidapi errors
           sudo apt-get update
-          sudo apt-get install -y pkg-config libdbus-1-dev
+          sudo apt-get install -y \
+            pkg-config \
+            libdbus-1-dev \
+            libudev-dev \
+            libssl-dev \
+            build-essential
 
           # Install Rust
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
