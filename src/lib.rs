@@ -32,10 +32,10 @@ impl RWAContract {
 
         // Step 1: Verify signature
         let is_valid_sig = env.crypto().ed25519_verify(
-            &data.issuer_pubkey,
-            &data.pid.into(),
-            &data.signature,
-        );
+    &data.issuer_pubkey,
+    &data.pid,
+    &data.signature,
+);
 
         // Step 2: NFC binding check (optional)
         let mut confidence: u32 = 0;
