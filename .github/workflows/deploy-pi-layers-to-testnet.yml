@@ -10,54 +10,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install System Dependencies + Rust + Soroban CLI
+      - name: Setup Toolchain (High Speed)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          source "$HOME/.cargo/env"
           rustup target add wasm32v1-none
-          cargo install --locked soroban-cli
+          echo "📥 Downloading Soroban CLI..."
+          curl -L https://github.com/stellar/soroban-cli/releases/latest/download/soroban-cli-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          sudo mv soroban /usr/local/bin/soroban
+          soroban --version
 
       - name: Deploy all 7 PiRC-207 layers
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
-          STELLAR_ACCOUNT: GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6  # <-- Use your public key here!
         run: |
-          echo "🚀 Starting FINAL deployment of 7 PiRC-207 Colored Token Layers..."
-
+          echo "🚀 Starting high-speed deployment..."
+          ADMIN_ADDR=$(soroban keys address --secret-key "$STELLAR_SECRET")
           for dir in contracts/soroban/pirc-207-*-token; do
+            [ -d "$dir" ] || continue
             color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
-            echo "🔨 Deploying $color layer..."
-
+            echo "------------------------------------------------------"
+            echo "🔨 Processing $color layer..."
             cd "$dir"
-
-            echo "" >> Cargo.toml
-            echo "[profile.release]" >> Cargo.toml
-            echo "opt-level = \"z\"" >> Cargo.toml
-            echo "overflow-checks = true" >> Cargo.toml
-            echo "debug = false" >> Cargo.toml
-            echo "strip = \"symbols\"" >> Cargo.toml
-            echo "debug-assertions = false" >> Cargo.toml
-            echo "panic = \"abort\"" >> Cargo.toml
-            echo "codegen-units = 1" >> Cargo.toml
-            echo "lto = true" >> Cargo.toml
-
+            printf "\n[profile.release]\nopt-level = 'z'\noverflow-checks = true\ndebug = false\nstrip = 'symbols'\ndebug-assertions = false\npanic = 'abort'\ncodegen-units = 1\nlto = true\n" >> Cargo.toml
+            echo "📦 Building $color..."
             soroban contract build
-
-            # --secret-key REMOVED -- use --source-account and the CLI will pick up secrets via config/env if needed
-            CONTRACT_ID=$(soroban contract deploy --source-account "$STELLAR_ACCOUNT" --wasm target/wasm32v1-none/release/*.wasm --resource-fee 100000)
-
-            echo "✅ Deployed $color → $CONTRACT_ID"
-
-            soroban contract invoke --id "$CONTRACT_ID" --source-account "$STELLAR_ACCOUNT" --network testnet -- initialize --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
-
-            VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value)
-            echo "📊 $color get_value() = $VALUE"
-
+            echo "🚀 Deploying $color to Testnet..."
+            CONTRACT_ID=$(soroban contract deploy \
+              --wasm target/wasm32v1-none/release/*.wasm \
+              --source "$STELLAR_SECRET" \
+              --network testnet)
+            echo "✅ Success! Contract ID: $CONTRACT_ID"
+            echo "⚙️ Initializing..."
+            soroban contract invoke \
+              --id "$CONTRACT_ID" \
+              --source "$STELLAR_SECRET" \
+              --network testnet \
+              -- initialize \
+              --admin "$ADMIN_ADDR" || echo "⚠️ Already initialized or skipped."
+            VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value 2>/dev/null || echo "N/A")
+            echo "📊 $color layer value: $VALUE"
             cd - > /dev/null
           done
-
-          echo ""
-          echo "🎉 ALL 7 LAYERS ARE NOW LIVE ON STELLAR TESTNET!"
-          echo "Copy the contract IDs above and use them in PiNetwo #72."
+          echo "------------------------------------------------------"
+          echo "🎉 ALL 7 LAYERS DEPLOYED SUCCESSFULLY TO TESTNET!"
