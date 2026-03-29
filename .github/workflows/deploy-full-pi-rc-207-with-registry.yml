@@ -43,9 +43,10 @@ jobs:
 
           TOKEN_CONTRACTS="[\"$PURPLE\",\"$GOLD\",\"$YELLOW\",\"$ORANGE\",\"$BLUE\",\"$GREEN\",\"$RED\"]"
 
-          # Generate dynamic date for the report
+          # Dynamic date for report
           DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
 
+          mkdir -p docs scripts
           cd contracts/soroban/pirc-207-registry
           stellar contract build
 
@@ -80,11 +81,10 @@ jobs:
 
           cd ../../..
 
-          # Generate Professional Final Report
-          cat > docs/PiRC-207-Final-Deployment-Report.md << EOF
+          # === Generate Professional Final Report (fixed heredoc) ===
+          cat > docs/PiRC-207-Final-Deployment-Report.md << 'REPORT'
 # PiRC-207 Final Deployment Report
-**Date**: $DATE  
-**Network**: Stellar Testnet  
+**Network**: Stellar Testnet
 **Status**: COMPLETE – All 8 contracts live
 
 ## 7 Colored Token Layers
@@ -99,19 +99,22 @@ jobs:
 | Red     | CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO | https://stellar.expert/explorer/testnet/tx/f4b5e37209876dc04c7b8b5041973d2a89916f24b8a61dc3732f0f81cfe27bb4 |
 
 ## Registry Layer (Central Governance + RWA)
-**Contract ID**: $REGISTRY_ID  
-**Explorer**: https://stellar.expert/explorer/testnet/contract/$REGISTRY_ID
+REPORT
 
-## Verification Results
-(Full output from get_layer_metadata calls above)
-
-## Files Generated
-- docs/PiRC-207-Final-Deployment-Report.md ← this file
-- scripts/verify-pirc-207-all-layers.sh
-
-**Label applied**: PiRC-207-Registry-Live  
-**Ready for PiNetwork #72 & mainnet transition.**
-EOF
+          # Append dynamic lines
+          echo "**Date**: $DATE" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "**Contract ID**: $REGISTRY_ID" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "**Explorer**: https://stellar.expert/explorer/testnet/contract/$REGISTRY_ID" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "## Verification Results" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "(Full output from get_layer_metadata calls above)" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "## Files Generated" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "- docs/PiRC-207-Final-Deployment-Report.md ← this file" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "- scripts/verify-pirc-207-all-layers.sh" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "**Label applied**: PiRC-207-Registry-Live" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "**Ready for PiNetwork #72 & mainnet transition.**" >> docs/PiRC-207-Final-Deployment-Report.md
 
           # Generate verification script
           cat > scripts/verify-pirc-207-all-layers.sh << 'SCRIPT'
