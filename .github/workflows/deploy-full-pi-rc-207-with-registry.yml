@@ -32,7 +32,7 @@ jobs:
           SOURCE_ACCOUNT=$(stellar keys address deployer)
           echo "📌 Deployer: $SOURCE_ACCOUNT"
 
-          # === 7 Deployed Contract IDs (in order: Purple → Red) ===
+          # 7 Deployed Contract IDs (Purple → Red)
           PURPLE="CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4"
           GOLD="CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG"
           YELLOW="CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF"
@@ -42,6 +42,9 @@ jobs:
           RED="CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO"
 
           TOKEN_CONTRACTS="[\"$PURPLE\",\"$GOLD\",\"$YELLOW\",\"$ORANGE\",\"$BLUE\",\"$GREEN\",\"$RED\"]"
+
+          # Generate dynamic date for the report
+          DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
 
           cd contracts/soroban/pirc-207-registry
           stellar contract build
@@ -65,7 +68,7 @@ jobs:
 
           echo "✅ Registry initialized with all 7 layers"
 
-          # === Automatic Verification ===
+          # Automatic Verification
           echo "🔍 Verifying all 7 layers through Registry..."
           for i in {0..6}; do
             echo "Layer $i metadata:"
@@ -75,12 +78,12 @@ jobs:
               -- get_layer_metadata --layer_id "$i"
           done
 
-          # === Generate Professional Files ===
           cd ../../..
 
-          cat > docs/PiRC-207-Final-Deployment-Report.md << 'EOF'
+          # Generate Professional Final Report
+          cat > docs/PiRC-207-Final-Deployment-Report.md << EOF
 # PiRC-207 Final Deployment Report
-**Date**: $(date -u +"%Y-%m-%d %H:%M UTC")  
+**Date**: $DATE  
 **Network**: Stellar Testnet  
 **Status**: COMPLETE – All 8 contracts live
 
@@ -100,29 +103,27 @@ jobs:
 **Explorer**: https://stellar.expert/explorer/testnet/contract/$REGISTRY_ID
 
 ## Verification Results
-(Full output from `get_layer_metadata` calls above)
+(Full output from get_layer_metadata calls above)
 
 ## Files Generated
-- `docs/PiRC-207-Final-Deployment-Report.md` ← this file
-- `scripts/verify-pirc-207-all-layers.sh`
+- docs/PiRC-207-Final-Deployment-Report.md ← this file
+- scripts/verify-pirc-207-all-layers.sh
 
 **Label applied**: PiRC-207-Registry-Live  
 **Ready for PiNetwork #72 & mainnet transition.**
 EOF
 
           # Generate verification script
-          cat > scripts/verify-pirc-207-all-layers.sh << 'EOF'
+          cat > scripts/verify-pirc-207-all-layers.sh << 'SCRIPT'
 #!/bin/bash
-# PiRC-207 Full Verification Script
-REGISTRY_ID="$1"  # Pass Registry ID as argument
-
+REGISTRY_ID="$1"
 echo "🔍 Verifying PiRC-207 Registry + 7 Layers..."
 for i in {0..6}; do
   echo "=== Layer $i ==="
   stellar contract invoke --id "$REGISTRY_ID" --network testnet -- get_layer_metadata --layer_id "$i"
 done
 echo "✅ All layers verified!"
-EOF
+SCRIPT
 
           chmod +x scripts/verify-pirc-207-all-layers.sh
 
