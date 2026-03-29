@@ -1,4 +1,4 @@
-name: Deploy FULL PiRC-207 with Registry Layer 
+name: Deploy FULL PiRC-207 with Registry Layer (Safe English Version)
 
 on:
   workflow_dispatch:
@@ -25,14 +25,13 @@ jobs:
         run: |
           echo "🚀 Starting FULL PROFESSIONAL deployment of PiRC-207 (7 Token Layers + Registry Layer)..."
 
-          # Deploy the 7 existing token layers
           for dir in contracts/soroban/pirc-207-*-token; do
             color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
             echo "🔨 Deploying $color layer..."
 
             cd "$dir"
 
-            # Add required release profile (fixes overflow-checks error)
+            # Add required release profile
             echo "" >> Cargo.toml
             echo "[profile.release]" >> Cargo.toml
             echo "opt-level = \"z\"" >> Cargo.toml
@@ -46,15 +45,30 @@ jobs:
 
             soroban contract build
 
-            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32v1-none/release/*.wasm --secret-key "$STELLAR_SECRET" --network testnet)
+            # Derive public address from secret key
+            SOURCE_ACCOUNT=$(soroban keys address --secret-key "$STELLAR_SECRET")
+
+            # Deploy using correct flag
+            CONTRACT_ID=$(soroban contract deploy \
+              --wasm target/wasm32v1-none/release/*.wasm \
+              --source-account "$SOURCE_ACCOUNT" \
+              --network testnet)
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
             # Initialize contract
-            soroban contract invoke --id "$CONTRACT_ID" --secret-key "$STELLAR_SECRET" --network testnet -- initialize --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
+            soroban contract invoke \
+              --id "$CONTRACT_ID" \
+              --secret-key "$STELLAR_SECRET" \
+              --network testnet \
+              -- initialize \
+              --admin "$SOURCE_ACCOUNT" || true
 
             # Get value to confirm
-            VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value)
+            VALUE=$(soroban contract invoke \
+              --id "$CONTRACT_ID" \
+              --network testnet \
+              -- get_value)
             echo "📊 $color get_value() = $VALUE"
 
             cd - > /dev/null
