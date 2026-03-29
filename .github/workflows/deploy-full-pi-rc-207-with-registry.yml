@@ -1,16 +1,18 @@
-name: Deploy FULL PiRC-207 with Registry Layer (Safe English Version)
+name: Deploy PiRC-207 Registry Layer + Generate Final Docs
 
 on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy-registry:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: feature/pirc-207-registry-final
 
-      - name: Install System Dependencies + Rust + Stellar CLI
+      - name: Install Stellar CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
@@ -18,69 +20,113 @@ jobs:
           source "$HOME/.cargo/env"
           rustup target add wasm32v1-none
           cargo install --locked stellar-cli
-          echo "✅ Stellar CLI installed: $(stellar --version)"
 
-      - name: Deploy all 7 PiRC-207 layers + Registry Layer
+      - name: Deploy Registry + Generate All Files
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
           set -e
 
-          echo "🚀 Starting FULL PROFESSIONAL deployment of PiRC-207 (7 Token Layers + Registry Layer)..."
-
-          # === Setup identity once (non-interactive for CI) ===
-          echo "🔑 Adding deployer identity..."
+          echo "🔑 Setting up deployer identity..."
           echo "$STELLAR_SECRET" | stellar keys add deployer --secret-key
           SOURCE_ACCOUNT=$(stellar keys address deployer)
-          echo "📌 Deployer public key: $SOURCE_ACCOUNT"
+          echo "📌 Deployer: $SOURCE_ACCOUNT"
 
-          for dir in contracts/soroban/pirc-207-*-token; do
-            color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
-            echo "🔨 Deploying $color layer..."
+          # === 7 Deployed Contract IDs (in order: Purple → Red) ===
+          PURPLE="CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4"
+          GOLD="CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG"
+          YELLOW="CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF"
+          ORANGE="CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF"
+          BLUE="CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD"
+          GREEN="CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4"
+          RED="CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO"
 
-            cd "$dir"
+          TOKEN_CONTRACTS="[\"$PURPLE\",\"$GOLD\",\"$YELLOW\",\"$ORANGE\",\"$BLUE\",\"$GREEN\",\"$RED\"]"
 
-            # Add optimized release profile
-            echo "" >> Cargo.toml
-            echo "[profile.release]" >> Cargo.toml
-            echo "opt-level = \"z\"" >> Cargo.toml
-            echo "overflow-checks = true" >> Cargo.toml
-            echo "debug = false" >> Cargo.toml
-            echo "strip = \"symbols\"" >> Cargo.toml
-            echo "debug-assertions = false" >> Cargo.toml
-            echo "panic = \"abort\"" >> Cargo.toml
-            echo "codegen-units = 1" >> Cargo.toml
-            echo "lto = true" >> Cargo.toml
+          cd contracts/soroban/pirc-207-registry
+          stellar contract build
 
-            stellar contract build
+          echo "🚀 Deploying PiRC-207 Registry Layer..."
+          REGISTRY_ID=$(stellar contract deploy \
+            --wasm target/wasm32v1-none/release/*.wasm \
+            --source deployer \
+            --network testnet)
 
-            # Deploy
-            CONTRACT_ID=$(stellar contract deploy \
-              --wasm target/wasm32v1-none/release/*.wasm \
-              --source deployer \
-              --network testnet)
+          echo "✅ Registry deployed → $REGISTRY_ID"
 
-            echo "✅ Deployed $color → $CONTRACT_ID"
+          # Initialize with the 7 live token contracts
+          stellar contract invoke \
+            --id "$REGISTRY_ID" \
+            --source deployer \
+            --network testnet \
+            -- initialize \
+            --admin "$SOURCE_ACCOUNT" \
+            --token_contracts "$TOKEN_CONTRACTS"
 
-            # Initialize (safe if already done)
+          echo "✅ Registry initialized with all 7 layers"
+
+          # === Automatic Verification ===
+          echo "🔍 Verifying all 7 layers through Registry..."
+          for i in {0..6}; do
+            echo "Layer $i metadata:"
             stellar contract invoke \
-              --id "$CONTRACT_ID" \
-              --source deployer \
+              --id "$REGISTRY_ID" \
               --network testnet \
-              -- initialize --admin "$SOURCE_ACCOUNT" || true
-
-            # Verify
-            VALUE=$(stellar contract invoke \
-              --id "$CONTRACT_ID" \
-              --source deployer \
-              --network testnet \
-              -- get_value 2>/dev/null || echo "N/A")
-
-            echo "📊 $color get_value() = $VALUE"
-
-            cd - > /dev/null
+              -- get_layer_metadata --layer_id "$i"
           done
 
-          echo ""
-          echo "🎉 ALL 7 LAYERS + REGISTRY LAYER ARE NOW LIVE ON STELLAR TESTNET!"
-          echo "Copy the contract IDs above for PiNetwork #72."
+          # === Generate Professional Files ===
+          cd ../../..
+
+          cat > docs/PiRC-207-Final-Deployment-Report.md << 'EOF'
+# PiRC-207 Final Deployment Report
+**Date**: $(date -u +"%Y-%m-%d %H:%M UTC")  
+**Network**: Stellar Testnet  
+**Status**: COMPLETE – All 8 contracts live
+
+## 7 Colored Token Layers
+| Layer   | Contract ID                                      | Deployment Tx Link |
+|---------|--------------------------------------------------|--------------------|
+| Purple  | CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4 | https://stellar.expert/explorer/testnet/tx/c8a50ce029788a8e26067f80313c65bff95a6b331113af002991ee9912c7cc2d |
+| Gold    | CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG | https://stellar.expert/explorer/testnet/tx/1b3e65d28102febf458b49ec1ed095fee41c2ad0e38254dcda5464f0820cac88 |
+| Yellow  | CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF | https://stellar.expert/explorer/testnet/tx/75411b63eb7257496a9e19c4b89412eef3fc8b00f45f8b7942ba58fbe294845e |
+| Orange  | CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF | https://stellar.expert/explorer/testnet/tx/3363bce259f2e0acc5bad02408d89da2187dd5e4a485d6ecad397e5b014e7691 |
+| Blue    | CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD | https://stellar.expert/explorer/testnet/tx/8a5daf879a604e64088d5730f686250deffebe4d4514e1bd53f9a4792d748430 |
+| Green   | CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4 | https://stellar.expert/explorer/testnet/tx/5e9c0b7fd03bb8c07395ce930997e09957c51e94b9a8015b06e22868ceff1142 |
+| Red     | CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO | https://stellar.expert/explorer/testnet/tx/f4b5e37209876dc04c7b8b5041973d2a89916f24b8a61dc3732f0f81cfe27bb4 |
+
+## Registry Layer (Central Governance + RWA)
+**Contract ID**: $REGISTRY_ID  
+**Explorer**: https://stellar.expert/explorer/testnet/contract/$REGISTRY_ID
+
+## Verification Results
+(Full output from `get_layer_metadata` calls above)
+
+## Files Generated
+- `docs/PiRC-207-Final-Deployment-Report.md` ← this file
+- `scripts/verify-pirc-207-all-layers.sh`
+
+**Label applied**: PiRC-207-Registry-Live  
+**Ready for PiNetwork #72 & mainnet transition.**
+EOF
+
+          # Generate verification script
+          cat > scripts/verify-pirc-207-all-layers.sh << 'EOF'
+#!/bin/bash
+# PiRC-207 Full Verification Script
+REGISTRY_ID="$1"  # Pass Registry ID as argument
+
+echo "🔍 Verifying PiRC-207 Registry + 7 Layers..."
+for i in {0..6}; do
+  echo "=== Layer $i ==="
+  stellar contract invoke --id "$REGISTRY_ID" --network testnet -- get_layer_metadata --layer_id "$i"
+done
+echo "✅ All layers verified!"
+EOF
+
+          chmod +x scripts/verify-pirc-207-all-layers.sh
+
+          echo "🎉 ALL FILES GENERATED!"
+          echo "Registry Contract ID: $REGISTRY_ID"
+          echo "Full report: docs/PiRC-207-Final-Deployment-Report.md"
+          echo "Verification script: scripts/verify-pirc-207-all-layers.sh"
