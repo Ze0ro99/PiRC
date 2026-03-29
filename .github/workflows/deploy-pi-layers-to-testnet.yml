@@ -23,7 +23,7 @@ jobs:
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
-          echo "🚀 Starting FINAL deployment of 7 PiRC-207 Colored Token Layers..."
+          echo "🚀 Starting PROFESSIONAL deployment of 7 PiRC-207 Colored Token Layers..."
 
           for dir in contracts/soroban/pirc-207-*-token; do
             color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
@@ -31,6 +31,7 @@ jobs:
 
             cd "$dir"
 
+            # Auto-add optimized release profile (fixes overflow-checks error)
             echo "" >> Cargo.toml
             echo "[profile.release]" >> Cargo.toml
             echo "opt-level = \"z\"" >> Cargo.toml
@@ -44,12 +45,18 @@ jobs:
 
             soroban contract build
 
-            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32v1-none/release/*.wasm --secret-key "$STELLAR_SECRET" --network testnet)
+            # Derive public address from secret key
+            SOURCE_ACCOUNT=$(soroban keys address --secret-key "$STELLAR_SECRET")
+
+            # Deploy using correct flag
+            CONTRACT_ID=$(soroban contract deploy --wasm target/wasm32v1-none/release/*.wasm --source-account "$SOURCE_ACCOUNT" --network testnet)
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
-            soroban contract invoke --id "$CONTRACT_ID" --secret-key "$STELLAR_SECRET" --network testnet -- initialize --admin "$(soroban keys address --secret-key "$STELLAR_SECRET")" || true
+            # Initialize contract
+            soroban contract invoke --id "$CONTRACT_ID" --secret-key "$STELLAR_SECRET" --network testnet -- initialize --admin "$SOURCE_ACCOUNT" || true
 
+            # Get layer value to confirm
             VALUE=$(soroban contract invoke --id "$CONTRACT_ID" --network testnet -- get_value)
             echo "📊 $color get_value() = $VALUE"
 
