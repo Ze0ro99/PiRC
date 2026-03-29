@@ -10,20 +10,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install System Dependencies + Rust + Soroban CLI
+      - name: Install System Dependencies + Rust + Stellar CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source "$HOME/.cargo/env"
           rustup target add wasm32v1-none
-          cargo install --locked soroban-cli
+          cargo install --locked stellar-cli
+          echo "✅ Stellar CLI installed: $(stellar --version)"
 
       - name: Deploy all 7 PiRC-207 layers + Registry Layer
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
+          set -e
+
           echo "🚀 Starting FULL PROFESSIONAL deployment of PiRC-207 (7 Token Layers + Registry Layer)..."
+
+          # === Setup identity once (non-interactive for CI) ===
+          echo "🔑 Adding deployer identity..."
+          echo "$STELLAR_SECRET" | stellar keys add deployer --secret-key
+          SOURCE_ACCOUNT=$(stellar keys address deployer)
+          echo "📌 Deployer public key: $SOURCE_ACCOUNT"
 
           for dir in contracts/soroban/pirc-207-*-token; do
             color=$(basename "$dir" | sed 's/pirc-207-//;s/-token//')
@@ -31,7 +40,7 @@ jobs:
 
             cd "$dir"
 
-            # Add required release profile
+            # Add optimized release profile
             echo "" >> Cargo.toml
             echo "[profile.release]" >> Cargo.toml
             echo "opt-level = \"z\"" >> Cargo.toml
@@ -43,32 +52,30 @@ jobs:
             echo "codegen-units = 1" >> Cargo.toml
             echo "lto = true" >> Cargo.toml
 
-            soroban contract build
+            stellar contract build
 
-            # Derive public address from secret key
-            SOURCE_ACCOUNT=$(soroban keys address --secret-key "$STELLAR_SECRET")
-
-            # Deploy using correct flag
-            CONTRACT_ID=$(soroban contract deploy \
+            # Deploy
+            CONTRACT_ID=$(stellar contract deploy \
               --wasm target/wasm32v1-none/release/*.wasm \
-              --source-account "$SOURCE_ACCOUNT" \
+              --source deployer \
               --network testnet)
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
-            # Initialize contract
-            soroban contract invoke \
+            # Initialize (safe if already done)
+            stellar contract invoke \
               --id "$CONTRACT_ID" \
-              --secret-key "$STELLAR_SECRET" \
+              --source deployer \
               --network testnet \
-              -- initialize \
-              --admin "$SOURCE_ACCOUNT" || true
+              -- initialize --admin "$SOURCE_ACCOUNT" || true
 
-            # Get value to confirm
-            VALUE=$(soroban contract invoke \
+            # Verify
+            VALUE=$(stellar contract invoke \
               --id "$CONTRACT_ID" \
+              --source deployer \
               --network testnet \
-              -- get_value)
+              -- get_value 2>/dev/null || echo "N/A")
+
             echo "📊 $color get_value() = $VALUE"
 
             cd - > /dev/null
@@ -76,4 +83,4 @@ jobs:
 
           echo ""
           echo "🎉 ALL 7 LAYERS + REGISTRY LAYER ARE NOW LIVE ON STELLAR TESTNET!"
-          echo "Copy the contract IDs above for PiNetwo #72 discussion."
+          echo "Copy the contract IDs above for PiNetwork #72."
