@@ -43,7 +43,6 @@ jobs:
 
           TOKEN_CONTRACTS="[\"$PURPLE\",\"$GOLD\",\"$YELLOW\",\"$ORANGE\",\"$BLUE\",\"$GREEN\",\"$RED\"]"
 
-          # Dynamic date for report
           DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
 
           mkdir -p docs scripts
@@ -58,7 +57,6 @@ jobs:
 
           echo "✅ Registry deployed → $REGISTRY_ID"
 
-          # Initialize with the 7 live token contracts
           stellar contract invoke \
             --id "$REGISTRY_ID" \
             --source deployer \
@@ -69,7 +67,6 @@ jobs:
 
           echo "✅ Registry initialized with all 7 layers"
 
-          # Automatic Verification
           echo "🔍 Verifying all 7 layers through Registry..."
           for i in {0..6}; do
             echo "Layer $i metadata:"
@@ -81,28 +78,24 @@ jobs:
 
           cd ../../..
 
-          # === Generate Professional Final Report (fixed heredoc) ===
-          cat > docs/PiRC-207-Final-Deployment-Report.md << 'REPORT'
-# PiRC-207 Final Deployment Report
-**Network**: Stellar Testnet
-**Status**: COMPLETE – All 8 contracts live
-
-## 7 Colored Token Layers
-| Layer   | Contract ID                                      | Deployment Tx Link |
-|---------|--------------------------------------------------|--------------------|
-| Purple  | CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4 | https://stellar.expert/explorer/testnet/tx/c8a50ce029788a8e26067f80313c65bff95a6b331113af002991ee9912c7cc2d |
-| Gold    | CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG | https://stellar.expert/explorer/testnet/tx/1b3e65d28102febf458b49ec1ed095fee41c2ad0e38254dcda5464f0820cac88 |
-| Yellow  | CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF | https://stellar.expert/explorer/testnet/tx/75411b63eb7257496a9e19c4b89412eef3fc8b00f45f8b7942ba58fbe294845e |
-| Orange  | CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF | https://stellar.expert/explorer/testnet/tx/3363bce259f2e0acc5bad02408d89da2187dd5e4a485d6ecad397e5b014e7691 |
-| Blue    | CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD | https://stellar.expert/explorer/testnet/tx/8a5daf879a604e64088d5730f686250deffebe4d4514e1bd53f9a4792d748430 |
-| Green   | CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4 | https://stellar.expert/explorer/testnet/tx/5e9c0b7fd03bb8c07395ce930997e09957c51e94b9a8015b06e22868ceff1142 |
-| Red     | CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO | https://stellar.expert/explorer/testnet/tx/f4b5e37209876dc04c7b8b5041973d2a89916f24b8a61dc3732f0f81cfe27bb4 |
-
-## Registry Layer (Central Governance + RWA)
-REPORT
-
-          # Append dynamic lines
+          # Generate Final Report (safe echo method - no heredoc)
+          echo "# PiRC-207 Final Deployment Report" > docs/PiRC-207-Final-Deployment-Report.md
           echo "**Date**: $DATE" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "**Network**: Stellar Testnet" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "**Status**: COMPLETE – All 8 contracts live" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "## 7 Colored Token Layers" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Layer   | Contract ID                                      | Deployment Tx Link |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "|---------|--------------------------------------------------|--------------------|" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Purple  | CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4 | https://stellar.expert/explorer/testnet/tx/c8a50ce029788a8e26067f80313c65bff95a6b331113af002991ee9912c7cc2d |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Gold    | CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG | https://stellar.expert/explorer/testnet/tx/1b3e65d28102febf458b49ec1ed095fee41c2ad0e38254dcda5464f0820cac88 |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Yellow  | CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF | https://stellar.expert/explorer/testnet/tx/75411b63eb7257496a9e19c4b89412eef3fc8b00f45f8b7942ba58fbe294845e |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Orange  | CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF | https://stellar.expert/explorer/testnet/tx/3363bce259f2e0acc5bad02408d89da2187dd5e4a485d6ecad397e5b014e7691 |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Blue    | CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD | https://stellar.expert/explorer/testnet/tx/8a5daf879a604e64088d5730f686250deffebe4d4514e1bd53f9a4792d748430 |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Green   | CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4 | https://stellar.expert/explorer/testnet/tx/5e9c0b7fd03bb8c07395ce930997e09957c51e94b9a8015b06e22868ceff1142 |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "| Red     | CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO | https://stellar.expert/explorer/testnet/tx/f4b5e37209876dc04c7b8b5041973d2a89916f24b8a61dc3732f0f81cfe27bb4 |" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "" >> docs/PiRC-207-Final-Deployment-Report.md
+          echo "## Registry Layer (Central Governance + RWA)" >> docs/PiRC-207-Final-Deployment-Report.md
           echo "**Contract ID**: $REGISTRY_ID" >> docs/PiRC-207-Final-Deployment-Report.md
           echo "**Explorer**: https://stellar.expert/explorer/testnet/contract/$REGISTRY_ID" >> docs/PiRC-207-Final-Deployment-Report.md
           echo "" >> docs/PiRC-207-Final-Deployment-Report.md
@@ -116,17 +109,15 @@ REPORT
           echo "**Label applied**: PiRC-207-Registry-Live" >> docs/PiRC-207-Final-Deployment-Report.md
           echo "**Ready for PiNetwork #72 & mainnet transition.**" >> docs/PiRC-207-Final-Deployment-Report.md
 
-          # Generate verification script
-          cat > scripts/verify-pirc-207-all-layers.sh << 'SCRIPT'
-#!/bin/bash
-REGISTRY_ID="$1"
-echo "🔍 Verifying PiRC-207 Registry + 7 Layers..."
-for i in {0..6}; do
-  echo "=== Layer $i ==="
-  stellar contract invoke --id "$REGISTRY_ID" --network testnet -- get_layer_metadata --layer_id "$i"
-done
-echo "✅ All layers verified!"
-SCRIPT
+          # Generate verification script (safe echo method - no heredoc)
+          echo '#!/bin/bash' > scripts/verify-pirc-207-all-layers.sh
+          echo 'REGISTRY_ID="$1"' >> scripts/verify-pirc-207-all-layers.sh
+          echo 'echo "🔍 Verifying PiRC-207 Registry + 7 Layers..."' >> scripts/verify-pirc-207-all-layers.sh
+          echo 'for i in {0..6}; do' >> scripts/verify-pirc-207-all-layers.sh
+          echo '  echo "=== Layer $i ==="' >> scripts/verify-pirc-207-all-layers.sh
+          echo '  stellar contract invoke --id "$REGISTRY_ID" --network testnet -- get_layer_metadata --layer_id "$i"' >> scripts/verify-pirc-207-all-layers.sh
+          echo 'done' >> scripts/verify-pirc-207-all-layers.sh
+          echo 'echo "✅ All layers verified!"' >> scripts/verify-pirc-207-all-layers.sh
 
           chmod +x scripts/verify-pirc-207-all-layers.sh
 
