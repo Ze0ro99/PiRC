@@ -24,13 +24,13 @@ jobs:
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
-          set -e  # Fail fast on any error
+          set -e
 
           echo "🚀 Starting PROFESSIONAL deployment of 7 PiRC-207 Colored Token Layers..."
 
-          # === Setup identity once (using your GitHub secret) ===
+          # === Setup identity once (NON-INTERACTIVE) ===
           echo "🔑 Adding deployer identity..."
-          stellar keys add deployer --secret-key "$STELLAR_SECRET"
+          echo "$STELLAR_SECRET" | stellar keys add deployer --secret-key
           SOURCE_ACCOUNT=$(stellar keys address deployer)
           echo "📌 Deployer public key: $SOURCE_ACCOUNT"
 
@@ -40,7 +40,7 @@ jobs:
 
             cd "$dir"
 
-            # Auto-add optimized release profile
+            # Optimized release profile
             echo "" >> Cargo.toml
             echo "[profile.release]" >> Cargo.toml
             echo "opt-level = \"z\"" >> Cargo.toml
@@ -54,7 +54,6 @@ jobs:
 
             stellar contract build
 
-            # Deploy
             CONTRACT_ID=$(stellar contract deploy \
               --wasm target/wasm32v1-none/release/*.wasm \
               --source deployer \
@@ -62,20 +61,17 @@ jobs:
 
             echo "✅ Deployed $color → $CONTRACT_ID"
 
-            # Initialize (ignore if already initialized)
             stellar contract invoke \
               --id "$CONTRACT_ID" \
               --source deployer \
               --network testnet \
               -- initialize --admin "$SOURCE_ACCOUNT" || true
 
-            # Get layer value to confirm (safe fallback if function missing)
-            echo "📊 Checking $color status..."
             VALUE=$(stellar contract invoke \
               --id "$CONTRACT_ID" \
               --source deployer \
               --network testnet \
-              -- get_value 2>/dev/null || echo "N/A (no get_value or error)")
+              -- get_value 2>/dev/null || echo "N/A")
 
             echo "📊 $color get_value() = $VALUE"
 
@@ -84,4 +80,4 @@ jobs:
 
           echo ""
           echo "🎉 ALL 7 LAYERS ARE NOW LIVE ON STELLAR TESTNET!"
-          echo "Contract IDs are printed above — copy them for PiNetwork #72."
+          echo "Contract IDs printed above — copy them for PiNetwork #72."
