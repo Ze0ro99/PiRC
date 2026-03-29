@@ -57,7 +57,7 @@ jobs:
           if [ -d "contracts/soroban/pirc-207-registry" ]; then
             echo "✅ Registry contract folder found – proceeding with deployment..."
             cd contracts/soroban/pirc-207-registry
-            
+
             # Optimized release profile
             cat >> Cargo.toml <<EOF
           [profile.release]
