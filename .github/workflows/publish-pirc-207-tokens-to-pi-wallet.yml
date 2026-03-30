@@ -1,4 +1,4 @@
-name: "PiRC-207: Final Professional RWA Orchestrator"
+name: "PiRC-207: Professional RWA System Orchestrator"
 
 on:
   workflow_dispatch:
@@ -39,79 +39,92 @@ jobs:
               const issuerPK = issuerKp.publicKey();
               const distPK = distKp.publicKey();
 
-              console.log("🚀 Starting Orchestration for: " + issuerPK);
+              console.log("🚀 Starting System Orchestration...");
+              console.log("Issuer:", issuerPK);
+              console.log("Distributor:", distPK);
+
               const issuerAcc = await server.loadAccount(issuerPK);
               const distAcc = await server.loadAccount(distPK);
-              const fee = "10000"; // High fee for guaranteed success
+              const fee = "20000"; // Increased fee for priority
 
               const layers = [
-                { code: "PURPLE", name: "Purple Layer 0", contract: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4" },
-                { code: "GOLD",   name: "Gold Layer 1",   contract: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG" },
-                { code: "YELLOW", name: "Yellow Layer 2", contract: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF" },
-                { code: "ORANGE", name: "Orange Layer 3", contract: "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF" },
-                { code: "BLUE",   name: "Blue Layer 4",   contract: "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD" },
-                { code: "GREEN",  name: "Green Layer 5",  contract: "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4" },
-                { code: "RED",    name: "Red Layer 6",    contract: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO" }
+                { code: "PURPLE", name: "Layer 0 - Root Registry" },
+                { code: "GOLD",   name: "Layer 1 - Reserve Currency" },
+                { code: "YELLOW", name: "Layer 2 - Utility Tier" },
+                { code: "ORANGE", name: "Layer 3 - Governance" },
+                { code: "BLUE",   name: "Layer 4 - Liquidity" },
+                { code: "GREEN",  name: "Layer 5 - Ecosystem" },
+                { code: "RED",    name: "Layer 6 - Settlement" }
               ];
 
-              // --- STEP 1: BLOCKCHAIN OPS (Trustlines + Minting + Domain) ---
-              let builder = new StellarSDK.TransactionBuilder(distAcc, {
+              // --- STEP 1: DISTRIBUTOR TRUSTLINES ---
+              console.log("🔗 Step 1: Establishing Trustlines...");
+              let trustTx = new StellarSDK.TransactionBuilder(distAcc, {
                 fee, networkPassphrase: NETWORK_PASSPHRASE,
                 timebounds: await server.fetchTimebounds(100)
               });
+              
               layers.forEach(l => {
-                builder.addOperation(StellarSDK.Operation.changeTrust({ 
+                trustTx.addOperation(StellarSDK.Operation.changeTrust({ 
                   asset: new StellarSDK.Asset(l.code, issuerPK) 
                 }));
               });
-              const sTrust = builder.build(); sTrust.sign(distKp);
-              await server.submitTransaction(sTrust);
-              console.log("✅ Trustlines established.");
 
-              let mintBuilder = new StellarSDK.TransactionBuilder(issuerAcc, {
+              const sTrust = trustTx.build();
+              sTrust.sign(distKp);
+              await server.submitTransaction(sTrust);
+              console.log("✅ Trustlines active.");
+
+              // --- STEP 2: ISSUER MINTING & DOMAIN ---
+              console.log("💎 Step 2: Minting & Linking Domain...");
+              // Refresh account to get latest sequence
+              const issuerAccUpdated = await server.loadAccount(issuerPK);
+              let mintTx = new StellarSDK.TransactionBuilder(issuerAccUpdated, {
                 fee, networkPassphrase: NETWORK_PASSPHRASE,
                 timebounds: await server.fetchTimebounds(100)
               });
+
               layers.forEach(l => {
-                mintBuilder.addOperation(StellarSDK.Operation.payment({
+                mintTx.addOperation(StellarSDK.Operation.payment({
                   destination: distPK,
                   asset: new StellarSDK.Asset(l.code, issuerPK),
                   amount: "1000000.0000000"
                 }));
               });
-              // Add Home Domain in same tx
-              mintBuilder.addOperation(StellarSDK.Operation.setOptions({
+
+              mintTx.addOperation(StellarSDK.Operation.setOptions({
                 homeDomain: "ze0ro99.github.io/PiRC"
               }));
-              const sMint = mintBuilder.build(); sMint.sign(issuerKp);
-              await server.submitTransaction(sMint);
-              console.log("✅ Tokens Minted & Home Domain Linked.");
 
-              // --- STEP 2: GENERATE TOML (Clean Strings - No code in file) ---
+              const sMint = mintTx.build();
+              sMint.sign(issuerKp);
+              await server.submitTransaction(sMint);
+              console.log("✅ Minting complete. Home Domain set.");
+
+              // --- STEP 3: TOML GENERATION (Clean Text) ---
               let toml = `ACCOUNTS=["${issuerPK}"]\n\n`;
               layers.forEach(l => {
-                toml += `[[CURRENCIES]]\n`;
-                toml += `code="${l.code}"\n`;
-                toml += `issuer="${issuerPK}"\n`;
-                toml += `display_decimals=7\n`;
-                toml += `name="${l.name}"\n`;
-                toml += `desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"\n`;
-                toml += `image="https://ze0ro99.github.io/PiRC/images/${l.code.toLowerCase()}.png"\n\n`;
+                toml += `[[CURRENCIES]]\ncode="${l.code}"\nissuer="${issuerPK}"\ndisplay_decimals=7\nname="PiRC-207 ${l.name}"\ndesc="Official PiRC-207 Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"\nimage="https://ze0ro99.github.io/PiRC/images/${l.code.toLowerCase()}.png"\n\n`;
               });
 
               if (!fs.existsSync('.well-known')) fs.mkdirSync('.well-known');
               fs.writeFileSync('.well-known/pi.toml', toml);
-              console.log("✅ Clean pi.toml generated.");
+              console.log("✅ pi.toml successfully generated.");
 
             } catch (e) {
-              console.error("❌ Failed: " + (e.response?.data?.extras?.result_codes || e.message));
+              console.error("❌ ERROR DETAILS:");
+              if (e.response && e.response.data) {
+                console.error(JSON.stringify(e.response.data.extras.result_codes, null, 2));
+              } else {
+                console.error(e.message);
+              }
               process.exit(1);
             }
           }
           run();
           EOF
 
-      - name: Deploy Professional Results
+      - name: Deploy Professional Metadata
         run: |
           git config user.name "PiRC-207 Automator"
           git config user.email "bot@ze0ro99.github.io"
