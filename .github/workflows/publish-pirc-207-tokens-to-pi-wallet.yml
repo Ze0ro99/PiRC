@@ -28,24 +28,31 @@ jobs:
           ISSUER_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
           DISTRIBUTOR_SECRET: ${{ secrets.DISTRIBUTOR_SECRET }}
         run: |
-          # Professional Minting Script
           node - << 'EOF'
           const StellarSDK = require("@stellar/stellar-sdk");
           const server = new StellarSDK.Horizon.Server("https://api.testnet.minepi.com");
           const NETWORK_PASSPHRASE = "Pi Testnet";
 
-          const issuerKp = StellarSDK.Keypair.fromSecret(process.env.ISSUER_SECRET);
-          const distKp = StellarSDK.Keypair.fromSecret(process.env.DISTRIBUTOR_SECRET);
-          
-          const layers = ["PURPLE", "GOLD", "YELLOW", "ORANGE", "BLUE", "GREEN", "RED"];
-          const amount = "1000000.0000000"; 
-
           async function run() {
             try {
+              // Safety check for keys
+              if (!process.env.ISSUER_SECRET?.startsWith('S')) throw new Error("ISSUER_SECRET must start with S");
+              if (!process.env.DISTRIBUTOR_SECRET?.startsWith('S')) throw new Error("DISTRIBUTOR_SECRET must start with S");
+
+              const issuerKp = StellarSDK.Keypair.fromSecret(process.env.ISSUER_SECRET);
+              const distKp = StellarSDK.Keypair.fromSecret(process.env.DISTRIBUTOR_SECRET);
+              
+              // Export Public Key for next steps
+              const fs = require('fs');
+              fs.writeFileSync('issuer_pk.txt', issuerKp.publicKey());
+
               console.log("🚀 Loading Accounts...");
               const issuerAcc = await server.loadAccount(issuerKp.publicKey());
               const distAcc = await server.loadAccount(distKp.publicKey());
               const fee = (await server.fetchBaseFee()).toString();
+
+              const layers = ["PURPLE", "GOLD", "YELLOW", "ORANGE", "BLUE", "GREEN", "RED"];
+              const amount = "1000000.0000000"; 
 
               // 1. TRUSTLINES
               console.log("🔗 Creating Trustlines...");
@@ -90,23 +97,28 @@ jobs:
               
               console.log("✅ Blockchain setup complete.");
             } catch (e) {
-              console.error("❌ Error:", e.response?.data?.extras?.result_codes || e.message);
+              console.error("❌ Error Detail:", e.message);
+              if (e.response?.data?.extras?.result_codes) {
+                console.error("Blockchain Error:", e.response.data.extras.result_codes);
+              }
               process.exit(1);
             }
           }
           run();
           EOF
 
-      - name: Generate pi.toml and Docs
+      - name: Generate pi.toml
         run: |
-          mkdir -p .well-known docs
-          # This command creates the TOML and removes all indentation spaces
-          cat << 'EOF' | sed 's/^[[:space:]]*//' > .well-known/pi.toml
-          ACCOUNTS=["GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"]
+          # Get the public key we just derived
+          ISSUER_PK=$(cat issuer_pk.txt)
+          mkdir -p .well-known
+          
+          cat << EOF | sed 's/^[[:space:]]*//' > .well-known/pi.toml
+          ACCOUNTS=["$ISSUER_PK"]
 
           [[CURRENCIES]]
           code="PURPLE"
-          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          issuer="$ISSUER_PK"
           display_decimals=7
           name="PiRC-207 Purple"
           desc="Layer 0 | Contract: CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4"
@@ -114,7 +126,7 @@ jobs:
 
           [[CURRENCIES]]
           code="GOLD"
-          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          issuer="$ISSUER_PK"
           display_decimals=7
           name="PiRC-207 Gold"
           desc="Layer 1 | Parity: 314159 | Contract: CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG"
@@ -122,7 +134,7 @@ jobs:
 
           [[CURRENCIES]]
           code="YELLOW"
-          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          issuer="$ISSUER_PK"
           display_decimals=7
           name="PiRC-207 Yellow"
           desc="Layer 2 | Contract: CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF"
@@ -130,7 +142,7 @@ jobs:
 
           [[CURRENCIES]]
           code="ORANGE"
-          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          issuer="$ISSUER_PK"
           display_decimals=7
           name="PiRC-207 Orange"
           desc="Layer 3 | Contract: CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF"
@@ -138,7 +150,7 @@ jobs:
 
           [[CURRENCIES]]
           code="BLUE"
-          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          issuer="$ISSUER_PK"
           display_decimals=7
           name="PiRC-207 Blue"
           desc="Layer 4 | Contract: CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD"
@@ -146,7 +158,7 @@ jobs:
 
           [[CURRENCIES]]
           code="GREEN"
-          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          issuer="$ISSUER_PK"
           display_decimals=7
           name="PiRC-207 Green"
           desc="Layer 5 | Contract: CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4"
@@ -154,7 +166,7 @@ jobs:
 
           [[CURRENCIES]]
           code="RED"
-          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          issuer="$ISSUER_PK"
           display_decimals=7
           name="PiRC-207 Red"
           desc="Layer 6 | Contract: CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO"
@@ -167,5 +179,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           touch .nojekyll
           git add .
-          git commit -m "Professional PiRC-207 Token System Deployment" || echo "No changes"
+          git commit -m "Deployment with derived PK" || echo "No changes"
           git push
