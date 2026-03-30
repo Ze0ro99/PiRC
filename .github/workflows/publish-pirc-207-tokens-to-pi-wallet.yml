@@ -1,16 +1,16 @@
-name: Publish PiRC-207 Tokens to Pi Wallet + Test Pidex (Self-Healing)
+name: PiRC-207 Professional Token Minting & Wallet Listing
 
 on:
   workflow_dispatch:
 
 jobs:
-  publish-and-verify:
+  mint-and-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -23,98 +23,149 @@ jobs:
       - name: Install Stellar SDK
         run: npm install @stellar/stellar-sdk
 
-      - name: Self-Healing Structure Creation
+      - name: Execute Professional Setup
         env:
-          STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
+          ISSUER_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
+          DISTRIBUTOR_SECRET: ${{ secrets.DISTRIBUTOR_SECRET }}
         run: |
-          # 1. Get Issuer Key
-          ISSUER=$(node -e '
-            const { Keypair } = require("@stellar/stellar-sdk");
-            try { console.log(Keypair.fromSecret(process.env.STELLAR_SECRET).publicKey()); } 
-            catch (e) { process.exit(1); }
-          ')
-          echo "ISSUER_PUBLIC_KEY=$ISSUER" >> $GITHUB_ENV
-
-          # 2. Create Folders
-          mkdir -p .well-known images docs
-          touch .nojekyll
-
-          # 3. Create pi.toml (Formatted to remove leading spaces automatically)
-          cat << EOF | sed 's/^[[:space:]]*//' > .well-known/pi.toml
-          [[CURRENCIES]]
-          code = "PURPLE"
-          issuer = "$ISSUER"
-          name = "PiRC-207 Purple Layer"
-          desc = "Layer 0 of the official PiRC-207 7-Layer RWA System"
-          image = "https://ze0ro99.github.io/PiRC/images/purple.png"
-
-          [[CURRENCIES]]
-          code = "GOLD"
-          issuer = "$ISSUER"
-          name = "PiRC-207 Gold Layer"
-          desc = "Layer 1 of the official PiRC-207 7-Layer RWA System | Parity: 314159"
-          image = "https://ze0ro99.github.io/PiRC/images/gold.png"
-
-          [[CURRENCIES]]
-          code = "YELLOW"
-          issuer = "$ISSUER"
-          name = "PiRC-207 Yellow Layer"
-          desc = "Layer 2 of the official PiRC-207 7-Layer RWA System"
-          image = "https://ze0ro99.github.io/PiRC/images/yellow.png"
-
-          [[CURRENCIES]]
-          code = "ORANGE"
-          issuer = "$ISSUER"
-          name = "PiRC-207 Orange Layer"
-          desc = "Layer 3 of the official PiRC-207 7-Layer RWA System"
-          image = "https://ze0ro99.github.io/PiRC/images/orange.png"
-
-          [[CURRENCIES]]
-          code = "BLUE"
-          issuer = "$ISSUER"
-          name = "PiRC-207 Blue Layer"
-          desc = "Layer 4 of the official PiRC-207 7-Layer RWA System"
-          image = "https://ze0ro99.github.io/PiRC/images/blue.png"
-
-          [[CURRENCIES]]
-          code = "GREEN"
-          issuer = "$ISSUER"
-          name = "PiRC-207 Green Layer"
-          desc = "Layer 5 of the official PiRC-207 7-Layer RWA System"
-          image = "https://ze0ro99.github.io/PiRC/images/green.png"
-
-          [[CURRENCIES]]
-          code = "RED"
-          issuer = "$ISSUER"
-          name = "PiRC-207 Red Layer"
-          desc = "Layer 6 of the official PiRC-207 7-Layer RWA System"
-          image = "https://ze0ro99.github.io/PiRC/images/red.png"
-          EOF
-
-          # 4. Commit Changes
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Fix: Clean pi.toml structure" || echo "No changes"
-          git push
-
-      - name: Set Home Domain
-        env:
-          STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
-        run: |
+          # Professional Minting Script
           node - << 'EOF'
           const StellarSDK = require("@stellar/stellar-sdk");
           const server = new StellarSDK.Horizon.Server("https://api.testnet.minepi.com");
-          const kp = StellarSDK.Keypair.fromSecret(process.env.STELLAR_SECRET);
+          const NETWORK_PASSPHRASE = "Pi Testnet";
+
+          const issuerKp = StellarSDK.Keypair.fromSecret(process.env.ISSUER_SECRET);
+          const distKp = StellarSDK.Keypair.fromSecret(process.env.DISTRIBUTOR_SECRET);
+          
+          const layers = ["PURPLE", "GOLD", "YELLOW", "ORANGE", "BLUE", "GREEN", "RED"];
+          const amount = "1000000.0000000"; 
+
           async function run() {
-            const acc = await server.loadAccount(kp.publicKey());
-            const tx = new StellarSDK.TransactionBuilder(acc, {
-              fee: (await server.fetchBaseFee()).toString(),
-              networkPassphrase: "Pi Testnet",
-              timebounds: await server.fetchTimebounds(100)
-            }).addOperation(StellarSDK.Operation.setOptions({ homeDomain: "ze0ro99.github.io/PiRC" })).build();
-            tx.sign(kp);
-            await server.submitTransaction(tx);
+            try {
+              console.log("🚀 Loading Accounts...");
+              const issuerAcc = await server.loadAccount(issuerKp.publicKey());
+              const distAcc = await server.loadAccount(distKp.publicKey());
+              const fee = (await server.fetchBaseFee()).toString();
+
+              // 1. TRUSTLINES
+              console.log("🔗 Creating Trustlines...");
+              let trustTx = new StellarSDK.TransactionBuilder(distAcc, {
+                fee, networkPassphrase: NETWORK_PASSPHRASE,
+                timebounds: await server.fetchTimebounds(100)
+              });
+              layers.forEach(code => {
+                trustTx.addOperation(StellarSDK.Operation.changeTrust({ 
+                  asset: new StellarSDK.Asset(code, issuerKp.publicKey()) 
+                }));
+              });
+              const sTrust = trustTx.build(); sTrust.sign(distKp);
+              await server.submitTransaction(sTrust);
+
+              // 2. MINTING
+              console.log("💎 Minting Tokens...");
+              let mintTx = new StellarSDK.TransactionBuilder(issuerAcc, {
+                fee, networkPassphrase: NETWORK_PASSPHRASE,
+                timebounds: await server.fetchTimebounds(100)
+              });
+              layers.forEach(code => {
+                mintTx.addOperation(StellarSDK.Operation.payment({
+                  destination: distKp.publicKey(),
+                  asset: new StellarSDK.Asset(code, issuerKp.publicKey()),
+                  amount: amount
+                }));
+              });
+              const sMint = mintTx.build(); sMint.sign(issuerKp);
+              await server.submitTransaction(sMint);
+
+              // 3. HOME DOMAIN
+              console.log("🌐 Setting Home Domain...");
+              const domTx = new StellarSDK.TransactionBuilder(issuerAcc, {
+                fee, networkPassphrase: NETWORK_PASSPHRASE,
+                timebounds: await server.fetchTimebounds(100)
+              }).addOperation(StellarSDK.Operation.setOptions({
+                homeDomain: "ze0ro99.github.io/PiRC"
+              })).build();
+              domTx.sign(issuerKp);
+              await server.submitTransaction(domTx);
+              
+              console.log("✅ Blockchain setup complete.");
+            } catch (e) {
+              console.error("❌ Error:", e.response?.data?.extras?.result_codes || e.message);
+              process.exit(1);
+            }
           }
-          run().catch(console.error);
+          run();
           EOF
+
+      - name: Generate pi.toml and Docs
+        run: |
+          mkdir -p .well-known docs
+          # This command creates the TOML and removes all indentation spaces
+          cat << 'EOF' | sed 's/^[[:space:]]*//' > .well-known/pi.toml
+          ACCOUNTS=["GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"]
+
+          [[CURRENCIES]]
+          code="PURPLE"
+          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          display_decimals=7
+          name="PiRC-207 Purple"
+          desc="Layer 0 | Contract: CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4"
+          image="https://ze0ro99.github.io/PiRC/images/purple.png"
+
+          [[CURRENCIES]]
+          code="GOLD"
+          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          display_decimals=7
+          name="PiRC-207 Gold"
+          desc="Layer 1 | Parity: 314159 | Contract: CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG"
+          image="https://ze0ro99.github.io/PiRC/images/gold.png"
+
+          [[CURRENCIES]]
+          code="YELLOW"
+          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          display_decimals=7
+          name="PiRC-207 Yellow"
+          desc="Layer 2 | Contract: CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF"
+          image="https://ze0ro99.github.io/PiRC/images/yellow.png"
+
+          [[CURRENCIES]]
+          code="ORANGE"
+          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          display_decimals=7
+          name="PiRC-207 Orange"
+          desc="Layer 3 | Contract: CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF"
+          image="https://ze0ro99.github.io/PiRC/images/orange.png"
+
+          [[CURRENCIES]]
+          code="BLUE"
+          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          display_decimals=7
+          name="PiRC-207 Blue"
+          desc="Layer 4 | Contract: CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD"
+          image="https://ze0ro99.github.io/PiRC/images/blue.png"
+
+          [[CURRENCIES]]
+          code="GREEN"
+          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          display_decimals=7
+          name="PiRC-207 Green"
+          desc="Layer 5 | Contract: CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4"
+          image="https://ze0ro99.github.io/PiRC/images/green.png"
+
+          [[CURRENCIES]]
+          code="RED"
+          issuer="GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+          display_decimals=7
+          name="PiRC-207 Red"
+          desc="Layer 6 | Contract: CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO"
+          image="https://ze0ro99.github.io/PiRC/images/red.png"
+          EOF
+
+      - name: Final Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          touch .nojekyll
+          git add .
+          git commit -m "Professional PiRC-207 Token System Deployment" || echo "No changes"
+          git push
