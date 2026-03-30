@@ -1,4 +1,4 @@
-name: Publish PiRC-207 Tokens to Pi Wallet + Test Pidex (Self-Healing Automation)
+name: Publish PiRC-207 Tokens to Pi Wallet + Test Pidex (Self-Healing)
 
 on:
   workflow_dispatch:
@@ -6,11 +6,16 @@ on:
 jobs:
   publish-and-verify:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code (any branch)
-        uses: actions/checkout@v4
+    permissions:
+      contents: write
 
-      - name: Setup Node.js + Stellar SDK
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -18,96 +23,98 @@ jobs:
       - name: Install Stellar SDK
         run: npm install @stellar/stellar-sdk
 
-      - name: Full Self-Diagnosis & Repair Report
-        run: |
-          echo "🔍 FULL REPOSITORY STRUCTURE CHECK..."
-          echo "Current branch: $(git branch --show-current)"
-          echo ""
-          echo "Root files:" && ls -la
-          echo ""
-          echo ".nojekyll check:"
-          if [ -f .nojekyll ]; then
-            echo "✅ .nojekyll is a proper empty FILE"
-          elif [ -d .nojekyll ]; then
-            echo "❌ .nojekyll is a FOLDER (must be empty FILE) - please fix!"
-          else
-            echo "❌ .nojekyll missing"
-          fi
-          echo ""
-          echo "Images check:"
-          for color in purple gold yellow orange blue green red; do
-            if [ -f "images/$color.png" ]; then
-              echo "✅ images/$color.png exists"
-            else
-              echo "❌ images/$color.png MISSING"
-            fi
-          done
-          echo ""
-          echo "pi.toml check:"
-          if [ -f ".well-known/pi.toml" ]; then
-            echo "✅ .well-known/pi.toml exists"
-          else
-            echo "❌ .well-known/pi.toml missing"
-          fi
-
-      - name: Derive Real Issuer Public Key
+      - name: Self-Healing Structure Creation
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
+          # 1. Get Issuer Key
           ISSUER=$(node -e '
             const { Keypair } = require("@stellar/stellar-sdk");
-            console.log(Keypair.fromSecret(process.env.STELLAR_SECRET).publicKey());
+            try { console.log(Keypair.fromSecret(process.env.STELLAR_SECRET).publicKey()); } 
+            catch (e) { process.exit(1); }
           ')
           echo "ISSUER_PUBLIC_KEY=$ISSUER" >> $GITHUB_ENV
-          echo "✅ Real Issuer Public Key: $ISSUER"
 
-      - name: Automatically Set Home Domain (Official token.md compliance)
+          # 2. Create Folders
+          mkdir -p .well-known images docs
+          touch .nojekyll
+
+          # 3. Create pi.toml (Formatted to remove leading spaces automatically)
+          cat << EOF | sed 's/^[[:space:]]*//' > .well-known/pi.toml
+          [[CURRENCIES]]
+          code = "PURPLE"
+          issuer = "$ISSUER"
+          name = "PiRC-207 Purple Layer"
+          desc = "Layer 0 of the official PiRC-207 7-Layer RWA System"
+          image = "https://ze0ro99.github.io/PiRC/images/purple.png"
+
+          [[CURRENCIES]]
+          code = "GOLD"
+          issuer = "$ISSUER"
+          name = "PiRC-207 Gold Layer"
+          desc = "Layer 1 of the official PiRC-207 7-Layer RWA System | Parity: 314159"
+          image = "https://ze0ro99.github.io/PiRC/images/gold.png"
+
+          [[CURRENCIES]]
+          code = "YELLOW"
+          issuer = "$ISSUER"
+          name = "PiRC-207 Yellow Layer"
+          desc = "Layer 2 of the official PiRC-207 7-Layer RWA System"
+          image = "https://ze0ro99.github.io/PiRC/images/yellow.png"
+
+          [[CURRENCIES]]
+          code = "ORANGE"
+          issuer = "$ISSUER"
+          name = "PiRC-207 Orange Layer"
+          desc = "Layer 3 of the official PiRC-207 7-Layer RWA System"
+          image = "https://ze0ro99.github.io/PiRC/images/orange.png"
+
+          [[CURRENCIES]]
+          code = "BLUE"
+          issuer = "$ISSUER"
+          name = "PiRC-207 Blue Layer"
+          desc = "Layer 4 of the official PiRC-207 7-Layer RWA System"
+          image = "https://ze0ro99.github.io/PiRC/images/blue.png"
+
+          [[CURRENCIES]]
+          code = "GREEN"
+          issuer = "$ISSUER"
+          name = "PiRC-207 Green Layer"
+          desc = "Layer 5 of the official PiRC-207 7-Layer RWA System"
+          image = "https://ze0ro99.github.io/PiRC/images/green.png"
+
+          [[CURRENCIES]]
+          code = "RED"
+          issuer = "$ISSUER"
+          name = "PiRC-207 Red Layer"
+          desc = "Layer 6 of the official PiRC-207 7-Layer RWA System"
+          image = "https://ze0ro99.github.io/PiRC/images/red.png"
+          EOF
+
+          # 4. Commit Changes
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Fix: Clean pi.toml structure" || echo "No changes"
+          git push
+
+      - name: Set Home Domain
         env:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
           node - << 'EOF'
-            const StellarSDK = require("@stellar/stellar-sdk");
-            const server = new StellarSDK.Horizon.Server("https://api.testnet.minepi.com");
-            const issuerKeypair = StellarSDK.Keypair.fromSecret(process.env.STELLAR_SECRET);
-            async function setHomeDomain() {
-              const account = await server.loadAccount(issuerKeypair.publicKey());
-              const feeRes = await server.ledgers().order("desc").limit(1).call();
-              const baseFee = feeRes.records[0].base_fee_in_stroops;
-              const tx = new StellarSDK.TransactionBuilder(account, {
-                fee: baseFee,
-                networkPassphrase: "Pi Testnet",
-                timebounds: await server.fetchTimebounds(90),
-              })
-                .addOperation(StellarSDK.Operation.setOptions({ homeDomain: "ze0ro99.github.io/PiRC" }))
-                .build();
-              tx.sign(issuerKeypair);
-              await server.submitTransaction(tx);
-              console.log("✅ Home Domain set successfully to ze0ro99.github.io/PiRC");
-            }
-            setHomeDomain().catch(console.error);
+          const StellarSDK = require("@stellar/stellar-sdk");
+          const server = new StellarSDK.Horizon.Server("https://api.testnet.minepi.com");
+          const kp = StellarSDK.Keypair.fromSecret(process.env.STELLAR_SECRET);
+          async function run() {
+            const acc = await server.loadAccount(kp.publicKey());
+            const tx = new StellarSDK.TransactionBuilder(acc, {
+              fee: (await server.fetchBaseFee()).toString(),
+              networkPassphrase: "Pi Testnet",
+              timebounds: await server.fetchTimebounds(100)
+            }).addOperation(StellarSDK.Operation.setOptions({ homeDomain: "ze0ro99.github.io/PiRC" })).build();
+            tx.sign(kp);
+            await server.submitTransaction(tx);
+          }
+          run().catch(console.error);
           EOF
-
-      - name: Verify GitHub Pages + Images + pi.toml
-        run: |
-          echo "🔍 Final live verification..."
-          curl -I -s https://ze0ro99.github.io/PiRC/.well-known/pi.toml | head -n 8
-          echo ""
-          for color in purple gold yellow orange blue green red; do
-            if curl -s -f -I https://ze0ro99.github.io/PiRC/images/$color.png > /dev/null; then
-              echo "✅ Live image OK: $color.png"
-            else
-              echo "❌ Live image MISSING: $color.png"
-            fi
-          done
-
-      - name: Final Pi Wallet + Test Pidex Discovery Links
-        env:
-          ISSUER: ${{ env.ISSUER_PUBLIC_KEY }}
-        run: |
-          echo "🎉 FINAL READY-TO-USE DISCOVERY LINKS:"
-          for code in PURPLE GOLD YELLOW ORANGE BLUE GREEN RED; do
-            echo "$code → https://api.testnet.minepi.com/assets?asset_code=$code&asset_issuer=$ISSUER"
-          done
-          echo ""
-          echo "✅ After this workflow, tokens will appear in Pi Wallet within 5-15 minutes"
-          echo "PiDex swaps will appear instantly in Stellar Explorer."
