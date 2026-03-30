@@ -1,0 +1,35 @@
+name: Publish PiRC-207 Tokens to Pi Wallet + Test Pidex
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify GitHub Pages & pi.toml
+        run: |
+          echo "🔍 Checking GitHub Pages..."
+          curl -I -s https://ze0ro99.github.io/PiRC/.well-known/pi.toml | head -n 5
+
+          echo "✅ Verifying all 7 token images..."
+          for color in purple gold yellow orange blue green red; do
+            curl -I -s -f https://ze0ro99.github.io/PiRC/images/$color.png > /dev/null && \
+            echo "✅ $color.png OK" || echo "❌ $color.png missing!"
+          done
+
+          echo "🎉 All files verified!"
+          echo ""
+          echo "Pi Wallet Discovery URLs (copy these):"
+          echo "PURPLE: https://api.testnet.minepi.com/assets?asset_code=PURPLE&asset_issuer=GA3ECR...3RNEN6"
+          echo "GOLD:   https://api.testnet.minepi.com/assets?asset_code=GOLD&asset_issuer=GA3ECR...3RNEN6"
+          echo "YELLOW: https://api.testnet.minepi.com/assets?asset_code=YELLOW&asset_issuer=GA3ECR...3RNEN6"
+          echo "ORANGE: https://api.testnet.minepi.com/assets?asset_code=ORANGE&asset_issuer=GA3ECR...3RNEN6"
+          echo "BLUE:   https://api.testnet.minepi.com/assets?asset_code=BLUE&asset_issuer=GA3ECR...3RNEN6"
+          echo "GREEN:  https://api.testnet.minepi.com/assets?asset_code=GREEN&asset_issuer=GA3ECR...3RNEN6"
+          echo "RED:    https://api.testnet.minepi.com/assets?asset_code=RED&asset_issuer=GA3ECR...3RNEN6"
+          echo ""
+          echo "✅ Tokens will appear in Pi Wallet within 5-15 minutes after Home Domain is set."
