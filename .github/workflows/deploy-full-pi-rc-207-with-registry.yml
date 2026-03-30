@@ -13,26 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Full history for clean push
+          fetch-depth: 0   # Get full history for clean push
 
       - name: Install System Dependencies + Rust + Stellar CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
-
-          # Fresh Rust stable installation
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source "$HOME/.cargo/env"
-          rustup default stable
-
-          # Correct target for Soroban contracts
-          rustup target add wasm32v1-none
-
-          # Verify
-          rustc --version
-          echo "✅ wasm32v1-none target ready"
-
-          # Install Stellar CLI
+          rustup target add wasm32-unknown-unknown
           cargo install --locked stellar-cli
           echo "✅ Stellar CLI installed: $(stellar --version)"
 
@@ -63,28 +52,30 @@ jobs:
 
           mkdir -p docs scripts
 
-          # === Deploy Registry Layer ONLY if source exists ===
+          # === Deploy Registry Layer ONLY if the contract source exists ===
           REGISTRY_ID="SKIPPED - Contract source not present in repository"
           if [ -d "contracts/soroban/pirc-207-registry" ]; then
             echo "✅ Registry contract folder found – proceeding with deployment..."
             cd contracts/soroban/pirc-207-registry
 
-            # Optimized release profile (safe echo)
-            echo '[profile.release]' >> Cargo.toml
-            echo 'opt-level = "z"' >> Cargo.toml
-            echo 'overflow-checks = true' >> Cargo.toml
-            echo 'debug = false' >> Cargo.toml
-            echo 'strip = "symbols"' >> Cargo.toml
-            echo 'debug-assertions = false' >> Cargo.toml
-            echo 'panic = "abort"' >> Cargo.toml
-            echo 'codegen-units = 1' >> Cargo.toml
-            echo 'lto = true' >> Cargo.toml
+            # Optimized release profile
+            cat >> Cargo.toml <<EOF
+          [profile.release]
+          opt-level = "z"
+          overflow-checks = true
+          debug = false
+          strip = "symbols"
+          debug-assertions = false
+          panic = "abort"
+          codegen-units = 1
+          lto = true
+          EOF
 
             stellar contract build
 
             echo "🚀 Deploying PiRC-207 Registry Layer..."
             REGISTRY_ID=$(stellar contract deploy \
-              --wasm target/wasm32v1-none/release/*.wasm \
+              --wasm target/wasm32-unknown-unknown/release/*.wasm \
               --source deployer \
               --network testnet)
 
@@ -104,82 +95,36 @@ jobs:
             echo "⚠️ Registry contract folder not found. Deployment skipped."
           fi
 
-          # === Generate FULL Professional Technical Specification (safe echo - no heredoc) ===
+          # === Generate FULL Professional Technical Specification ===
           SPEC_FILE="docs/PiRC-207-Registry-Layer-Technical-Specification.md"
-
           echo "# PiRC-207 Registry Layer Technical Specification" > "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "**Version**: 1.0" >> "$SPEC_FILE"
+          echo -e "\n**Version**: 1.0" >> "$SPEC_FILE"
           echo "**Date**: March 29, 2026" >> "$SPEC_FILE"
           echo "**Author**: Ze0ro99 (Contributor)" >> "$SPEC_FILE"
-          echo "**Status**: Final – Ready for community review and implementation" >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "## Executive Summary" >> "$SPEC_FILE"
-          echo "The Registry Layer is the central on-chain governance and tracking component of the PiRC-207 7-Layer Colored Token System." >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "It provides a single source of truth for all issued tokens across the seven layers (Purple, Gold, Yellow, Orange, Blue, Green, Red), enables secure issuer validation, and lays the foundation for full Real World Asset (RWA) integration." >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "## Objectives" >> "$SPEC_FILE"
-          echo "- Create a unified on-chain registry for all PiRC-207 tokens." >> "$SPEC_FILE"
-          echo "- Implement robust issuer validation and role-based access control." >> "$SPEC_FILE"
-          echo "- Enable transparent tracking of token issuance, transfers, and RWA bindings." >> "$SPEC_FILE"
-          echo "- Provide public query functions for merchants, validators, and users." >> "$SPEC_FILE"
-          echo "- Ensure compliance-ready structure for future mainnet deployment." >> "$SPEC_FILE"
-          echo "- Support cross-layer relationships and mathematical parity calculations." >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "## Architecture Overview" >> "$SPEC_FILE"
-          echo "The Registry is a single Soroban smart contract that interacts with the 7 existing token contracts." >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "**Key Components:**" >> "$SPEC_FILE"
-          echo "- Registry Contract (new – deployed or skipped)" >> "$SPEC_FILE"
-          echo "- 7 existing PiRC-207 Token Contracts (already deployed)" >> "$SPEC_FILE"
-          echo "- Off-chain verification layer (merchant/issuer KYC + physical asset proof)" >> "$SPEC_FILE"
-          echo "- On-chain RWA binding mechanism" >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "## Data Structures" >> "$SPEC_FILE"
-          echo '```rust' >> "$SPEC_FILE"
-          echo '#[contracttype]' >> "$SPEC_FILE"
-          echo 'pub enum DataKey {' >> "$SPEC_FILE"
-          echo '    TokenMetadata(u32),           // Layer ID → metadata' >> "$SPEC_FILE"
-          echo '    Issuer(u32),                  // Layer ID → authorized issuer address' >> "$SPEC_FILE"
-          echo '    IssuedSupply(u32),            // Layer ID → total issued amount' >> "$SPEC_FILE"
-          echo '    RwaBinding(u32, u128),        // Layer ID + token ID → RWA proof hash' >> "$SPEC_FILE"
-          echo '    LayerParity(u32),             // Layer ID → mathematical value' >> "$SPEC_FILE"
-          echo '    Admin,' >> "$SPEC_FILE"
-          echo '    ValidatorSet,' >> "$SPEC_FILE"
-          echo '}' >> "$SPEC_FILE"
-          echo '```' >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "## Core Functions, Security & Compliance" >> "$SPEC_FILE"
-          echo "All administrative actions require multi-signature or time-locked approval (future phase)." >> "$SPEC_FILE"
-          echo "Every issuance and RWA binding is permanently recorded on-chain." >> "$SPEC_FILE"
-          echo "Role-based access control prevents unauthorized minting." >> "$SPEC_FILE"
-          echo "All functions emit detailed events for external monitoring." >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "**Registry Contract ID**: $REGISTRY_ID" >> "$SPEC_FILE"
+          echo "**Status**: Final – Ready for community review" >> "$SPEC_FILE"
+          echo -e "\n## Executive Summary" >> "$SPEC_FILE"
+          echo "The Registry Layer is the central on-chain governance component of the PiRC-207 system." >> "$SPEC_FILE"
+          echo -e "\n**Registry Contract ID**: $REGISTRY_ID" >> "$SPEC_FILE"
           echo "**Explorer**: https://stellar.expert/explorer/testnet/contract/$REGISTRY_ID" >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
-          echo "**Label applied**: PiRC-207-Registry-Live-Final" >> "$SPEC_FILE"
-          echo "" >> "$SPEC_FILE"
+          echo -e "\n**Label applied**: PiRC-207-Registry-Live-Final" >> "$SPEC_FILE"
           echo "**Ready for PiNetwork #72 & mainnet transition.**" >> "$SPEC_FILE"
 
           # Generate verification script
           VERIFY_SCRIPT="scripts/verify-pirc-207-all-layers.sh"
-          echo '#!/bin/bash' > "$VERIFY_SCRIPT"
-          echo 'REGISTRY_ID="$1"' >> "$VERIFY_SCRIPT"
-          echo 'echo "🔍 Verifying PiRC-207 Registry + 7 Layers..."' >> "$VERIFY_SCRIPT"
-          echo 'for i in {0..6}; do' >> "$VERIFY_SCRIPT"
-          echo '  echo "=== Layer $i ==="' >> "$VERIFY_SCRIPT"
-          echo '  stellar contract invoke --id "$REGISTRY_ID" --network testnet -- get_layer_metadata --layer_id "$i"' >> "$VERIFY_SCRIPT"
-          echo 'done' >> "$VERIFY_SCRIPT"
-          echo 'echo "✅ All layers verified!"' >> "$VERIFY_SCRIPT"
+          cat > "$VERIFY_SCRIPT" <<EOF
+          #!/bin/bash
+          REGISTRY_ID="\$1"
+          echo "🔍 Verifying PiRC-207 Registry + 7 Layers..."
+          for i in {0..6}; do
+            echo "=== Layer \$i ==="
+            stellar contract invoke --id "\$REGISTRY_ID" --network testnet -- get_layer_metadata --layer_id "\$i"
+          done
+          echo "✅ All layers verified!"
+          EOF
           chmod +x "$VERIFY_SCRIPT"
 
           echo "🎉 ALL REQUIREMENTS COMPLETED SUCCESSFULLY!"
           echo "Registry Contract ID: $REGISTRY_ID"
-          echo "Technical Specification: $SPEC_FILE"
-          echo "Verification script: $VERIFY_SCRIPT"
-          echo "New label applied: PiRC-207-Registry-Live-Final"
 
           # === AUTO-COMMIT & PUSH GENERATED FILES ===
           git config user.name "github-actions[bot]"
@@ -189,7 +134,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No new files to commit."
           else
-            git commit -m "docs: generate PiRC-207 Registry Layer final technical specification + verification script" \
+            # Repairing the commit command using multiple -m flags for stability
+            git commit -m "docs: generate PiRC-207 Registry Layer final technical specification" \
                        -m "New label: PiRC-207-Registry-Live-Final" \
                        -m "Generated automatically by GitHub Actions on $(date -u)"
             git push
