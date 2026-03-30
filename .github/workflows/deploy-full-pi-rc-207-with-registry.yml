@@ -21,7 +21,10 @@ jobs:
           sudo apt-get install -y pkg-config libdbus-1-dev libudev-dev libssl-dev build-essential
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source "$HOME/.cargo/env"
-          rustup target add wasm32-unknown-unknown
+          
+          # FIX: Added wasm32v1-none which is required for #![no_std] Soroban contracts
+          rustup target add wasm32-unknown-unknown wasm32v1-none
+          
           cargo install --locked stellar-cli
           echo "✅ Stellar CLI installed: $(stellar --version)"
 
@@ -30,6 +33,7 @@ jobs:
           STELLAR_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
         run: |
           set -e
+          source "$HOME/.cargo/env"
 
           echo "🚀 Starting FINAL Registry Layer deployment (7 tokens already live)..."
 
@@ -71,6 +75,7 @@ jobs:
           lto = true
           EOF
 
+            # This command now works because the wasm32v1-none target is installed
             stellar contract build
 
             echo "🚀 Deploying PiRC-207 Registry Layer..."
@@ -134,7 +139,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No new files to commit."
           else
-            # Repairing the commit command using multiple -m flags for stability
             git commit -m "docs: generate PiRC-207 Registry Layer final technical specification" \
                        -m "New label: PiRC-207-Registry-Live-Final" \
                        -m "Generated automatically by GitHub Actions on $(date -u)"
