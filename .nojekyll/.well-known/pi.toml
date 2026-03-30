@@ -1,0 +1,48 @@
+[[CURRENCIES]]
+code = "PURPLE"
+issuer = "GA3ECR...3RNEN6"   # ← REPLACE with your actual deployer/issuer public key
+name = "PiRC-207 Purple Layer"
+desc = "Layer 0 of the official PiRC-207 7-Layer RWA System | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image = "https://ze0ro99.github.io/PiRC/images/purple.png"
+
+[[CURRENCIES]]
+code = "GOLD"
+issuer = "GA3ECR...3RNEN6"
+name = "PiRC-207 Gold Layer"
+desc = "Layer 1 of the official PiRC-207 7-Layer RWA System | Parity: 314159 | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image = "https://ze0ro99.github.io/PiRC/images/gold.png"
+
+[[CURRENCIES]]
+code = "YELLOW"
+issuer = "GA3ECR...3RNEN6"
+name = "PiRC-207 Yellow Layer"
+desc = "Layer 2 of the official PiRC-207 7-Layer RWA System | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image = "https://ze0ro99.github.io/PiRC/images/yellow.png"
+
+[[CURRENCIES]]
+code = "ORANGE"
+issuer = "GA3ECR...3RNEN6"
+name = "PiRC-207 Orange Layer"
+desc = "Layer 3 of the official PiRC-207 7-Layer RWA System | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image = "https://ze0ro99.github.io/PiRC/images/orange.png"
+
+[[CURRENCIES]]
+code = "BLUE"
+issuer = "GA3ECR...3RNEN6"
+name = "PiRC-207 Blue Layer"
+desc = "Layer 4 of the official PiRC-207 7-Layer RWA System | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image = "https://ze0ro99.github.io/PiRC/images/blue.png"
+
+[[CURRENCIES]]
+code = "GREEN"
+issuer = "GA3ECR...3RNEN6"
+name = "PiRC-207 Green Layer"
+desc = "Layer 5 of the official PiRC-207 7-Layer RWA System | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image = "https://ze0ro99.github.io/PiRC/images/green.png"
+
+[[CURRENCIES]]
+code = "RED"
+issuer = "GA3ECR...3RNEN6"
+name = "PiRC-207 Red Layer"
+desc = "Layer 6 of the official PiRC-207 7-Layer RWA System | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image = "https://ze0ro99.github.io/PiRC/images/red.png"
