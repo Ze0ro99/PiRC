@@ -35,18 +35,22 @@ jobs:
 
           async function run() {
             try {
-              // Safety check for keys
-              if (!process.env.ISSUER_SECRET?.startsWith('S')) throw new Error("ISSUER_SECRET must start with S");
-              if (!process.env.DISTRIBUTOR_SECRET?.startsWith('S')) throw new Error("DISTRIBUTOR_SECRET must start with S");
+              // 1. Clean the keys from any accidental spaces
+              const s_issuer = (process.env.ISSUER_SECRET || "").trim();
+              const s_dist = (process.env.DISTRIBUTOR_SECRET || "").trim();
 
-              const issuerKp = StellarSDK.Keypair.fromSecret(process.env.ISSUER_SECRET);
-              const distKp = StellarSDK.Keypair.fromSecret(process.env.DISTRIBUTOR_SECRET);
+              // 2. Safety Check: Must start with S to sign transactions
+              if (!s_issuer.startsWith('S')) throw new Error("ISSUER_SECRET is a Public Key (G). You must use the Secret Key (S) from Pi Wallet Settings.");
+              if (!s_dist.startsWith('S')) throw new Error("DISTRIBUTOR_SECRET is a Public Key (G). You must use the Secret Key (S) from Pi Wallet Settings.");
+
+              const issuerKp = StellarSDK.Keypair.fromSecret(s_issuer);
+              const distKp = StellarSDK.Keypair.fromSecret(s_dist);
               
-              // Export Public Key for next steps
+              // We save the Public Key (G...) for the TOML file automatically
               const fs = require('fs');
               fs.writeFileSync('issuer_pk.txt', issuerKp.publicKey());
 
-              console.log("🚀 Loading Accounts...");
+              console.log("🚀 Syncing with Pi Testnet...");
               const issuerAcc = await server.loadAccount(issuerKp.publicKey());
               const distAcc = await server.loadAccount(distKp.publicKey());
               const fee = (await server.fetchBaseFee()).toString();
@@ -54,7 +58,7 @@ jobs:
               const layers = ["PURPLE", "GOLD", "YELLOW", "ORANGE", "BLUE", "GREEN", "RED"];
               const amount = "1000000.0000000"; 
 
-              // 1. TRUSTLINES
+              // STEP 1: DISTRIBUTOR TRUSTS ISSUER
               console.log("🔗 Creating Trustlines...");
               let trustTx = new StellarSDK.TransactionBuilder(distAcc, {
                 fee, networkPassphrase: NETWORK_PASSPHRASE,
@@ -68,8 +72,8 @@ jobs:
               const sTrust = trustTx.build(); sTrust.sign(distKp);
               await server.submitTransaction(sTrust);
 
-              // 2. MINTING
-              console.log("💎 Minting Tokens...");
+              // STEP 2: ISSUER MINTS TO DISTRIBUTOR
+              console.log("💎 Minting PiRC-207 Layers...");
               let mintTx = new StellarSDK.TransactionBuilder(issuerAcc, {
                 fee, networkPassphrase: NETWORK_PASSPHRASE,
                 timebounds: await server.fetchTimebounds(100)
@@ -84,8 +88,8 @@ jobs:
               const sMint = mintTx.build(); sMint.sign(issuerKp);
               await server.submitTransaction(sMint);
 
-              // 3. HOME DOMAIN
-              console.log("🌐 Setting Home Domain...");
+              // STEP 3: LINK DOMAIN
+              console.log("🌐 Linking Domain...");
               const domTx = new StellarSDK.TransactionBuilder(issuerAcc, {
                 fee, networkPassphrase: NETWORK_PASSPHRASE,
                 timebounds: await server.fetchTimebounds(100)
@@ -95,12 +99,9 @@ jobs:
               domTx.sign(issuerKp);
               await server.submitTransaction(domTx);
               
-              console.log("✅ Blockchain setup complete.");
+              console.log("✅ All Blockchain steps successful!");
             } catch (e) {
-              console.error("❌ Error Detail:", e.message);
-              if (e.response?.data?.extras?.result_codes) {
-                console.error("Blockchain Error:", e.response.data.extras.result_codes);
-              }
+              console.error("❌ " + e.message);
               process.exit(1);
             }
           }
@@ -109,13 +110,11 @@ jobs:
 
       - name: Generate pi.toml
         run: |
-          # Get the public key we just derived
+          # This pulls the Public Key (G...) we derived from the Secret Key (S...)
           ISSUER_PK=$(cat issuer_pk.txt)
           mkdir -p .well-known
-          
           cat << EOF | sed 's/^[[:space:]]*//' > .well-known/pi.toml
           ACCOUNTS=["$ISSUER_PK"]
-
           [[CURRENCIES]]
           code="PURPLE"
           issuer="$ISSUER_PK"
@@ -123,7 +122,6 @@ jobs:
           name="PiRC-207 Purple"
           desc="Layer 0 | Contract: CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4"
           image="https://ze0ro99.github.io/PiRC/images/purple.png"
-
           [[CURRENCIES]]
           code="GOLD"
           issuer="$ISSUER_PK"
@@ -131,7 +129,6 @@ jobs:
           name="PiRC-207 Gold"
           desc="Layer 1 | Parity: 314159 | Contract: CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG"
           image="https://ze0ro99.github.io/PiRC/images/gold.png"
-
           [[CURRENCIES]]
           code="YELLOW"
           issuer="$ISSUER_PK"
@@ -139,7 +136,6 @@ jobs:
           name="PiRC-207 Yellow"
           desc="Layer 2 | Contract: CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF"
           image="https://ze0ro99.github.io/PiRC/images/yellow.png"
-
           [[CURRENCIES]]
           code="ORANGE"
           issuer="$ISSUER_PK"
@@ -147,7 +143,6 @@ jobs:
           name="PiRC-207 Orange"
           desc="Layer 3 | Contract: CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF"
           image="https://ze0ro99.github.io/PiRC/images/orange.png"
-
           [[CURRENCIES]]
           code="BLUE"
           issuer="$ISSUER_PK"
@@ -155,7 +150,6 @@ jobs:
           name="PiRC-207 Blue"
           desc="Layer 4 | Contract: CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD"
           image="https://ze0ro99.github.io/PiRC/images/blue.png"
-
           [[CURRENCIES]]
           code="GREEN"
           issuer="$ISSUER_PK"
@@ -163,7 +157,6 @@ jobs:
           name="PiRC-207 Green"
           desc="Layer 5 | Contract: CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4"
           image="https://ze0ro99.github.io/PiRC/images/green.png"
-
           [[CURRENCIES]]
           code="RED"
           issuer="$ISSUER_PK"
@@ -173,11 +166,11 @@ jobs:
           image="https://ze0ro99.github.io/PiRC/images/red.png"
           EOF
 
-      - name: Final Commit and Push
+      - name: Final Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           touch .nojekyll
           git add .
-          git commit -m "Deployment with derived PK" || echo "No changes"
+          git commit -m "Official PiRC-207 Metadata Sync" || echo "No changes"
           git push
