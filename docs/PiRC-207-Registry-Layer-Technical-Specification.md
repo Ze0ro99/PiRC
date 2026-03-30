@@ -8,8 +8,8 @@
 ## Executive Summary
 The Registry Layer is the central on-chain governance component of the PiRC-207 system.
 
-**Registry Contract ID**: SKIPPED - Contract source not present in repository
-**Explorer**: https://stellar.expert/explorer/testnet/contract/SKIPPED - Contract source not present in repository
+**Registry Contract ID**: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B
+**Explorer**: https://stellar.expert/explorer/testnet/contract/CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B
 
 **Label applied**: PiRC-207-Registry-Live-Final
 **Ready for PiNetwork #72 & mainnet transition.**
