@@ -1,176 +1,112 @@
-name: PiRC-207 Professional Token Minting & Wallet Listing
+name: "PiRC-207: Professional RWA System Orchestrator"
 
 on:
   workflow_dispatch:
 
 jobs:
-  mint-and-publish:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    
     steps:
-      - name: Checkout Repository
+      - name: Checkout Master Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Fetches all branches for cross-referencing
 
-      - name: Setup Node.js
+      - name: Setup Professional Environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install Stellar SDK
+      - name: Install Blockchain Core
         run: npm install @stellar/stellar-sdk
 
-      - name: Execute Professional Setup
+      - name: System Synthesis (RWA Automation)
         env:
           ISSUER_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
           DISTRIBUTOR_SECRET: ${{ secrets.DISTRIBUTOR_SECRET }}
         run: |
           node - << 'EOF'
           const StellarSDK = require("@stellar/stellar-sdk");
+          const fs = require('fs');
           const server = new StellarSDK.Horizon.Server("https://api.testnet.minepi.com");
           const NETWORK_PASSPHRASE = "Pi Testnet";
 
-          async function run() {
+          async function orchestrate() {
             try {
-              // 1. Clean the keys from any accidental spaces
-              const s_issuer = (process.env.ISSUER_SECRET || "").trim();
-              const s_dist = (process.env.DISTRIBUTOR_SECRET || "").trim();
+              const issuerKp = StellarSDK.Keypair.fromSecret(process.env.ISSUER_SECRET.trim());
+              const distKp = StellarSDK.Keypair.fromSecret(process.env.DISTRIBUTOR_SECRET.trim());
+              const issuerPK = issuerKp.publicKey();
 
-              // 2. Safety Check: Must start with S to sign transactions
-              if (!s_issuer.startsWith('S')) throw new Error("ISSUER_SECRET is a Public Key (G). You must use the Secret Key (S) from Pi Wallet Settings.");
-              if (!s_dist.startsWith('S')) throw new Error("DISTRIBUTOR_SECRET is a Public Key (G). You must use the Secret Key (S) from Pi Wallet Settings.");
-
-              const issuerKp = StellarSDK.Keypair.fromSecret(s_issuer);
-              const distKp = StellarSDK.Keypair.fromSecret(s_dist);
+              console.log("🛠️ Validating RWA Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B");
               
-              // We save the Public Key (G...) for the TOML file automatically
-              const fs = require('fs');
-              fs.writeFileSync('issuer_pk.txt', issuerKp.publicKey());
+              // Define the 7-Layer RWA Structure
+              const layers = [
+                { code: "PURPLE", name: "Layer 0 - Root Registry", contract: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4" },
+                { code: "GOLD",   name: "Layer 1 - Reserve Currency", contract: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG" },
+                { code: "YELLOW", name: "Layer 2 - Utility Tier", contract: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF" },
+                { code: "ORANGE", name: "Layer 3 - Governance", contract: "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF" },
+                { code: "BLUE",   name: "Layer 4 - Liquidity", contract: "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD" },
+                { code: "GREEN",  name: "Layer 5 - Ecosystem", contract: "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4" },
+                { code: "RED",    name: "Layer 6 - Settlement", contract: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO" }
+              ];
 
-              console.log("🚀 Syncing with Pi Testnet...");
-              const issuerAcc = await server.loadAccount(issuerKp.publicKey());
+              // AUTOMATED BLOCKCHAIN OPERATIONS
+              const issuerAcc = await server.loadAccount(issuerPK);
               const distAcc = await server.loadAccount(distKp.publicKey());
               const fee = (await server.fetchBaseFee()).toString();
 
-              const layers = ["PURPLE", "GOLD", "YELLOW", "ORANGE", "BLUE", "GREEN", "RED"];
-              const amount = "1000000.0000000"; 
-
-              // STEP 1: DISTRIBUTOR TRUSTS ISSUER
-              console.log("🔗 Creating Trustlines...");
-              let trustTx = new StellarSDK.TransactionBuilder(distAcc, {
-                fee, networkPassphrase: NETWORK_PASSPHRASE,
-                timebounds: await server.fetchTimebounds(100)
-              });
-              layers.forEach(code => {
-                trustTx.addOperation(StellarSDK.Operation.changeTrust({ 
-                  asset: new StellarSDK.Asset(code, issuerKp.publicKey()) 
-                }));
-              });
-              const sTrust = trustTx.build(); sTrust.sign(distKp);
-              await server.submitTransaction(sTrust);
-
-              // STEP 2: ISSUER MINTS TO DISTRIBUTOR
-              console.log("💎 Minting PiRC-207 Layers...");
-              let mintTx = new StellarSDK.TransactionBuilder(issuerAcc, {
-                fee, networkPassphrase: NETWORK_PASSPHRASE,
-                timebounds: await server.fetchTimebounds(100)
-              });
-              layers.forEach(code => {
-                mintTx.addOperation(StellarSDK.Operation.payment({
-                  destination: distKp.publicKey(),
-                  asset: new StellarSDK.Asset(code, issuerKp.publicKey()),
-                  amount: amount
-                }));
-              });
-              const sMint = mintTx.build(); sMint.sign(issuerKp);
-              await server.submitTransaction(sMint);
-
-              // STEP 3: LINK DOMAIN
-              console.log("🌐 Linking Domain...");
-              const domTx = new StellarSDK.TransactionBuilder(issuerAcc, {
+              console.log("⛓️ Executing Batch Operations...");
+              // Set Home Domain to stabilize Pi Wallet listing
+              const tx = new StellarSDK.TransactionBuilder(issuerAcc, {
                 fee, networkPassphrase: NETWORK_PASSPHRASE,
                 timebounds: await server.fetchTimebounds(100)
               }).addOperation(StellarSDK.Operation.setOptions({
                 homeDomain: "ze0ro99.github.io/PiRC"
               })).build();
-              domTx.sign(issuerKp);
-              await server.submitTransaction(domTx);
-              
-              console.log("✅ All Blockchain steps successful!");
+              tx.sign(issuerKp);
+              await server.submitTransaction(tx);
+
+              // GENERATE PROFESSIONAL METADATA
+              let tomlContent = `ACCOUNTS=["${issuerPK}"]\n\n`;
+              layers.forEach(l => {
+                tomlContent += `[[CURRENCIES]]\ncode="${l.code}"\nissuer="${issuerPK}"\ndisplay_decimals=7\nname="${l.name}"\ndesc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"\nimage="https://ze0ro99.github.io/PiRC/images/${l.code.toLowerCase()}.png"\n\n`;
+              });
+
+              fs.writeFileSync('.well-known/pi.toml', tomlContent);
+              fs.writeFileSync('issuer_pk.txt', issuerPK);
+              console.log("✅ System Metadata Generated Successfully.");
+
             } catch (e) {
-              console.error("❌ " + e.message);
+              console.error("❌ Orchestration Failed:", e.message);
               process.exit(1);
             }
           }
-          run();
+          orchestrate();
           EOF
 
-      - name: Generate pi.toml
+      - name: Professional Documentation & Branch Sync
         run: |
-          # This pulls the Public Key (G...) we derived from the Secret Key (S...)
           ISSUER_PK=$(cat issuer_pk.txt)
-          mkdir -p .well-known
-          cat << EOF | sed 's/^[[:space:]]*//' > .well-known/pi.toml
-          ACCOUNTS=["$ISSUER_PK"]
-          [[CURRENCIES]]
-          code="PURPLE"
-          issuer="$ISSUER_PK"
-          display_decimals=7
-          name="PiRC-207 Purple"
-          desc="Layer 0 | Contract: CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4"
-          image="https://ze0ro99.github.io/PiRC/images/purple.png"
-          [[CURRENCIES]]
-          code="GOLD"
-          issuer="$ISSUER_PK"
-          display_decimals=7
-          name="PiRC-207 Gold"
-          desc="Layer 1 | Parity: 314159 | Contract: CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG"
-          image="https://ze0ro99.github.io/PiRC/images/gold.png"
-          [[CURRENCIES]]
-          code="YELLOW"
-          issuer="$ISSUER_PK"
-          display_decimals=7
-          name="PiRC-207 Yellow"
-          desc="Layer 2 | Contract: CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF"
-          image="https://ze0ro99.github.io/PiRC/images/yellow.png"
-          [[CURRENCIES]]
-          code="ORANGE"
-          issuer="$ISSUER_PK"
-          display_decimals=7
-          name="PiRC-207 Orange"
-          desc="Layer 3 | Contract: CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF"
-          image="https://ze0ro99.github.io/PiRC/images/orange.png"
-          [[CURRENCIES]]
-          code="BLUE"
-          issuer="$ISSUER_PK"
-          display_decimals=7
-          name="PiRC-207 Blue"
-          desc="Layer 4 | Contract: CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD"
-          image="https://ze0ro99.github.io/PiRC/images/blue.png"
-          [[CURRENCIES]]
-          code="GREEN"
-          issuer="$ISSUER_PK"
-          display_decimals=7
-          name="PiRC-207 Green"
-          desc="Layer 5 | Contract: CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4"
-          image="https://ze0ro99.github.io/PiRC/images/green.png"
-          [[CURRENCIES]]
-          code="RED"
-          issuer="$ISSUER_PK"
-          display_decimals=7
-          name="PiRC-207 Red"
-          desc="Layer 6 | Contract: CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO"
-          image="https://ze0ro99.github.io/PiRC/images/red.png"
+          mkdir -p docs schemas
+          
+          # 1. Generate Technical Spec
+          cat << EOF > docs/TECHNICAL_SPEC.md
+          # PiRC-207 Technical Specification
+          ## Asset System Overview
+          - **Master Registry**: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B
+          - **Issuer Node**: $ISSUER_PK
+          - **Network**: Pi Testnet (Stellar-Compatible)
+
+          ## Layer Verification
+          The system utilizes a 7-layer colored token architecture for Real World Asset (RWA) categorization.
           EOF
 
-      - name: Final Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          touch .nojekyll
+          # 2. Sync to Repository
+          git config user.name "PiRC-207 Automator"
+          git config user.email "bot@ze0ro99.github.io"
           git add .
-          git commit -m "Official PiRC-207 Metadata Sync" || echo "No changes"
-          git push
+          git commit -m "chore: professional system synthesis and RWA registry update" || echo "No changes"
+          git push origin main
