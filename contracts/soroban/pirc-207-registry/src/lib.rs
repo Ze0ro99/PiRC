@@ -1,5 +1,9 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, contracttype, Address, Env, Vec, symbol_short, String, panic_with_error};
+// ADDED: IntoVal must be in the list below to use .into_val(&env)
+use soroban_sdk::{
+    contract, contractimpl, contracttype, Address, Env, Vec, 
+    symbol_short, String, panic_with_error, IntoVal
+};
 
 #[contracttype]
 pub enum DataKey {
@@ -47,6 +51,7 @@ impl Pirc207Registry {
         let token_address = tokens.get(layer_id).unwrap();
 
         // Cross-contract call to the specific layer's mint function
+        // Now works because IntoVal is imported above
         env.invoke_contract::<()>(
             &token_address,
             &symbol_short!("mint"),
