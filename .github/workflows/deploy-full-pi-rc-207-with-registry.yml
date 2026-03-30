@@ -22,7 +22,7 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source "$HOME/.cargo/env"
           
-          # FIX: Added wasm32v1-none which is required for #![no_std] Soroban contracts
+          # FIX 1: Install BOTH targets to ensure full compatibility with #![no_std]
           rustup target add wasm32-unknown-unknown wasm32v1-none
           
           cargo install --locked stellar-cli
@@ -75,12 +75,12 @@ jobs:
           lto = true
           EOF
 
-            # This command now works because the wasm32v1-none target is installed
             stellar contract build
 
             echo "🚀 Deploying PiRC-207 Registry Layer..."
+            # FIX 2: Pointed to target/wasm32v1-none/ folder where the build output is actually located
             REGISTRY_ID=$(stellar contract deploy \
-              --wasm target/wasm32-unknown-unknown/release/*.wasm \
+              --wasm target/wasm32v1-none/release/*.wasm \
               --source deployer \
               --network testnet)
 
