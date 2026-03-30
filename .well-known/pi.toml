@@ -1,48 +1,58 @@
-[[CURRENCIES]]
-code = "PURPLE"
-issuer = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
-name = "PiRC-207 Purple Layer"
-desc = "Layer 0 of the official PiRC-207 7-Layer RWA System"
-image = "https://ze0ro99.github.io/PiRC/images/purple.png"
+ACCOUNTS=["GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"]
 
 [[CURRENCIES]]
-code = "GOLD"
-issuer = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
-name = "PiRC-207 Gold Layer"
-desc = "Layer 1 of the official PiRC-207 7-Layer RWA System | Parity: 314159"
-image = "https://ze0ro99.github.io/PiRC/images/gold.png"
+code="PURPLE"
+issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+display_decimals=7
+name="Layer 0 - Root Registry"
+desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image="https://ze0ro99.github.io/PiRC/images/purple.png"
 
 [[CURRENCIES]]
-code = "YELLOW"
-issuer = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
-name = "PiRC-207 Yellow Layer"
-desc = "Layer 2 of the official PiRC-207 7-Layer RWA System"
-image = "https://ze0ro99.github.io/PiRC/images/yellow.png"
+code="GOLD"
+issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+display_decimals=7
+name="Layer 1 - Reserve Currency"
+desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image="https://ze0ro99.github.io/PiRC/images/gold.png"
 
 [[CURRENCIES]]
-code = "ORANGE"
-issuer = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
-name = "PiRC-207 Orange Layer"
-desc = "Layer 3 of the official PiRC-207 7-Layer RWA System"
-image = "https://ze0ro99.github.io/PiRC/images/orange.png"
+code="YELLOW"
+issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+display_decimals=7
+name="Layer 2 - Utility Tier"
+desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image="https://ze0ro99.github.io/PiRC/images/yellow.png"
 
 [[CURRENCIES]]
-code = "BLUE"
-issuer = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
-name = "PiRC-207 Blue Layer"
-desc = "Layer 4 of the official PiRC-207 7-Layer RWA System"
-image = "https://ze0ro99.github.io/PiRC/images/blue.png"
+code="ORANGE"
+issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+display_decimals=7
+name="Layer 3 - Governance"
+desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image="https://ze0ro99.github.io/PiRC/images/orange.png"
 
 [[CURRENCIES]]
-code = "GREEN"
-issuer = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
-name = "PiRC-207 Green Layer"
-desc = "Layer 5 of the official PiRC-207 7-Layer RWA System"
-image = "https://ze0ro99.github.io/PiRC/images/green.png"
+code="BLUE"
+issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+display_decimals=7
+name="Layer 4 - Liquidity"
+desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image="https://ze0ro99.github.io/PiRC/images/blue.png"
 
 [[CURRENCIES]]
-code = "RED"
-issuer = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
-name = "PiRC-207 Red Layer"
-desc = "Layer 6 of the official PiRC-207 7-Layer RWA System"
-image = "https://ze0ro99.github.io/PiRC/images/red.png"
+code="GREEN"
+issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+display_decimals=7
+name="Layer 5 - Ecosystem"
+desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image="https://ze0ro99.github.io/PiRC/images/green.png"
+
+[[CURRENCIES]]
+code="RED"
+issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+display_decimals=7
+name="Layer 6 - Settlement"
+desc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+image="https://ze0ro99.github.io/PiRC/images/red.png"
+
