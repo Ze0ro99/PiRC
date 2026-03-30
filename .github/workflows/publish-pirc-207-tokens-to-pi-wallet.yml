@@ -13,9 +13,9 @@ jobs:
       - name: Checkout Master Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetches all branches for cross-referencing
+          fetch-depth: 0
 
-      - name: Setup Professional Environment
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -23,7 +23,7 @@ jobs:
       - name: Install Blockchain Core
         run: npm install @stellar/stellar-sdk
 
-      - name: System Synthesis (RWA Automation)
+      - name: System Synthesis & RWA Automation
         env:
           ISSUER_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
           DISTRIBUTOR_SECRET: ${{ secrets.DISTRIBUTOR_SECRET }}
@@ -39,10 +39,41 @@ jobs:
               const issuerKp = StellarSDK.Keypair.fromSecret(process.env.ISSUER_SECRET.trim());
               const distKp = StellarSDK.Keypair.fromSecret(process.env.DISTRIBUTOR_SECRET.trim());
               const issuerPK = issuerKp.publicKey();
+              const distPK = distKp.publicKey();
 
               console.log("🛠️ Validating RWA Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B");
               
-              // Define the 7-Layer RWA Structure
+              // 1. Check Account Existence (Self-Healing Check)
+              let issuerAcc, distAcc;
+              try {
+                issuerAcc = await server.loadAccount(issuerPK);
+              } catch (e) {
+                console.error(`\n❌ ISSUER NOT FOUND: ${issuerPK}`);
+                console.error(`👉 ACTION: Send Test-Pi to this address from your phone wallet to activate it.\n`);
+                process.exit(1);
+              }
+
+              try {
+                distAcc = await server.loadAccount(distPK);
+              } catch (e) {
+                console.error(`\n❌ DISTRIBUTOR NOT FOUND: ${distPK}`);
+                console.error(`👉 ACTION: Send Test-Pi to this address from your phone wallet to activate it.\n`);
+                process.exit(1);
+              }
+
+              const fee = (await server.fetchBaseFee()).toString();
+              console.log("⛓️ Syncing PiRC-207 Home Domain...");
+              
+              const tx = new StellarSDK.TransactionBuilder(issuerAcc, {
+                fee, networkPassphrase: NETWORK_PASSPHRASE,
+                timebounds: await server.fetchTimebounds(100)
+              }).addOperation(StellarSDK.Operation.setOptions({
+                homeDomain: "ze0ro99.github.io/PiRC"
+              })).build();
+              tx.sign(issuerKp);
+              await server.submitTransaction(tx);
+
+              // 2. Automated Metadata Generation
               const layers = [
                 { code: "PURPLE", name: "Layer 0 - Root Registry", contract: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4" },
                 { code: "GOLD",   name: "Layer 1 - Reserve Currency", contract: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG" },
@@ -53,34 +84,18 @@ jobs:
                 { code: "RED",    name: "Layer 6 - Settlement", contract: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO" }
               ];
 
-              // AUTOMATED BLOCKCHAIN OPERATIONS
-              const issuerAcc = await server.loadAccount(issuerPK);
-              const distAcc = await server.loadAccount(distKp.publicKey());
-              const fee = (await server.fetchBaseFee()).toString();
-
-              console.log("⛓️ Executing Batch Operations...");
-              // Set Home Domain to stabilize Pi Wallet listing
-              const tx = new StellarSDK.TransactionBuilder(issuerAcc, {
-                fee, networkPassphrase: NETWORK_PASSPHRASE,
-                timebounds: await server.fetchTimebounds(100)
-              }).addOperation(StellarSDK.Operation.setOptions({
-                homeDomain: "ze0ro99.github.io/PiRC"
-              })).build();
-              tx.sign(issuerKp);
-              await server.submitTransaction(tx);
-
-              // GENERATE PROFESSIONAL METADATA
               let tomlContent = `ACCOUNTS=["${issuerPK}"]\n\n`;
               layers.forEach(l => {
                 tomlContent += `[[CURRENCIES]]\ncode="${l.code}"\nissuer="${issuerPK}"\ndisplay_decimals=7\nname="${l.name}"\ndesc="Official PiRC-207 RWA Asset | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"\nimage="https://ze0ro99.github.io/PiRC/images/${l.code.toLowerCase()}.png"\n\n`;
               });
 
+              if (!fs.existsSync('.well-known')) fs.mkdirSync('.well-known');
               fs.writeFileSync('.well-known/pi.toml', tomlContent);
               fs.writeFileSync('issuer_pk.txt', issuerPK);
               console.log("✅ System Metadata Generated Successfully.");
 
             } catch (e) {
-              console.error("❌ Orchestration Failed:", e.message);
+              console.error("❌ Error Detail:", e.message);
               process.exit(1);
             }
           }
@@ -92,19 +107,20 @@ jobs:
           ISSUER_PK=$(cat issuer_pk.txt)
           mkdir -p docs schemas
           
-          # 1. Generate Technical Spec
+          # Generate Technical Specification Document
           cat << EOF > docs/TECHNICAL_SPEC.md
           # PiRC-207 Technical Specification
           ## Asset System Overview
           - **Master Registry**: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B
           - **Issuer Node**: $ISSUER_PK
+          - **Home Domain**: ze0ro99.github.io/PiRC
           - **Network**: Pi Testnet (Stellar-Compatible)
 
-          ## Layer Verification
-          The system utilizes a 7-layer colored token architecture for Real World Asset (RWA) categorization.
+          ## Layer-Based Verification
+          The system utilizes a 7-layer colored token architecture for Real World Asset (RWA) categorization. Each layer is linked to a Soroban Smart Contract for automated settlement.
           EOF
 
-          # 2. Sync to Repository
+          # Automate Git operations for all branches
           git config user.name "PiRC-207 Automator"
           git config user.email "bot@ze0ro99.github.io"
           git add .
