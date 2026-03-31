@@ -1,0 +1,37 @@
+name: RWA Extension CI (Safe & Clean)
+
+on:
+  push:
+    paths:
+      - 'extensions/rwa-conceptual-auth-extension/**'
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate RWA Spec & Demo
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Python (lightweight, no error)
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. Validate JSON schema (anti error JSON)
+      - name: Validate JSON Schema
+        run: |
+          python -m json.tool extensions/rwa-conceptual-auth-extension/spec/rwa_auth_schema_v0.3.json > /dev/null
+
+      # 4. Run RWA verification demo
+      - name: Run Verification Demo
+        run: |
+          python extensions/rwa-conceptual-auth-extension/examples/verification_demo_v0.3.py
+
+      # 5. Done (biar jelas di log)
+      - name: Success Message
+        run: echo "✅ RWA v0.3 pipeline passed successfully"
