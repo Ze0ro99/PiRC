@@ -1,58 +1,62 @@
 ACCOUNTS=["GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6", "GB7EKKXHOCCMVN5SQNJ6IVILY53KSVH2DPMJ66P6272CWCJO7DUJMFVZ"]
 
+[DOCUMENTATION]
+ORG_NAME="PiRC-207 RWA System"
+ORG_URL="https://ze0ro99.github.io/PiRC"
+
 [[CURRENCIES]]
 code="PURPLE"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
-name="PiRC-207 Registry (L0)"
-desc="Official PRC RWA Layer | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+name="Registry Layer (L0)"
+desc="Protocol Root Registry foundation. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/purple.png"
 
 [[CURRENCIES]]
 code="GOLD"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
-name="PiRC-207 Reserve (L1)"
-desc="Official PRC RWA Layer | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+name="Reserve Layer (L1)"
+desc="Sovereign Reserve Asset | Parity: 314,159. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/gold.png"
 
 [[CURRENCIES]]
 code="YELLOW"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
-name="PiRC-207 Utility (L2)"
-desc="Official PRC RWA Layer | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+name="Utility Layer (L2)"
+desc="Transactional Tier for Ecosystem Velocity. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/yellow.png"
 
 [[CURRENCIES]]
 code="ORANGE"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
-name="PiRC-207 Settlement (L3)"
-desc="Official PRC RWA Layer | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+name="Settlement Layer (L3)"
+desc="Professional Settlement & Finality Facility. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/orange.png"
 
 [[CURRENCIES]]
 code="BLUE"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
-name="PiRC-207 Liquidity (L4)"
-desc="Official PRC RWA Layer | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+name="Liquidity Layer (L4)"
+desc="AMM Stability & Market Making Guardrail. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/blue.png"
 
 [[CURRENCIES]]
 code="GREEN"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
-name="PiRC-207 PiCash (L5)"
-desc="Official PRC RWA Layer | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+name="PiCash Standard (L5)"
+desc="Ecosystem Cash Benchmark | P2P Utility. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/green.png"
 
 [[CURRENCIES]]
 code="RED"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
-name="PiRC-207 Governance (L6)"
-desc="Official PRC RWA Layer | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+name="Governance Layer (L6)"
+desc="Decentralized DAO Matrix & Auth Extension. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/red.png"
 
