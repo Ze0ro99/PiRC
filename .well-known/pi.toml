@@ -9,7 +9,7 @@ code="PURPLE"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
 name="Registry Layer (L0)"
-desc="Protocol Root Registry foundation. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+desc="Foundation Metadata & Protocol Root Registry. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/purple.png"
 
 [[CURRENCIES]]
@@ -17,7 +17,7 @@ code="GOLD"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
 name="Reserve Layer (L1)"
-desc="Sovereign Reserve Asset | Parity: 314,159. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+desc="Sovereign Reserve Asset | Parity: 314,159 Target. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/gold.png"
 
 [[CURRENCIES]]
@@ -25,7 +25,7 @@ code="YELLOW"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
 name="Utility Layer (L2)"
-desc="Transactional Tier for Ecosystem Velocity. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+desc="High-Speed Transaction Tier for Ecosystem Velocity. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/yellow.png"
 
 [[CURRENCIES]]
@@ -33,7 +33,7 @@ code="ORANGE"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
 name="Settlement Layer (L3)"
-desc="Professional Settlement & Finality Facility. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+desc="Multi-Asset Clearing Facility & Instant Finality Hub. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/orange.png"
 
 [[CURRENCIES]]
@@ -41,7 +41,7 @@ code="BLUE"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
 name="Liquidity Layer (L4)"
-desc="AMM Stability & Market Making Guardrail. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+desc="AMM Stability Guardrail & Systematic Market Making. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/blue.png"
 
 [[CURRENCIES]]
@@ -49,7 +49,7 @@ code="GREEN"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
 name="PiCash Standard (L5)"
-desc="Ecosystem Cash Benchmark | P2P Utility. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+desc="Ecosystem Cash Benchmark | Primary Utility Standard. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/green.png"
 
 [[CURRENCIES]]
@@ -57,6 +57,6 @@ code="RED"
 issuer="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 display_decimals=7
 name="Governance Layer (L6)"
-desc="Decentralized DAO Matrix & Auth Extension. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
+desc="Decentralized DAO Matrix & Authorization Extension. | Registry: CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B"
 image="https://ze0ro99.github.io/PiRC/images/red.png"
 
