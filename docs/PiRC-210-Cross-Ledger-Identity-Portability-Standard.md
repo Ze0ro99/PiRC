@@ -85,5 +85,9 @@ PiRC-210 transforms PiRC-209 from a single-ledger identity system into a **truly
 **Proposed By**: Ze0ro99/PiRC Contributors (April 2026)
 
 ---
+**Reference Implementations (PiRC-210):**
+- Solidity (EVM): [`contracts/PiRC210Portability.sol`](../contracts/PiRC210Portability.sol)
+- Soroban (Stellar): [`contracts/soroban/src/portability.rs`](../contracts/soroban/src/portability.rs)
 
+---
 **License**: PiOS License (same as repository)
