@@ -84,5 +84,9 @@ PiRC-208 formalizes AI as a sovereign, parity-preserving layer of the Pi Network
 **Proposed By**: Ze0ro99/PiRC Contributors (April 2026)
 
 ---
+**Reference Code Locations (PiRC-208):**
+- Solidity (EVM): [`contracts/PiRC208MLVerifier.sol`](../contracts/PiRC208MLVerifier.sol)
+- Soroban (Stellar): [`contracts/soroban/src/ai_oracle.rs`](../contracts/soroban/src/ai_oracle.rs)
 
+---
 **License**: PiOS License (same as repository)
