@@ -1,5 +1,8 @@
 # PiRC-208: Pi Network AI Integration Standard
+---
+<img width="1408" height="768" alt="1000099367" src="https://github.com/user-attachments/assets/b777148e-5817-4b27-8ce7-e6387679a4ac" />
 
+---
 ## 1. Executive Summary
 
 This document defines **PiRC-208**, the official standard for seamless, sovereign, and decentralized integration of Artificial Intelligence (AI) capabilities into the Pi Network ecosystem.  
