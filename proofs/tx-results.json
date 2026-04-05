@@ -1,0 +1,12 @@
+{
+  "networks": {
+    "stellar": {
+      "tx_hash": "REAL_HASH_HERE",
+      "status": "SUCCESS"
+    },
+    "pi_mock": {
+      "tx_id": "pi-mock-001",
+      "status": "SUCCESS"
+    }
+  }
+}
