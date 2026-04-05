@@ -21,6 +21,7 @@ This repository contains formal RFC-style proposals, economic models, reference 
 |----------|---------------|--------|------------------|
 | **PiRC-101** | Sovereign Monetary Standard Specification | Machine | [docs/PiRC101_Whitepaper.md](docs/PiRC101_Whitepaper.md) |
 | **PiRC-207** | CEX Liquidity Entry Rules | Ready for Review | [docs/PiRC-207_CEX_Liquidity_Entry.md](docs/PiRC-207_CEX_Liquidity_Entry.md) |
+| **PiRC-208** | Pi Network AI Integration Standard | Vector (Ω_AI) | [docs/PiRC-208-AI-Integration-Standard.md](docs/PiRC-208-AI-Integration-Standard.md) |
 <!-- TABLE_END -->
 
 ---
