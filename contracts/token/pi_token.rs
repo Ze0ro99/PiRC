@@ -1,25 +1,41 @@
-pub struct PiToken {
-    pub total_supply: u128,
-}
+#![no_std]
 
-impl PiToken {
+use soroban_sdk::{contract, contractimpl, Address, Env};
 
-    pub fn new() -> Self {
-        Self {
-            total_supply: 0,
+#[contract]
+pub struct Token;
+
+#[contractimpl]
+impl Token {
+
+    pub fn mint(env: Env, to: Address, amount: i128) {
+        if amount <= 0 {
+            panic!("Invalid amount");
         }
+
+        let key = (to.clone(), "bal");
+        let bal: i128 = env.storage().instance().get(&key).unwrap_or(0);
+
+        env.storage().instance().set(&key, &(bal + amount));
     }
 
-    pub fn mint(&mut self, amount: u128) {
-        self.total_supply += amount;
-    }
+    pub fn transfer(env: Env, from: Address, to: Address, amount: i128) {
+        if amount <= 0 {
+            panic!("Invalid amount");
+        }
 
-    pub fn burn(&mut self, amount: u128) {
-        self.total_supply -= amount;
-    }
+        let from_key = (from.clone(), "bal");
+        let to_key = (to.clone(), "bal");
 
-    pub fn total_supply(&self) -> u128 {
-        self.total_supply
-    }
+        let from_bal: i128 = env.storage().instance().get(&from_key).unwrap_or(0);
 
+        if from_bal < amount {
+            panic!("Insufficient");
+        }
+
+        let to_bal: i128 = env.storage().instance().get(&to_key).unwrap_or(0);
+
+        env.storage().instance().set(&from_key, &(from_bal - amount));
+        env.storage().instance().set(&to_key, &(to_bal + amount));
+    }
 }
