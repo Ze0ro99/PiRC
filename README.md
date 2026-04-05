@@ -19,6 +19,8 @@ This repository contains formal RFC-style proposals, economic models, reference 
 <!-- TABLE_START -->
 | Proposal | Title / Focus | Status | Key Deliverables |
 |----------|---------------|--------|------------------|
+| **PiRC-101** | Sovereign Monetary Standard Specification | Machine | [docs/PiRC101_Whitepaper.md](docs/PiRC101_Whitepaper.md) |
+| **PiRC-207** | CEX Liquidity Entry Rules | Ready for Review | [docs/PiRC-207_CEX_Liquidity_Entry.md](docs/PiRC-207_CEX_Liquidity_Entry.md) |
 <!-- TABLE_END -->
 
 ---
