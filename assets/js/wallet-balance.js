@@ -1,9 +1,8 @@
 import { wallet } from "./wallet.js";
-import { TOKEN_LAYERS } from "./token_layers.js";
+import { Server, Contract, TransactionBuilder, Networks } from "https://cdn.jsdelivr.net/npm/@stellar/soroban-client/+esm";
 
-const RPC = "https://soroban-testnet.stellar.org";
+const server = new Server("https://soroban-testnet.stellar.org");
 
-// Ambil balance per contract
 export async function fetchBalances() {
   if (!wallet.address) return;
 
@@ -18,28 +17,26 @@ export async function fetchBalances() {
 
     try {
       balanceEl.innerText = "Loading...";
-      statusEl.innerText = "...";
 
-      const res = await fetch(RPC, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: 1,
-          method: "getLedgerEntries",
-          params: {
-            keys: [contractId]
-          }
-        })
-      });
+      const contract = new Contract(contractId);
 
-      const data = await res.json();
+      const tx = new TransactionBuilder(
+        { accountId: wallet.address, sequence: "0" },
+        {
+          fee: "100",
+          networkPassphrase: Networks.TESTNET
+        }
+      )
+        .addOperation(contract.call("balance", wallet.address))
+        .setTimeout(30)
+        .build();
 
-      // ⚠️ Simplified parsing (nanti bisa kita refine)
-      const balance = data?.result ? "OK" : "0";
+      const sim = await server.simulateTransaction(tx);
+
+      const balance = sim?.result?.retval || "0";
 
       balanceEl.innerText = balance;
-      statusEl.innerText = "Loaded";
+      statusEl.innerText = "On-chain";
 
     } catch (err) {
       balanceEl.innerText = "Error";
@@ -47,19 +44,4 @@ export async function fetchBalances() {
       console.error(err);
     }
   }
-}
-
-// mapping contract dari layer
-function getContractId(layer) {
-  const map = {
-    L0: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4",
-    L1: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG",
-    L2: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF",
-    L3: "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF",
-    L4: "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD",
-    L5: "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4",
-    L6: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO"
-  };
-
-  return map[layer];
 }
