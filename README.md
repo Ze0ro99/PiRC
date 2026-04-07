@@ -21,7 +21,7 @@ This repository contains formal RFC-style proposals, economic models, reference 
 |----------|---------------|--------|------------------|
 | **PiRC-101** | Sovereign Monetary Standard Specification | Machine | [docs/PiRC101_Whitepaper.md](docs/PiRC101_Whitepaper.md) |
 | **PiRC-207** | CEX Liquidity Entry Rules | Ready for Review | [docs/PiRC-207_CEX_Liquidity_Entry.md](docs/PiRC-207_CEX_Liquidity_Entry.md) |
-| **PiRC-208** | Pi Network AI Integration Standard | Vector (Ω_AI) | [docs/PiRC-208-AI-Integration-Standard (1).md](docs/PiRC-208-AI-Integration-Standard (1).md) |
+| **PiRC-208** | Pi Network AI Integration Standard | Vector (Ω_AI) | [docs/PiRC-208-AI-Integration-Standard.md](docs/PiRC-208-AI-Integration-Standard.md) |
 | **PiRC-209** | Sovereign Decentralized Identity and Verifiable Credentials Standard | **: Draft → Ready for Community Review & Pi Core Team Approval | [docs/PiRC-209-Sovereign-Decentralized-Identity-Standard (1).md](docs/PiRC-209-Sovereign-Decentralized-Identity-Standard (1).md) |
 | **PiRC-210** | Cross-Ledger Sovereign Identity Portability and Interoperability Standard | Vector (Ω_PORT) | [docs/PiRC-210-Cross-Ledger-Identity-Portability-Standard.md](docs/PiRC-210-Cross-Ledger-Identity-Portability-Standard.md) |
 | **PiRC-211** | Sovereign EVM Bridge and Cross-Ledger Token Portability Standard | Vector (Ω_BRIDGE) | [docs/PiRC-211-Sovereign-EVM-Bridge-and-Cross-Ledger-Token-Portability-Standard.md](docs/PiRC-211-Sovereign-EVM-Bridge-and-Cross-Ledger-Token-Portability-Standard.md) |
