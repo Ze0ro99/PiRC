@@ -1,3 +1,4 @@
+ rwa-conceptual-auth-extension
 use soroban_sdk::{Env, Address, Map, symbol_short};
 
 pub struct PiToken;
@@ -33,4 +34,30 @@ impl PiToken {
             .get(&symbol_short!("TOTAL"))
             .unwrap_or(0)
     }
+
+pub struct PiToken {
+    pub total_supply: u128,
+}
+
+impl PiToken {
+
+    pub fn new() -> Self {
+        Self {
+            total_supply: 0,
+        }
+    }
+
+    pub fn mint(&mut self, amount: u128) {
+        self.total_supply += amount;
+    }
+
+    pub fn burn(&mut self, amount: u128) {
+        self.total_supply -= amount;
+    }
+
+    pub fn total_supply(&self) -> u128 {
+        self.total_supply
+    }
+
+ Backup-copy
 }
