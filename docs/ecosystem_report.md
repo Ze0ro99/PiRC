@@ -1,6 +1,6 @@
 # 📊 PiRC Ecosystem: LIVE Smart Contract Status Report
 
-## 👤 Lead Architect: Ze0ro99 (EslaM-X)
+## 👤 Lead Architect: Ze0ro99 (EslaM-X) (Clawue884)
 **Status:** FULLY DEPLOYED & SIGNED (Pi Testnet)
 
 ## 🏗️ Verified 7-Layer Soroban Contracts
