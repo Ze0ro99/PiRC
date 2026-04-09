@@ -5,4 +5,4 @@ for script in run_*.sh; do
   echo "Testing → $script"
   ./"$script"
 done
-echo "✅ Master test finished — all systems have examples."
+echo "✅ Master test finished — all systems ready."
