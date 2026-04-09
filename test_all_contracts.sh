@@ -1,9 +1,8 @@
 #!/bin/bash
-echo "🚀 PiRC Master Test — Running examples for ALL contracts"
+echo "🚀 PiRC Master Test — All Contracts"
 for script in run_*.sh; do
   echo "────────────────────────────────────"
-  echo "Testing: $script"
+  echo "Testing → $script"
   ./"$script"
 done
-echo "────────────────────────────────────"
-echo "✅ Master test completed — all systems have examples ready."
+echo "✅ Master test finished — all systems have examples."
