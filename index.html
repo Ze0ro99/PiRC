@@ -2,48 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>πRC Live Sovereign Matrix</title>
+    <title>πRC Live Sovereign Monitor</title>
     <style>
-        :root { --pi-color: #fcc006; --bg: #0a0a0a; --panel: #161616; --text: #e0e0e0; --success: #00ff00; }
-        body { background: var(--bg); color: var(--text); font-family: 'Consolas', monospace; padding: 20px; }
-        .header { border-bottom: 2px solid var(--pi-color); padding-bottom: 10px; margin-bottom: 20px; }
-        .live-pulse { display: inline-block; width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--panel); }
-        th, td { padding: 12px; border: 1px solid #333; text-align: left; }
-        th { background: #222; color: var(--pi-color); }
-        a { color: #624ad1; text-decoration: none; }
-        a:hover { text-decoration: underline; color: var(--pi-color); }
-        .footer { margin-top: 30px; font-size: 0.8em; color: #666; text-align: center; }
+        body { background: #0a0a0a; color: #fcc006; font-family: monospace; padding: 20px; }
+        .live-tag { color: #00ff00; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🪷 πRC SOVEREIGN MONETARY SYSTEM</h1>
-        <p>Lead Architect: <strong>Ze0ro99</strong> | Network Status: <span class="live-pulse"></span> <strong>LIVE ON PI TESTNET</strong></p>
-    </div>
-    
-    <div style="background: var(--panel); padding: 15px; border-radius: 5px; border-left: 4px solid var(--pi-color);">
-        <h3>Protocol 21 Operations Monitor</h3>
-        <p>All smart contracts are fully synchronized across Pi Network and Stellar Testnets. The Justice Engine is actively governing liquidity routing.</p>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>System Layer</th>
-                <th>Functional Role</th>
-                <th>Pi Network Explorer</th>
-                <th>Stellar Expert Tracker</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <div class="footer">
-        Automated Deployment via πRC Ultimate Integrator | Validated on Soroban RPC | Data parity confirmed 1:1.
-    </div>
+    <h1>🪷 πRC Sovereign Matrix <span class="live-tag">● LIVE</span></h1>
+    <p>Architect: <strong>Ze0ro99</strong> | Framework: <strong>Protocol 21</strong></p>
+    <div id="matrix-status">Matrix Status: OPTIMAL</div>
+    <hr>
+    <h3>Blockchain Registry</h3>
+    <pre id="registry-log"></pre>
 </body>
 </html>
