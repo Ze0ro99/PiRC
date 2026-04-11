@@ -60,3 +60,6 @@ Oracle Layer Resilience
 ​/simulator: Python & JS stress-testing tools proving protocol solvency.
 ​/security: Threat models (Sybil, Wash Trading, Oracle Manipulation).
 ​/docs: Formal technical standards (PI-STANDARD-101) and Integration guides.
+> Creator for this Repository: MSAFIRI MZIRAY (pioneer mdogo)
+/Usipende kuamini kila kitu japo inaweza kuwa ni uhalisia thamani ya mined pi $2,248,000 iliowekwa kwenye protocol ya Soloban na Stellar.
+> Chimba pi kama hauko timamu na nunua kama Mwendawazimu
