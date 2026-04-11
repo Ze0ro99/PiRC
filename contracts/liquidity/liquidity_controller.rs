@@ -1,3 +1,4 @@
+mod pirc_config;
 pub struct LiquidityController {
     pub liquidity_pool: u128,
 }

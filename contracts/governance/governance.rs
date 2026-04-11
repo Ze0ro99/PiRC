@@ -1,3 +1,4 @@
+mod pirc_config;
 pub struct Governance {
 
     pub reward_multiplier: u128,

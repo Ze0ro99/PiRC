@@ -1,3 +1,4 @@
+mod pirc_config;
 pub struct Bootstrap;
 
 impl Bootstrap {

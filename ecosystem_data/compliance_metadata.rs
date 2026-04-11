@@ -1,3 +1,4 @@
+mod pirc_config;
 // Metadata structure for AML/KYC tracking on every transaction
 struct TransactionAudit {
     source_app_id: Symbol,

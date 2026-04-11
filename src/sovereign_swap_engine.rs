@@ -1,3 +1,4 @@
+mod pirc_config;
 // Sovereign Swap Engine (V22)
 // Automated conversion of Visa/Sovereign tokens into App-Native Tokens.
 // Built-in AML tracking for source, type, and timestamp.

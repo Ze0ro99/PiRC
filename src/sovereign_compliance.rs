@@ -1,3 +1,4 @@
+mod pirc_config;
 // Sovereign Compliance & Swap Protocol (AML/KYC Standards)
 // Tracks: Source, Product Type, Date, and Time for absolute trust.
 

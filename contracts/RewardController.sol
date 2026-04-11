@@ -1,4 +1,5 @@
 pragma solidity ^0.8.0;
+import "./PiRC_7Layers_Config.sol";
 
 contract RewardController {
 

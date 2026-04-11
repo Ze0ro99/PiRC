@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
+import "./PiRC_7Layers_Config.sol";
 
 interface IERC20 {
     function balanceOf(address account) external view returns (uint256);

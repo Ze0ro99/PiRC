@@ -1,3 +1,4 @@
+mod pirc_config;
 #![no_std]
 use soroban_sdk::{contract, contractimpl, contractmeta, symbol_short, Env, String, U128};
 

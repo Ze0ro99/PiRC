@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: PiOS
 pragma solidity ^0.8.28;
+import "./PiRC_7Layers_Config.sol";
 
 contract PiRC243TaxWithholding {
     mapping(uint256 => uint256) public jurisdictionTaxRates; // Jurisdiction ID => Tax Rate (in basis points)

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
+import "./PiRC_7Layers_Config.sol";
 
 /**
  * @title PiRC-101 Sovereign Vault
