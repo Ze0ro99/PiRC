@@ -1,20 +1,7 @@
-[
-  {
-    "sku": "πRC-GARDEN-001",
-    "name": "Philosophical Wood & Iron Garden (Lotus Edition)",
-    "category": "High-End Home Accessory",
-    "materials": ["Aged Wood", "Forged Iron"],
-    "symbolism": ["Sumerian", "Pharaonic", "Pi-Symbol"],
-    "token_id": "rwa_garden_001",
-    "price_pichash": 314.15,
-    "aml_risk_score": "Verified_Low"
-  },
-  {
-    "sku": "πRC-MATRIX-002",
-    "name": "Sovereign 7-Layer Matrix Shelf",
-    "category": "Functional Art",
-    "token_id": "rwa_garden_002",
-    "price_pichash": 700.00,
-    "aml_risk_score": "Verified_Low"
-  }
-]
+{
+  "market_status": "Active",
+  "last_transaction": "TXN-F9440324197A",
+  "inventory": [
+    {"item": "Philosophical Wood & Iron Garden", "status": "Tokenized", "contract": "rwa_garden"}
+  ]
+}
