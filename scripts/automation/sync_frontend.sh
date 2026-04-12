@@ -13,8 +13,8 @@ echo "[INFO] Starting Professional Frontend Sync for Sovereign OS..."
 
 # 1. Update Contract ID in all JavaScript files
 echo "[INFO] Updating Master Contract ID in JS files..."
-find . -type f -name "*.js" -exec sed -i "s/const MASTER_CONTRACT_ID = .*/const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" {} +
-find . -type f -name "*.js" -exec sed -i "s/export const MASTER_CONTRACT_ID = .*/export const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" {} +
+find . -type f -name "*.js" -exec sed -i "s/const MASTER_CONTRACT_ID = .*/const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" {} + || true
+find . -type f -name "*.js" -exec sed -i "s/export const MASTER_CONTRACT_ID = .*/export const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" {} + || true
 
 # 2. The Professional Sovereign Terminal (HTML + CSS + JS)
 # Strictly adheres to PiRC-101 CEX Standards. No reward mentions.
@@ -105,7 +105,7 @@ echo "[INFO] Injecting Sovereign Terminal into HTML dashboards..."
 for html_file in $(find . -name "*.html"); do
   if ! grep -q "Sovereign Terminal Start" "$html_file"; then
     # Insert the widget right before the closing </body> tag
-    sed -i -e "/<\/body>/i \\$PIONEER_WIDGET" "$html_file"
+    sed -i -e "/<\/body>/i \\$PIONEER_WIDGET" "$html_file" || true
     echo "  -> [SUCCESS] Injected into $html_file"
   else
     echo "  -> [SKIP] Terminal already exists in $html_file"
