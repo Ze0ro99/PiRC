@@ -1,0 +1,44 @@
+name: 🌐 Deploy PiRC Live Terminal
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.html'
+      - '**.js'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Make Sync Script Executable
+        run: chmod +x scripts/automation/sync_frontend.sh
+
+      - name: 🔄 Run Professional Frontend Sync
+        run: ./scripts/automation/sync_frontend.sh
+
+      - name: 💾 Commit Live UI Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "feat(ui): Inject PiRC-101 Live Terminal and sync Master Contract ⚡" || echo "No changes to commit"
+          git pull origin main --rebase || true
+          git push origin main
+
+      - name: 🚀 Deploy to GitHub Pages (Fix 404)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          commit_message: "Deploy live PiRC-101 frontend to GitHub Pages 🚀"
