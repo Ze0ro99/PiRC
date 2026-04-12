@@ -1,3 +1,4 @@
+#![no_std]
 mod pirc_config;
 // contracts/activity_oracle.rs
 // PiRC Activity Oracle

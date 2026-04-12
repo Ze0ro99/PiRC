@@ -1,5 +1,5 @@
-mod pirc_config;
 #![no_std]
+mod pirc_config;
 use soroban_sdk::{contractimpl, Env};
 
 pub struct Bootstrapper;
