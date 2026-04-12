@@ -1,17 +1,16 @@
 #!/bin/bash
 
 # ==============================================================================
-# PiRC Soroban Smart Deployment Factory (Fault-Tolerant)
-# Compiles and deploys Rust contracts. If one fails, it logs and continues!
+# PiRC Soroban Smart Deployment Factory (Self-Healing & Fault-Tolerant)
 # ==============================================================================
 
-echo "🚀 [1/4] Initializing Smart Soroban Deployment Factory..."
+echo "🚀 [1/5] Initializing Smart Soroban Deployment Factory..."
 
 NETWORK="testnet"
 RPC_URL="https://testnet.sorobanrpc.com"
 NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
 
-echo "⚙️ [2/4] Setting up Stellar Identity..."
+echo "⚙️ [2/5] Setting up Stellar Identity..."
 stellar network add $NETWORK --rpc-url $RPC_URL --network-passphrase "$NETWORK_PASSPHRASE" || true
 
 if [ -n "$STELLAR_TESTNET_SECRET" ]; then
@@ -22,7 +21,24 @@ else
     exit 1
 fi
 
-echo "🔨 [3/4] Compiling and Deploying Soroban Contracts..."
+echo "🩹 [3/5] Auto-Healing Rust Files (Fixing #![no_std] placement)..."
+# هذا الجزء الذكي سيقوم بإصلاح خطأ الترتيب في كل ملفات Rust تلقائياً
+find contracts/soroban -name "*.rs" -type f | while read -r file; do
+    if grep -q "#\!\[no_std\]" "$file" || grep -q "mod pirc_config;" "$file"; then
+        # حذف الأسطر من مكانها الخاطئ
+        sed -i '/mod pirc_config;/d' "$file"
+        sed -i '/#\!\[no_std\]/d' "$file"
+        
+        # إعادة كتابتها بالترتيب الصحيح الإجباري في لغة Rust
+        echo "#![no_std]" > temp_fix.rs
+        echo "mod pirc_config;" >> temp_fix.rs
+        cat "$file" >> temp_fix.rs
+        mv temp_fix.rs "$file"
+    fi
+done
+echo "✅ Auto-Healing Complete."
+
+echo "🔨 [4/5] Compiling and Deploying Soroban Contracts..."
 mkdir -p deployment_logs
 LOG_FILE="deployment_logs/live_contracts_$(date +%Y%m%d_%H%M%S).txt"
 ERROR_LOG="deployment_logs/failed_contracts_$(date +%Y%m%d_%H%M%S).txt"
@@ -31,7 +47,6 @@ echo "PiRC Live Contract Deployments - $(date)" > "$LOG_FILE"
 echo "PiRC Failed Deployments (Needs Review) - $(date)" > "$ERROR_LOG"
 echo "---------------------------------------------------" >> "$LOG_FILE"
 
-# إزالة set -e لكي لا يتوقف السكربت بالكامل إذا فشل عقد واحد
 find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     contract_dir=$(dirname "$cargo_file")
     contract_name=$(basename "$contract_dir")
@@ -40,7 +55,6 @@ find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     cd "$contract_dir"
     
     echo "   -> Compiling..."
-    # إذا فشل التجميع، سجل الخطأ وانتقل للعقد التالي فوراً
     if ! cargo build --target wasm32-unknown-unknown --release; then
         echo "   ❌ Compilation Failed for $contract_name. Skipping to next..."
         echo "$contract_name : Compilation Error" >> "../../$ERROR_LOG"
@@ -52,7 +66,6 @@ find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     
     if [ -n "$wasm_file" ]; then
         echo "   -> Deploying $wasm_file to $NETWORK..."
-        # محاولة النشر، إذا فشلت لا توقف السكربت
         contract_id=$(stellar contract deploy --wasm "$wasm_file" --source deployer_account --network $NETWORK 2>/dev/null) || contract_id=""
         
         if [ -n "$contract_id" ]; then
@@ -70,12 +83,11 @@ find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     cd - > /dev/null
 done
 
-echo "🌐 [4/4] Committing Deployment Logs to GitHub..."
+echo "🌐 [5/5] Committing Deployment Logs and Auto-Fixes to GitHub..."
 git config --global user.name "github-actions[bot]"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
-git add deployment_logs/
-git commit -m "chore: Smart Auto-deploy Soroban contracts to Stellar Testnet" 2>/dev/null || true
+git add .
+git commit -m "chore: Auto-healed Rust contracts and deployed to Stellar Testnet" 2>/dev/null || true
 git push origin main
 
 echo "🎉 SMART DEPLOYMENT COMPLETE!"
-echo "Check deployment_logs/ for successful contracts and errors."
