@@ -116,7 +116,7 @@ git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git add .
 git commit -m "chore: Robust deploy with Retry Logic and Auto-Sync" 2>/dev/null || true
 
-# الترقية 3: سحب التحديثات أولاً لتجنب خطأ الرفض (Rejected Push)
+#Upgrade 3: Pull the updates first to avoid the rejection error.  (Rejected Push)
 git pull origin main --rebase || true
 git push origin main
 
