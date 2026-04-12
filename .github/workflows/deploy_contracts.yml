@@ -16,12 +16,8 @@ jobs:
       - name: Install Rust target
         run: rustup target add wasm32-unknown-unknown
 
-      - name: Install Stellar CLI (Fast Method)
-        run: |
-          wget https://github.com/stellar/stellar-cli/releases/latest/download/stellar-cli-linux-amd64.tar.gz
-          tar -xvzf stellar-cli-linux-amd64.tar.gz
-          sudo mv stellar-cli /usr/local/bin/stellar
-          stellar --version
+      - name: Install Stellar CLI (Stable Build)
+        run: cargo install --locked stellar-cli
 
       - name: Make Script Executable
         run: chmod +x scripts/automation/deploy_soroban_contracts.sh
