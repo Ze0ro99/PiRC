@@ -21,19 +21,26 @@ else
     exit 1
 fi
 
-echo "🩹 [3/5] Auto-Healing Rust Files (Fixing #![no_std] placement)..."
-# هذا الجزء الذكي سيقوم بإصلاح خطأ الترتيب في كل ملفات Rust تلقائياً
-find contracts/soroban -name "*.rs" -type f | while read -r file; do
-    if grep -q "#\!\[no_std\]" "$file" || grep -q "mod pirc_config;" "$file"; then
-        # حذف الأسطر من مكانها الخاطئ
-        sed -i '/mod pirc_config;/d' "$file"
-        sed -i '/#\!\[no_std\]/d' "$file"
-        
-        # إعادة كتابتها بالترتيب الصحيح الإجباري في لغة Rust
-        echo "#![no_std]" > temp_fix.rs
-        echo "mod pirc_config;" >> temp_fix.rs
-        cat "$file" >> temp_fix.rs
-        mv temp_fix.rs "$file"
+echo "🩹 [3/5] Auto-Healing Rust Files (Fixing Module Architecture)..."
+# 1. تنظيف كل الملفات من الأكواد التي تم حقنها بشكل خاطئ في كل مكان
+find contracts/soroban -name "*.rs" -type f -exec sed -i '/#\!\[no_std\]/d' {} +
+find contracts/soroban -name "*.rs" -type f -exec sed -i '/mod pirc_config;/d' {} +
+
+# 2. وضع الأكواد الأساسية في الملف الرئيسي (lib.rs) فقط كما تتطلب لغة Rust
+find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
+    contract_dir=$(dirname "$cargo_file")
+    lib_rs="$contract_dir/src/lib.rs"
+    
+    if [ -f "$lib_rs" ]; then
+        sed -i '1i #![no_std]' "$lib_rs"
+        sed -i '2i mod pirc_config;' "$lib_rs"
+    fi
+done
+
+# 3. إصلاح الخطأ البرمجي الخاص بعقد justice_engine
+find contracts/soroban -name "justice_engine.rs" -type f | while read -r file; do
+    if ! grep -q "use soroban_sdk::contracterror;" "$file"; then
+        sed -i '1i use soroban_sdk::contracterror;' "$file"
     fi
 done
 echo "✅ Auto-Healing Complete."
@@ -87,7 +94,7 @@ echo "🌐 [5/5] Committing Deployment Logs and Auto-Fixes to GitHub..."
 git config --global user.name "github-actions[bot]"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git add .
-git commit -m "chore: Auto-healed Rust contracts and deployed to Stellar Testnet" 2>/dev/null || true
+git commit -m "chore: Fixed Rust module architecture and deployed to Testnet" 2>/dev/null || true
 git push origin main
 
 echo "🎉 SMART DEPLOYMENT COMPLETE!"
