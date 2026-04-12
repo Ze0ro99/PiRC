@@ -16,6 +16,11 @@ jobs:
       - name: Install Rust target
         run: rustup target add wasm32-unknown-unknown
 
+      - name: Setup Stellar CLI
+        uses: stellar/actions/setup-cli@v2
+        with:
+          version: latest
+
       - name: Make Script Executable
         run: chmod +x scripts/automation/deploy_soroban_contracts.sh
 
