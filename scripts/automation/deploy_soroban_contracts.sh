@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# PiRC Soroban Smart Deployment Factory (Self-Healing & Fault-Tolerant)
+# PiRC Soroban Smart Deployment Factory (Self-Healing & Auto-Funding)
 # ==============================================================================
 
 echo "🚀 [1/5] Initializing Smart Soroban Deployment Factory..."
@@ -10,23 +10,29 @@ NETWORK="testnet"
 RPC_URL="https://testnet.sorobanrpc.com"
 NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
 
-echo "⚙️ [2/5] Setting up Stellar Identity..."
+echo "⚙️ [2/5] Setting up Stellar Identity and Auto-Funding..."
 stellar network add $NETWORK --rpc-url $RPC_URL --network-passphrase "$NETWORK_PASSPHRASE" || true
 
 if [ -n "$STELLAR_TESTNET_SECRET" ]; then
     echo "$STELLAR_TESTNET_SECRET" | stellar keys add deployer_account --secret-key || true
-    echo "✅ Stellar Testnet Identity configured successfully."
+    
+    # استخراج العنوان العام (Public Key) من المفتاح السري
+    PUBLIC_KEY=$(stellar keys address deployer_account)
+    echo "✅ Identity configured. Public Key: $PUBLIC_KEY"
+    
+    # تمويل المحفظة آلياً من Friendbot لضمان وجود رسوم النشر
+    echo "💰 Requesting funds from Friendbot for $PUBLIC_KEY..."
+    curl -s "https://friendbot.stellar.org/?addr=$PUBLIC_KEY" > /dev/null
+    echo "✅ Account funded."
 else
     echo "❌ ERROR: STELLAR_TESTNET_SECRET is missing! Cannot deploy."
     exit 1
 fi
 
 echo "🩹 [3/5] Auto-Healing Rust Files (Fixing Module Architecture)..."
-# 1. تنظيف كل الملفات من الأكواد التي تم حقنها بشكل خاطئ في كل مكان
 find contracts/soroban -name "*.rs" -type f -exec sed -i '/#\!\[no_std\]/d' {} +
 find contracts/soroban -name "*.rs" -type f -exec sed -i '/mod pirc_config;/d' {} +
 
-# 2. وضع الأكواد الأساسية في الملف الرئيسي (lib.rs) فقط كما تتطلب لغة Rust
 find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     contract_dir=$(dirname "$cargo_file")
     lib_rs="$contract_dir/src/lib.rs"
@@ -37,7 +43,6 @@ find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     fi
 done
 
-# 3. إصلاح الخطأ البرمجي الخاص بعقد justice_engine
 find contracts/soroban -name "justice_engine.rs" -type f | while read -r file; do
     if ! grep -q "use soroban_sdk::contracterror;" "$file"; then
         sed -i '1i use soroban_sdk::contracterror;' "$file"
@@ -73,7 +78,8 @@ find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     
     if [ -n "$wasm_file" ]; then
         echo "   -> Deploying $wasm_file to $NETWORK..."
-        contract_id=$(stellar contract deploy --wasm "$wasm_file" --source deployer_account --network $NETWORK 2>/dev/null) || contract_id=""
+        # إزالة 2>/dev/null لكي نرى سبب فشل النشر إذا حدث مرة أخرى
+        contract_id=$(stellar contract deploy --wasm "$wasm_file" --source deployer_account --network $NETWORK) || contract_id=""
         
         if [ -n "$contract_id" ]; then
             echo "   ✅ Deployed Successfully! ID: $contract_id"
@@ -94,7 +100,7 @@ echo "🌐 [5/5] Committing Deployment Logs and Auto-Fixes to GitHub..."
 git config --global user.name "github-actions[bot]"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git add .
-git commit -m "chore: Fixed Rust module architecture and deployed to Testnet" 2>/dev/null || true
+git commit -m "chore: Auto-funded account and deployed to Testnet" 2>/dev/null || true
 git push origin main
 
 echo "🎉 SMART DEPLOYMENT COMPLETE!"
