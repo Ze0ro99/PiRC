@@ -1,5 +1,3 @@
-#![no_std]
-mod pirc_config;
 use soroban_sdk::{contract, contractimpl, contractmeta, symbol_short, Address, Env};
 
 #[contract]

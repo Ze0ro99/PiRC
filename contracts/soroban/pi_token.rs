@@ -1,5 +1,3 @@
-#![no_std]
-mod pirc_config;
 use soroban_sdk::{contractimpl, Address, Env, Symbol, Vec, Map};
 
 pub struct PiToken;

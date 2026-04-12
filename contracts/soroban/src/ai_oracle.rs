@@ -1,5 +1,3 @@
-#![no_std]
-mod pirc_config;
  rwa-conceptual-auth-extension
 use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env, String, U256, BytesN};
 
