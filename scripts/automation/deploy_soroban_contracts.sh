@@ -13,17 +13,10 @@ NETWORK="testnet"
 RPC_URL="https://testnet.sorobanrpc.com"
 NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
 
-echo "⚙️ [2/4] Setting up Stellar CLI and Identity..."
-if ! command -v stellar &> /dev/null; then
-    echo "Stellar CLI not found. Installing..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    source "$HOME/.cargo/env"
-    cargo install --locked stellar-cli --features opt
-fi
+echo "⚙️ [2/4] Setting up Stellar Identity..."
 
 stellar network add $NETWORK --rpc-url $RPC_URL --network-passphrase "$NETWORK_PASSPHRASE" || true
 
-# Using the specific secret key you defined for the Stellar environment
 if [ -n "$STELLAR_TESTNET_SECRET" ]; then
     echo "$STELLAR_TESTNET_SECRET" | stellar keys add deployer_account --secret-key || true
     echo "✅ Stellar Testnet Identity configured successfully."
