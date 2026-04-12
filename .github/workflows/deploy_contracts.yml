@@ -1,0 +1,26 @@
+name: PiRC Deploy to Testnet
+
+on:
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  deploy-soroban:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Rust target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Make Script Executable
+        run: chmod +x scripts/automation/deploy_soroban_contracts.sh
+
+      - name: Run Deployment Factory
+        env:
+          STELLAR_TESTNET_SECRET: ${{ secrets.STELLAR_TESTNET_SECRET }}
+          DISTRIBUTOR_SECRET: ${{ secrets.DISTRIBUTOR_SECRET }}
+        run: ./scripts/automation/deploy_soroban_contracts.sh
