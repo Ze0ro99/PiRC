@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # ==============================================================================
-# PiRC Soroban Smart Deployment Factory (Self-Healing & Auto-Funding)
+# PiRC Soroban Smart Deployment Factory (Self-Healing, Auto-Funding, Retry-Logic)
 # ==============================================================================
 
 echo "🚀 [1/5] Initializing Smart Soroban Deployment Factory..."
 
 NETWORK="testnet"
-RPC_URL="https://testnet.sorobanrpc.com"
+#Upgrade 1: Use the official primary server to avoid DNS problems 
+RPC_URL="https://soroban-testnet.stellar.org"
 NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
 
 echo "⚙️ [2/5] Setting up Stellar Identity and Auto-Funding..."
@@ -15,12 +16,9 @@ stellar network add $NETWORK --rpc-url $RPC_URL --network-passphrase "$NETWORK_P
 
 if [ -n "$STELLAR_TESTNET_SECRET" ]; then
     echo "$STELLAR_TESTNET_SECRET" | stellar keys add deployer_account --secret-key || true
-    
-    # استخراج العنوان العام (Public Key) من المفتاح السري
     PUBLIC_KEY=$(stellar keys address deployer_account)
     echo "✅ Identity configured. Public Key: $PUBLIC_KEY"
     
-    # تمويل المحفظة آلياً من Friendbot لضمان وجود رسوم النشر
     echo "💰 Requesting funds from Friendbot for $PUBLIC_KEY..."
     curl -s "https://friendbot.stellar.org/?addr=$PUBLIC_KEY" > /dev/null
     echo "✅ Account funded."
@@ -78,15 +76,31 @@ find contracts/soroban -name "Cargo.toml" | while read -r cargo_file; do
     
     if [ -n "$wasm_file" ]; then
         echo "   -> Deploying $wasm_file to $NETWORK..."
-        # إزالة 2>/dev/null لكي نرى سبب فشل النشر إذا حدث مرة أخرى
-        contract_id=$(stellar contract deploy --wasm "$wasm_file" --source deployer_account --network $NETWORK) || contract_id=""
         
-        if [ -n "$contract_id" ]; then
+        #Upgrade 2: Repeated Loop System to Resist Network Outages 
+        MAX_RETRIES=3
+        RETRY_COUNT=0
+        DEPLOY_SUCCESS=false
+        contract_id=""
+
+        while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            contract_id=$(stellar contract deploy --wasm "$wasm_file" --source deployer_account --network $NETWORK)
+            if [ $? -eq 0 ] && [ -n "$contract_id" ]; then
+                DEPLOY_SUCCESS=true
+                break
+            else
+                echo "   ⚠️ Network issue detected. Retrying in 5 seconds... ($((RETRY_COUNT+1))/$MAX_RETRIES)"
+                sleep 5
+                RETRY_COUNT=$((RETRY_COUNT+1))
+            fi
+        done
+
+        if [ "$DEPLOY_SUCCESS" = true ]; then
             echo "   ✅ Deployed Successfully! ID: $contract_id"
             echo "$contract_name : $contract_id" >> "../../$LOG_FILE"
         else
-            echo "   ❌ Deployment Failed for $contract_name. Skipping..."
-            echo "$contract_name : Deployment Error" >> "../../$ERROR_LOG"
+            echo "   ❌ Deployment Failed for $contract_name after $MAX_RETRIES attempts. Skipping..."
+            echo "$contract_name : Deployment Error (Network/DNS)" >> "../../$ERROR_LOG"
         fi
     else
         echo "   ❌ .wasm file not found for $contract_name"
@@ -100,7 +114,10 @@ echo "🌐 [5/5] Committing Deployment Logs and Auto-Fixes to GitHub..."
 git config --global user.name "github-actions[bot]"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git add .
-git commit -m "chore: Auto-funded account and deployed to Testnet" 2>/dev/null || true
+git commit -m "chore: Robust deploy with Retry Logic and Auto-Sync" 2>/dev/null || true
+
+# الترقية 3: سحب التحديثات أولاً لتجنب خطأ الرفض (Rejected Push)
+git pull origin main --rebase || true
 git push origin main
 
 echo "🎉 SMART DEPLOYMENT COMPLETE!"
