@@ -1,7 +1,7 @@
 #!/bin/bash
 # =============================================================================
 # πRC MATRIX UNIFIER & FULL SYNC SCRIPT - PROFESSIONAL EDITION
-# Version: 1.1 (Fixed Git Rebase Autostash)
+# Version: 1.2 (Auto-resolve Conflicts & Safe Merge)
 # Purpose: Unify all 7 colored layers, sync with all PIRC standards (101-260),
 #          update smart contracts bindings, merge branches safely,
 #          clean broken data, and make everything live on Pi PRC Testnet.
@@ -30,15 +30,21 @@ echo "✅ Loaded 7 colored layers + Core Mint contract"
 
 # ====================== STEP 1: SAFE BRANCH SYNC ======================
 echo "📦 [1/6] Syncing main branch and merging all feature branches safely..."
-git checkout main
 
-# FIX: Added --autostash to temporarily hide the chmod changes during the pull
+# Clean up any pending merges from previous failed runs
+git merge --abort 2>/dev/null || true
+
+git checkout main
 git pull origin main --rebase --autostash
 
-# Merge all PIRC branches without deleting anything
+# Merge all PIRC branches safely, auto-resolving conflicts by keeping the incoming changes
 for branch in $(git branch -r | grep -E 'feat/pirc-|pirc/' | sed 's/origin\///'); do
     echo "   Merging → $branch"
-    git merge --no-ff "origin/$branch" -m "chore: merge $branch into matrix unifier" || echo "   ⚠️  Skipped (already merged)"
+    # Use -X theirs to automatically resolve conflicts in favor of the feature branch
+    if ! git merge --no-ff "origin/$branch" -m "chore: merge $branch into matrix unifier" -X theirs; then
+        echo "   ⚠️  Merge conflict could not be auto-resolved. Aborting this specific merge to keep workspace clean."
+        git merge --abort
+    fi
 done
 
 # ====================== STEP 2: UPDATE FRONTEND BINDINGS ======================
