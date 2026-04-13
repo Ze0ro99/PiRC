@@ -4,17 +4,20 @@
 # Description: Injects PiRC-101 CEX Standard Terminal & Updates Master Contract
 # ==============================================================================
 
-set -e
-
 MASTER_CONTRACT="CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q"
 RPC_URL="https://soroban-testnet.stellar.org"
 
 echo "[INFO] Starting Professional Frontend Sync for Sovereign OS..."
 
-# 1. Update Contract ID in all JavaScript files
+# 1. Update Contract ID in all JavaScript files (Safe Method)
 echo "[INFO] Updating Master Contract ID in JS files..."
-find . -type f -name "*.js" -exec sed -i "s/const MASTER_CONTRACT_ID = .*/const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" {} + || true
-find . -type f -name "*.js" -exec sed -i "s/export const MASTER_CONTRACT_ID = .*/export const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" {} + || true
+for js_file in $(find . -type f -name "*.js" 2>/dev/null); do
+  if grep -q "MASTER_CONTRACT_ID" "$js_file"; then
+    sed -i "s/const MASTER_CONTRACT_ID = .*/const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" "$js_file" || true
+    sed -i "s/export const MASTER_CONTRACT_ID = .*/export const MASTER_CONTRACT_ID = \"$MASTER_CONTRACT\";/g" "$js_file" || true
+    echo "  -> [UPDATED] $js_file"
+  fi
+done
 
 # 2. The Professional Sovereign Terminal (HTML + CSS + JS)
 # Strictly adheres to PiRC-101 CEX Standards. No reward mentions.
@@ -102,7 +105,7 @@ EOF
 
 # 3. Inject the Terminal into all HTML files
 echo "[INFO] Injecting Sovereign Terminal into HTML dashboards..."
-for html_file in $(find . -name "*.html"); do
+for html_file in $(find . -name "*.html" 2>/dev/null); do
   if ! grep -q "Sovereign Terminal Start" "$html_file"; then
     # Insert the widget right before the closing </body> tag
     sed -i -e "/<\/body>/i \\$PIONEER_WIDGET" "$html_file" || true
