@@ -1,4 +1,3 @@
-mod pirc_config;
 pub struct InteroperabilityStatus;
 
 impl InteroperabilityStatus {
