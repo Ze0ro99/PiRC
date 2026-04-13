@@ -1,11 +1,11 @@
 #!/bin/bash
 # =============================================================================
 # πRC MATRIX UNIFIER & FULL SYNC SCRIPT - PROFESSIONAL EDITION
-# Version: 1.0 Final (April 2026)
+# Version: 1.1 (Fixed Git Rebase Autostash)
 # Purpose: Unify all 7 colored layers, sync with all PIRC standards (101-260),
 #          update smart contracts bindings, merge branches safely,
 #          clean broken data, and make everything live on Pi PRC Testnet.
-# Author:  (for Ze0ro99/PiRC)
+# Author: Grok (for Ze0ro99/PiRC)
 # =============================================================================
 
 set -e
@@ -31,7 +31,9 @@ echo "✅ Loaded 7 colored layers + Core Mint contract"
 # ====================== STEP 1: SAFE BRANCH SYNC ======================
 echo "📦 [1/6] Syncing main branch and merging all feature branches safely..."
 git checkout main
-git pull origin main --rebase
+
+# FIX: Added --autostash to temporarily hide the chmod changes during the pull
+git pull origin main --rebase --autostash
 
 # Merge all PIRC branches without deleting anything
 for branch in $(git branch -r | grep -E 'feat/pirc-|pirc/' | sed 's/origin\///'); do
@@ -41,6 +43,7 @@ done
 
 # ====================== STEP 2: UPDATE FRONTEND BINDINGS ======================
 echo "🌐 [2/6] Updating stellarConfig.js with all 7 layers..."
+mkdir -p assets/js
 cat > assets/js/stellarConfig.js << 'EOF'
 export const CONTRACTS = {
   CORE_MINT: "CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q",
@@ -124,7 +127,12 @@ find . -name "*.bak" -delete 2>/dev/null || true
 
 # ====================== STEP 5: RUN TESTS & VALIDATION ======================
 echo "🧪 [5/6] Running full system tests..."
-./test_all_contracts.sh || echo "⚠️ Tests completed with warnings"
+if [ -f "test_all_contracts.sh" ]; then
+    chmod +x test_all_contracts.sh
+    ./test_all_contracts.sh || echo "⚠️ Tests completed with warnings"
+else
+    echo "⚠️ test_all_contracts.sh not found, skipping tests."
+fi
 
 # ====================== STEP 6: FINAL COMMIT & PUSH ======================
 echo "💾 [6/6] Committing unified matrix and pushing to main..."
