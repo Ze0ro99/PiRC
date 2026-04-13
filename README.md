@@ -3,165 +3,143 @@
 ```markdown
 # πRC Sovereign Matrix
 
-**Pi Requests for Comment – The Sovereign Monetary System on Pi Network + Stellar**
+**The First Sovereign Monetary System on Pi Network + Stellar Soroban**
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Pi Network](https://img.shields.io/badge/Powered%20by-Pi%20Network-blue)](https://minepi.com)
 [![Stellar Soroban](https://img.shields.io/badge/Stellar-Soroban%20Testnet-purple)](https://soroban-testnet.stellar.org)
 
-> A fully operational 7-Layer colored token matrix with real smart contract intelligence.  
-> Compliant with **PIRC-101 → PIRC-260** standards.  
-> Live on **Pi PRC Testnet** + **Stellar Soroban Testnet**.
+---
+
+## 🌟 Core Minting Engine (Live)
+
+**Main Smart Contract (Core Mint + Intelligence Engine):**  
+**`CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q`**
+
+- **Deployed:** April 12, 2026  
+- **Creator:** GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6  
+- **Functions:** `mint_ref_capacity`, `calculate_qwf_eff`, `check_phi_solvency`  
+- **Purpose:** Gives dynamic intelligence (QWF Efficiency, Phi Solvency, REF Capacity) to all colored tokens.
+
+This contract is the **brain** of the entire PiRC system.
 
 ---
 
-## 🌟 Overview
+## 📋 Overview
 
-**PiRC** is a sovereign monetary system that combines:
-- **Pi Network** (high-velocity utility tokens)
-- **Stellar Soroban** (smart contracts)
-- **7 Colored Token Layers** (Purple → Red)
+PiRC is a complete sovereign monetary system that brings together:
+- **Pi Network Testnet** (high-velocity utility tokens)
+- **Stellar Soroban Smart Contracts**
+- **7 Colored Token Layers** with real on-chain intelligence
 
-The system gives every colored token **dynamic skills and attributes** (QWF Efficiency, Phi Solvency, REF Capacity) through live smart contracts.
+Every colored token now has **dynamic skills and attributes** powered directly by the Core Mint Contract above.
 
-**Core Contract (Minting Engine):**  
-`CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q`
-
-**7 Live Colored Layers (all deployed and verified):**
-
-| Layer       | Color   | Contract ID                                      | Purpose                          | Status |
-|-------------|---------|--------------------------------------------------|----------------------------------|--------|
-| L0          | Purple  | CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4 | Root Registry & Identity        | ✅ LIVE |
-| L1          | Gold    | CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG   | Core Value & Treasury           | ✅ LIVE |
-| L2          | Yellow  | CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF   | Merchant Oracle & Trade         | ✅ LIVE |
-| L3          | Orange  | CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF   | Liquidity & AMM                 | ✅ LIVE |
-| L4          | Blue    | CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD   | RWA & Custody                   | ✅ LIVE |
-| L5          | Green   | CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4   | Governance & Execution          | ✅ LIVE |
-| L6          | Red     | CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO   | Justice Engine & Failsafe       | ✅ LIVE |
-
-All contracts are **live**, verified on [Stellar Expert](https://stellar.expert/explorer/testnet) and fully synchronized with **Pi PRC Testnet**.
+**All contracts are live and fully synchronized** between Pi PRC Testnet and Stellar Soroban Testnet.
 
 ---
 
-## ✨ Key Achievements
+## 🏗️ The 7 Colored Layers (All Live)
 
-- ✅ **All 7 colored layers** successfully deployed (green GitHub Actions)
-- ✅ **Core Minting Engine** with `mint_ref_capacity`, `calculate_qwf_eff`, `check_phi_solvency`
-- ✅ Full **state synchronization** between Pi PRC Testnet and Stellar Soroban
-- ✅ **PIRC-101 to PIRC-260** standards compliance
-- ✅ Real-time Pioneer Dashboard (`index.html`) showing live attributes
-- ✅ Automated deployment pipeline (`pirc_ultimate_deployment.sh`)
-- ✅ Matrix unification script (`pirc_matrix_unifier_and_sync.sh`)
+| Layer | Color   | Contract ID                                      | Primary Function                     | Status |
+|-------|---------|--------------------------------------------------|--------------------------------------|--------|
+| L0    | Purple  | CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4 | Root Registry & Identity            | ✅ LIVE |
+| L1    | Gold    | CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG   | Core Value & Treasury               | ✅ LIVE |
+| L2    | Yellow  | CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF   | Merchant Oracle & Trade             | ✅ LIVE |
+| L3    | Orange  | CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF   | Liquidity & AMM Pools               | ✅ LIVE |
+| L4    | Blue    | CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD   | RWA & Custody                       | ✅ LIVE |
+| L5    | Green   | CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4   | Governance & Execution              | ✅ LIVE |
+| L6    | Red     | CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO   | Justice Engine & Failsafe           | ✅ LIVE |
+
+---
+
+## ✅ Key Achievements (Verified April 13, 2026)
+
+- All 7 colored layers successfully deployed via GitHub Actions (green pipelines)
+- Core Mint Contract `CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q` fully operational
+- Real-time state synchronization between Pi PRC Testnet and Stellar Soroban
+- Full compliance with **PIRC-101 to PIRC-260** standards
+- Professional Pioneer Dashboard with live contract queries
+- Automated deployment, testing, and matrix unification scripts
 
 ---
 
 ## 🚀 Quick Start
 
-### For Users (Pioneers)
-1. Open the live dashboard:  
-   → [`index.html`](index.html) (or deploy it on Netlify/GitHub Pages)
-2. Click **"Connect Pi Wallet"** (Pi SDK authentication)
-3. Click **"Sync Network Data"** → see real-time QWF, Phi, and REF Capacity for every layer
-4. Explore the 7 colored tokens and their dynamic skills
+### For Pioneers (Users)
+1. Open the dashboard: [`index.html`](index.html)
+2. Click **"Connect Pi Wallet"**
+3. Click **"Sync Network Data"** or **"Force Full Sync"**
+4. View live QWF Efficiency, Phi Solvency, and REF Capacity for all 7 layers
 
 ### For Developers & Contributors
 
 ```bash
 git clone https://github.com/Ze0ro99/PiRC.git
 cd PiRC
-```
 
-#### Run the Full System
-```bash
-# 1. Unify matrix & sync everything
+# Full system unification and sync
 chmod +x pirc_matrix_unifier_and_sync.sh
 ./pirc_matrix_unifier_and_sync.sh
 
-# 2. Run ultimate deployment pipeline
+# Run complete deployment pipeline
 chmod +x pirc_ultimate_deployment.sh
 ./pirc_ultimate_deployment.sh
+```
 
-# 3. Test all contracts
+---
+
+## 🧪 Testing
+
+```bash
 chmod +x test_all_contracts.sh
 ./test_all_contracts.sh
 ```
 
-#### Local Development
-- Open `index.html` directly in your browser
-- All contract bindings are in `assets/js/stellarConfig.js`
-- Edit `LIVE_MATRIX_REGISTRY.csv` or `sovereign_manifest.json` for new layers
+The dashboard includes a **Live Soroban RPC Terminal** that shows real blockchain calls.
 
 ---
 
-## 🧪 Testing & Verification
+## 📁 Important Files
 
-- **Live Terminal** in the dashboard shows real Soroban RPC calls
-- **Ledger polling** every 4 seconds from `https://soroban-testnet.stellar.org`
-- All 7 layers display **real attributes** fetched from smart contracts
-- Run `./health_monitor.sh` for system health check
+- `index.html` → Professional Live Dashboard
+- `assets/js/stellarConfig.js` → All contract bindings (including Core Mint)
+- `pirc_matrix_unifier_and_sync.sh` → Unifies everything
+- `LIVE_MATRIX_REGISTRY.csv` → Registry of all layers
+- `sovereign_manifest.json` → System manifest
 
 ---
 
 ## 💡 Benefits
 
-**For Pioneers / Users**
-- Own colored utility tokens with real on-chain intelligence
-- Dynamic skills (QWF, Phi, Capacity) that evolve with network activity
-- Seamless Pi Network + Stellar experience
-
-**For Developers**
-- Ready-to-use Soroban smart contracts
-- Full Pi SDK + Stellar SDK integration
-- Automated deployment & testing pipeline
-- Modular 7-layer architecture for easy extension
-
-**For Applications**
-- Tokenize Real World Assets (RWA)
-- Build DeFi, governance, or merchant tools on top of the matrix
-- Cross-network state sync (Pi PRC ↔ Stellar)
-- Production-ready sovereign monetary system
-
----
-
-## 📁 Project Structure (Key Files)
-
-- `index.html` → Professional Pioneer Dashboard
-- `assets/js/stellarConfig.js` → All contract bindings
-- `pirc_matrix_unifier_and_sync.sh` → Full matrix unification
-- `pirc_ultimate_deployment.sh` → Complete deployment pipeline
-- `LIVE_MATRIX_REGISTRY.csv` → Registry of all layers
-- `sovereign_manifest.json` → System manifest
-- `.github/workflows/` → Automated GitHub Actions
+- **Pioneers**: Own intelligent colored tokens with real on-chain skills
+- **Developers**: Ready-made Soroban contracts + full Pi SDK integration
+- **Applications**: Build DeFi, RWA, governance, or merchant systems on a sovereign foundation
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`feat/your-feature`)
-3. Run the matrix unifier script before pushing
+1. Fork the repo
+2. Create a feature branch
+3. Run the matrix unifier script
 4. Submit a Pull Request
 
-All contributions must follow **PIRC-101 to PIRC-260** standards.
-
 ---
 
-## 📄 License
-
-MIT License – see [LICENSE](LICENSE) file.
-
----
-
-**Made with ❤️ by the PiRC Community**  
-**Live • Verifiable • Sovereign**
+**Made with ❤️ for the PiRC Community**  
+**Live • Sovereign • Intelligent**
 
 *Last updated: April 13, 2026*
 ```
 
-**✅ Now upload this file:* *
+---
+
+**How do you use it now? ؟**
 
 ```bash
 git add README.md
-git commit -m "docs: add professional comprehensive README.md with full achievements, 7 layers, and developer guide"
+git commit -m "docs: update README with prominent Core Mint Contract CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q"
 git push origin main
 ```
+
+هل تريد أي تعديل إضافي (مثل إضافة صور أو قسم جديد)؟
