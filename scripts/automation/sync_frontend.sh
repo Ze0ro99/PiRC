@@ -20,7 +20,6 @@ for js_file in $(find . -type f -name "*.js" 2>/dev/null); do
 done
 
 # 2. The Professional Sovereign Terminal (HTML + CSS + JS)
-# Strictly adheres to PiRC-101 CEX Standards. No reward mentions.
 read -r -d '' PIONEER_WIDGET << 'EOF'
 <!-- πRC Sovereign Terminal Start -->
 <style>
@@ -103,7 +102,7 @@ read -r -d '' PIONEER_WIDGET << 'EOF'
 <!-- πRC Sovereign Terminal End -->
 EOF
 
-# 3. Inject the Terminal into all HTML files
+# 3. Inject the Terminal into all HTML files (Safe Method)
 echo "[INFO] Injecting Sovereign Terminal into HTML dashboards..."
 for html_file in $(find . -name "*.html" 2>/dev/null); do
   if ! grep -q "Sovereign Terminal Start" "$html_file"; then
