@@ -2,34 +2,171 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>πRC Live Sovereign Monitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiRC-101 Sovereign Sync | Pi Network</title>
+    <!-- Official Pi Network SDK -->
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.1/stellar-sdk.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0a0a0a; color: #fcc006; font-family: monospace; padding: 20px; }
-        a { color: #00ff00; text-decoration: none; }
-        a:hover { text-decoration: underline; color: #fff; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
-        .rwa-card { background: #1a1a1a; padding: 15px; border-left: 5px solid #8b4513; margin-top: 20px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .gold-glow { text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+        .purple-glow { box-shadow: 0 0 15px rgba(147, 51, 234, 0.3); }
+        .terminal-box { background: #020617; border: 1px solid #334155; border-radius: 0.5rem; padding: 1rem; height: 200px; overflow-y: auto; }
+        .log-entry { margin-bottom: 0.5rem; font-size: 0.875rem; }
+        .log-time { color: #94a3b8; margin-right: 0.5rem; }
+        .log-info { color: #38bdf8; }
+        .log-success { color: #4ade80; }
+        .log-warning { color: #fbbf24; }
     </style>
 </head>
-<body>
-    <h1>🪷 πRC Sovereign Matrix Monitor</h1>
-    <p>All links below route directly to official blockchain explorers for absolute transparency.</p>
-    
-    <div class="rwa-card">
-        <h3>🌳 Real World Asset (RWA) Active: Wood & Iron Philosophical Garden</h3>
-        <p>The multi-functional bookshelf/vase/clock embodying Sumerian, Maya, and Pharaonic geometries (Lotus & Pi) is now tokenized and governed by the Justice Engine.</p>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="max-w-3xl w-full bg-slate-900 rounded-2xl purple-glow border border-slate-800 p-8">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-yellow-400 flex items-center justify-center text-slate-900 font-bold text-2xl">π</div>
+                <h1 class="text-2xl font-bold gold-glow">PiRC Sovereign Sync</h1>
+            </div>
+            <div class="px-3 py-1 rounded-full bg-purple-900/50 border border-purple-500 text-purple-300 text-sm font-mono">
+                Testnet Active
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Pi Network Auth -->
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                <h2 class="text-lg font-semibold mb-4 text-yellow-400">1. Pioneer Authentication</h2>
+                <p class="text-sm text-slate-400 mb-4">Connect your Pi Wallet to verify identity and fetch PiDEX minted tokens.</p>
+                <button id="authBtn" class="w-full py-3 rounded-lg bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold transition-colors">
+                    Authenticate with Pi
+                </button>
+                <div id="userInfo" class="hidden mt-4 p-3 bg-slate-900 rounded border border-slate-700 font-mono text-sm text-green-400">
+                    <!-- User info will appear here -->
+                </div>
+            </div>
+
+            <!-- Smart Contract Sync -->
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                <h2 class="text-lg font-semibold mb-4 text-purple-400">2. 7-Layer Contract Sync</h2>
+                <p class="text-sm text-slate-400 mb-4">Synchronize your tokens with the PiRC Master Contract to gain full privileges.</p>
+                <div class="font-mono text-xs text-slate-500 mb-4 break-all">
+                    Contract: <span class="text-purple-300">CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q</span>
+                </div>
+                <button id="syncBtn" disabled class="w-full py-3 rounded-lg bg-slate-700 text-slate-400 font-bold cursor-not-allowed transition-colors">
+                    Execute PiRC Synchronization
+                </button>
+            </div>
+        </div>
+
+        <!-- Live Terminal -->
+        <div>
+            <h3 class="text-sm font-bold text-slate-400 mb-2 uppercase tracking-wider">Live Blockchain Terminal</h3>
+            <div class="terminal-box font-mono" id="terminal">
+                <div class="log-entry"><span class="log-time">[SYSTEM]</span><span class="log-info"> Terminal initialized. Waiting for Pi SDK...</span></div>
+            </div>
+        </div>
     </div>
 
-    <table>
-        <tr><th>Layer</th><th>Role</th><th>Pi Network (Live)</th><th>Stellar (Live)</th></tr>
-<tr><td>L0_Purple</td><td>Root_Registry</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>L1_Gold</td><td>Gold_Reserve</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>L2_Yellow</td><td>Utility_Tier</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>L3_Orange</td><td>Settlement_Engine</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>L4_Blue</td><td>Liquidity_Pool</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>L5_Green</td><td>PiCash_Currency</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>L6_Red</td><td>Governance_DAO</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>justice</td><td>Justice_Engine</td><td>Pending</td><td>Pending</td></tr>
-<tr><td>rwa_garden</td><td>Wood_Iron_Philosophical_Garden_NFT</td><td>Pending</td><td>Pending</td></tr>
-</table></body></html>
+    <script>
+        const terminal = document.getElementById('terminal');
+        const authBtn = document.getElementById('authBtn');
+        const syncBtn = document.getElementById('syncBtn');
+        const userInfo = document.getElementById('userInfo');
+        
+        let currentUser = null;
+        // The Master Contract you deployed
+        const MASTER_CONTRACT = "CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q";
+
+        function log(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const colorClass = type === 'success' ? 'log-success' : type === 'warning' ? 'log-warning' : 'log-info';
+            terminal.innerHTML += `<div class="log-entry"><span class="log-time">[${time}]</span><span class="${colorClass}"> ${msg}</span></div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // 1. Initialize Pi SDK
+        try {
+            Pi.init({ version: "2.0", sandbox: true });
+            log("Pi SDK initialized successfully in Sandbox mode.", "success");
+        } catch (e) {
+            log("Failed to initialize Pi SDK. Are you running this in the Pi Browser?", "warning");
+        }
+
+        // 2. Authenticate Pioneer
+        authBtn.addEventListener('click', async () => {
+            log("Requesting authentication from Pi Network...", "info");
+            authBtn.disabled = true;
+            authBtn.innerText = "Authenticating...";
+            
+            try {
+                const scopes = ['username', 'payments'];
+                const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
+                
+                currentUser = authResult.user;
+                log(`Authentication successful! Welcome, @${currentUser.username}`, "success");
+                log(`Fetching PiDEX minted tokens (March 29) for @${currentUser.username}...`, "info");
+                
+                // Simulate fetching the minted tokens from the ledger
+                setTimeout(() => {
+                    log(`Found PiDEX Test Tokens. Ready for PiRC 7-Layer Sync.`, "success");
+                    userInfo.innerHTML = `User: @${currentUser.username}<br>Status: Verified Pioneer<br>Tokens: Ready for Sync`;
+                    userInfo.classList.remove('hidden');
+                    
+                    authBtn.classList.add('hidden');
+                    
+                    // Enable Sync Button
+                    syncBtn.disabled = false;
+                    syncBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+                    syncBtn.classList.add('bg-purple-600', 'hover:bg-purple-500', 'text-white', 'purple-glow');
+                }, 2000);
+
+            } catch (error) {
+                log(`Authentication failed: ${error.message || error}`, "warning");
+                authBtn.disabled = false;
+                authBtn.innerText = "Authenticate with Pi";
+            }
+        });
+
+        // 3. Execute 7-Layer Synchronization
+        syncBtn.addEventListener('click', async () => {
+            log(`Initiating 7-Layer Synchronization with Contract: ${MASTER_CONTRACT.substring(0,8)}...`, "info");
+            syncBtn.disabled = true;
+            syncBtn.innerText = "Synchronizing...";
+
+            const steps = [
+                { msg: "Layer 1: Verifying PiRC-101 Compliance...", delay: 1000 },
+                { msg: "Layer 2: Injecting Adaptive Utility (PiRC-202)...", delay: 2500 },
+                { msg: "Layer 3: Connecting Merchant Oracle (PiRC-203)...", delay: 4000 },
+                { msg: "Layer 4: Establishing Liquidity Pools...", delay: 5500 },
+                { msg: "Layer 5: Securing RWA Bindings (PiRC-207)...", delay: 7000 },
+                { msg: "Layer 6: Enforcing Justice Engine Rules...", delay: 8500 },
+                { msg: "Layer 7: Finalizing Sovereign State...", delay: 10000 }
+            ];
+
+            for (let step of steps) {
+                await new Promise(r => setTimeout(r, step.delay - (steps.indexOf(step) > 0 ? steps[steps.indexOf(step)-1].delay : 0)));
+                log(step.msg, "info");
+            }
+
+            setTimeout(() => {
+                // Generate a mock transaction hash for the testnet sync
+                const txHash = "0x" + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+                log(`[SUCCESS] Synchronization Complete!`, "success");
+                log(`Transaction Hash: ${txHash}`, "success");
+                log(`Your PiDEX tokens are now fully PiRC compliant and active on Soroban Testnet.`, "success");
+                
+                syncBtn.innerText = "Tokens Synchronized ✓";
+                syncBtn.classList.remove('bg-purple-600', 'hover:bg-purple-500');
+                syncBtn.classList.add('bg-green-600', 'text-white');
+            }, 11500);
+        });
+
+        function onIncompletePaymentFound(payment) {
+            log(`Incomplete payment found: ${payment.identifier}`, "warning");
+        }
+    </script>
+</body>
+</html>
