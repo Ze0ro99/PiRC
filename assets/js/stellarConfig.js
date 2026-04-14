@@ -1,33 +1,30 @@
+// Auto-generated PiRC Contract Configuration
 export const CONTRACTS = {
   CORE_MINT: "CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q",
-  CORE_ISSUER: "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6",
-  
-  // 7 Colored Layers - Live on Pi PRC Testnet + Stellar Testnet
-  L0_PURPLE:  "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4",
-  L1_GOLD:    "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG",
-  L2_YELLOW:  "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF",
-  L3_ORANGE:  "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF",
-  L4_BLUE:    "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD",
-  L5_GREEN:   "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4",
-  L6_RED:     "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO",
-
-  NETWORK: "TESTNET",
-  PI_RPC: "https://rpc.testnet.minepi.com",
-  STELLAR_RPC: "https://soroban-testnet.stellar.org"
+  LAYER_YELLOW: "CANL...SDFF",
+  // Add remaining 6 layers here
+  NETWORK: "TESTNET"
 };
 
-export async function getTokenAttributes(tokenId, layer) {
-  console.log(`🔥 Real-time attributes for ${layer} (Token: ${tokenId})`);
-  return {
-    qwf_eff: 128,
-    phi_solvency: true,
-    ref_capacity: 32779800,
-    status: "ACTIVE",
-    layer: layer,
-    issuer: "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6",
-    last_updated: new Date().toISOString()
-  };
+/**
+ * Fetches dynamic token attributes from the Soroban Smart Contract
+ * @param {string} tokenId - The ID of the token
+ */
+export async function getTokenAttributes(tokenId) {
+  try {
+    console.log(`Fetching attributes for ${tokenId}...`);
+    // Mocking contract calls for QWF and Phi Solvency
+    const qwf = await mockContractCall("calculate_qwf_eff", tokenId);
+    const phi = await mockContractCall("check_phi_solvency", tokenId);
+    
+    return { qwf, phi, status: "Active" };
+  } catch (error) {
+    console.error("Error fetching token attributes:", error);
+    return null;
+  }
 }
 
-window.CONTRACTS = CONTRACTS;
-window.getTokenAttributes = getTokenAttributes;
+async function mockContractCall(method, args) {
+  // Replace with actual Stellar SDK / Soroban RPC call
+  return Promise.resolve(`Result of ${method}`);
+}
