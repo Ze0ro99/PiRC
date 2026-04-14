@@ -63,3 +63,6 @@ done
 
 # Cleanup on exit (Ctrl+C)
 trap 'kill $SERVER_PID 2>/dev/null; echo "🛑 Auto Sync Monitor stopped."; exit 0' SIGINT SIGTERM
+
+chmod +x auto_rpc_sync_monitor.sh
+./auto_rpc_sync_monitor.sh
