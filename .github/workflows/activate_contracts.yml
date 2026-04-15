@@ -1,0 +1,71 @@
+name: Activate All PiRC Contracts
+
+on:
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  activate-contracts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: true
+
+      - name: Install Soroban CLI
+        run: |
+          echo "Installing Soroban CLI..."
+          cargo install --locked soroban-cli --features opt
+
+      - name: Configure Soroban Network & Identity
+        run: |
+          echo "Configuring Testnet..."
+          soroban config network add --global testnet \
+            --rpc-url https://soroban-testnet.stellar.org:443 \
+            --network-passphrase "Test SDF Network ; September 2015"
+          
+          echo "Setting up Identity..."
+          # Using a temporary generated identity for the invocation
+          soroban config identity generate --global pirc-admin
+
+      - name: Invoke & Activate Contracts
+        run: |
+          echo "🚀 Starting batch activation of all 7 layers..."
+          
+          CORE_ID="CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q"
+          
+          declare -A LAYERS
+          LAYERS["L0_PURPLE"]="CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4"
+          LAYERS["L1_GOLD"]="CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG"
+          LAYERS["L2_YELLOW"]="CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF"
+          LAYERS["L3_ORANGE"]="CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF"
+          LAYERS["L4_BLUE"]="CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD"
+          LAYERS["L5_GREEN"]="CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4"
+          LAYERS["L6_RED"]="CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO"
+
+          for layer_name in "${!LAYERS[@]}"; do
+            layer_id="${LAYERS[$layer_name]}"
+            echo "🔄 Activating $layer_name -> $layer_id..."
+            
+            # Note: We use || true so if one fails, the pipeline continues
+            soroban contract invoke \
+              --id "$CORE_ID" \
+              --source pirc-admin \
+              --network testnet \
+              -- \
+              mint_ref_capacity \
+              --pioneer "$layer_id" \
+              --pi_locked 0 \
+              --market_price 1 \
+              --time_elapsed 0 \
+              --current_liquidity 0 \
+              --current_supply 0 || echo "⚠️ Invocation returned an error (might already be bound), continuing..."
+          done
+          
+          echo "✅ ALL 7 LAYERS INVOCATION ATTEMPTED!"
