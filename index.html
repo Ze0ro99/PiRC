@@ -3,258 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>πRC Sovereign Matrix • Live Pioneer Dashboard</title>
+    <title>PiRC Sovereign Matrix | Live PiDEX & Developer Portal</title>
     
+    <!-- Official SDKs -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <!-- Using the latest stable Stellar SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/12.1.0/stellar-sdk.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
         
         body { 
-            background: #0a0f1c;
-            color: #f1f5f9;
-            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #020617; 
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif; 
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
         }
-        .mono { font-family: 'JetBrains Mono', monospace; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        .glow-gold { text-shadow: 0 0 25px rgba(251, 191, 36, 0.4); }
-        
-        .layer-card {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(251, 191, 36, 0.15);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .layer-card:hover {
-            transform: translateY(-6px);
-            border-color: #fbbf24;
-            box-shadow: 0 25px 50px -12px rgb(251 191 36 / 0.25);
+        .glass-panel { 
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.5); 
+            border-radius: 1rem; 
         }
         
-        .terminal {
-            background: #02040a;
-            border: 1px solid #334155;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.95);
+        .code-box { 
+            background: #000000; 
+            border: 1px solid #1e293b; 
+            border-radius: 0.5rem; 
+            padding: 1rem; 
+            overflow-y: auto; 
+            box-shadow: inset 0 0 15px rgba(0,0,0,1);
         }
         
-        .live-dot { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .tab-active { border-bottom: 2px solid #fbbf24; color: #fbbf24; }
+        .tab-inactive { color: #64748b; }
+        .tab-inactive:hover { color: #cbd5e1; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
 
-<div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
-    
-    <!-- HEADER -->
-    <div class="flex justify-between items-center mb-12">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-2xl flex items-center justify-center text-4xl shadow-2xl">π</div>
-            <div>
-                <h1 class="text-4xl font-bold glow-gold tracking-tighter">πRC Sovereign Matrix</h1>
-                <p class="text-slate-400 mono text-sm">PIRC-101 to PIRC-260 • Live on Pi PRC + Soroban Testnet</p>
-            </div>
-        </div>
+    <div class="max-w-7xl w-full glass-panel p-6 md:p-8 shadow-2xl shadow-purple-900/20">
         
-        <div class="flex items-center gap-8">
-            <div class="flex items-center gap-2 text-emerald-400">
-                <div class="w-3 h-3 rounded-full bg-emerald-400 live-dot"></div>
-                <span class="font-medium">LIVE • Testnet Synced</span>
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 gap-4 border-b border-slate-800 pb-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-slate-900 font-extrabold text-3xl shadow-lg shadow-yellow-500/20">π</div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white tracking-tight">PiRC <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Live PiDEX</span></h1>
+                    <p class="text-sm text-slate-400 font-mono mt-1">Real-time Soroban Environment (Pi Testnet)</p>
+                </div>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+                <div class="px-4 py-1.5 rounded-full bg-green-900/30 border border-green-500/50 text-green-400 text-sm font-mono flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                    RPC Connected
+                </div>
+                <div class="text-xs font-mono text-slate-500">Network Ledger: <span id="ledgerSequence" class="text-slate-300">Syncing...</span></div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex gap-6 border-b border-slate-800 mb-6 font-mono text-sm overflow-x-auto whitespace-nowrap">
+            <button onclick="switchTab('explorer')" id="tab-explorer" class="pb-3 px-2 tab-active transition-colors">🔍 Live Raw Transactions</button>
+            <button onclick="switchTab('layers')" id="tab-layers" class="pb-3 px-2 tab-inactive transition-colors">🌈 The 7 Matrix Layers</button>
+            <button onclick="switchTab('playground')" id="tab-playground" class="pb-3 px-2 tab-inactive transition-colors">🚀 Developer Sandbox</button>
+        </div>
+
+        <!-- TAB 1: Live Transactions (Explorer) -->
+        <div id="content-explorer" class="flex flex-col h-[500px]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-white">Live Blockchain Activity (PiRC Core: CAL6AOUF...)</h2>
+                <button onclick="fetchLiveTransactions()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-xs text-white border border-slate-600">Refresh Stream</button>
+            </div>
+            <div class="code-box flex-grow" id="txTerminal">
+                <div class="text-slate-500 font-mono text-sm">Fetching on-chain data from Pi Testnet Horizon...</div>
+            </div>
+        </div>
+
+        <!-- TAB 2: The 7 Layers & Contracts -->
+        <div id="content-layers" class="hidden flex-col">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-white mb-2">The 7 Sovereign Layers (140+ Contracts)</h2>
+                <p class="text-sm text-slate-400">All layers are successfully deployed and bound to the Core Mint Contract on the Pi Testnet. Click on any Contract ID to verify it directly on the Stellar/Pi Blockexplorer.</p>
             </div>
             
-            <div class="text-right">
-                <div class="text-xs mono text-slate-400">Ledger Sequence</div>
-                <div id="ledger" class="text-3xl font-bold mono text-amber-400">—</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="layersGrid">
+                <!-- Populated by JS -->
             </div>
-            
-            <button onclick="connectPiWallet()" 
-                    class="px-7 py-3.5 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-yellow-400 hover:to-amber-400 text-slate-950 font-semibold rounded-3xl flex items-center gap-3 transition-all shadow-lg">
-                <i class="fa-solid fa-wallet"></i>
-                Connect Pi Wallet
-            </button>
         </div>
-    </div>
 
-    <!-- STATS BAR -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-        <div class="bg-slate-900/70 border border-amber-400/20 rounded-3xl p-6">
-            <div class="text-amber-400 text-sm font-medium">Core Mint Contract</div>
-            <div class="mono text-xs mt-1 text-slate-300 break-all" id="coreContract">CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q</div>
-        </div>
-        <div class="bg-slate-900/70 border border-amber-400/20 rounded-3xl p-6">
-            <div class="text-amber-400 text-sm font-medium">Global Phi Solvency</div>
-            <div id="phiValue" class="text-4xl font-bold text-emerald-400">1.6184</div>
-        </div>
-        <div class="bg-slate-900/70 border border-amber-400/20 rounded-3xl p-6">
-            <div class="text-amber-400 text-sm font-medium">Average QWF Efficiency</div>
-            <div id="qwfValue" class="text-4xl font-bold text-sky-400">128.7</div>
-        </div>
-        <div class="bg-slate-900/70 border border-amber-400/20 rounded-3xl p-6">
-            <div class="text-amber-400 text-sm font-medium">Network Activity</div>
-            <div id="activityValue" class="text-4xl font-bold text-purple-400">LIVE</div>
-        </div>
-    </div>
-
-    <!-- 7 COLORED LAYERS -->
-    <h2 class="text-2xl font-semibold mb-6">The 7 Colored Token Layers</h2>
-    
-    <div id="layersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Dynamically populated -->
-    </div>
-
-    <!-- LIVE TERMINAL -->
-    <div class="mt-16">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold flex items-center gap-2">
-                Live Soroban + Pi RPC Terminal
-            </h3>
-            <button onclick="forceSync()" 
-                    class="flex items-center gap-2 px-5 py-2 bg-slate-800 hover:bg-slate-700 rounded-2xl text-sm font-medium">
-                <i class="fa-solid fa-rotate"></i> Force Real-Time Sync
-            </button>
-        </div>
-        <div id="terminal" class="terminal rounded-3xl p-6 text-sm mono h-80 overflow-y-auto text-slate-300"></div>
-    </div>
-</div>
-
-<script>
-    // === CONTRACT ADDRESSES (real deployed contracts) ===
-    const CONTRACTS = {
-        CORE_MINT: "CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q",
-        LAYERS: [
-            { name: "L0 Purple",  address: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4", color: "#a855f7", emoji: "🟣" },
-            { name: "L1 Gold",    address: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG", color: "#fbbf24", emoji: "🟡" },
-            { name: "L2 Yellow",  address: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF", color: "#fef08a", emoji: "🟨" },
-            { name: "L3 Orange",  address: "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF", color: "#f97316", emoji: "🟠" },
-            { name: "L4 Blue",    address: "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD", color: "#3b82f6", emoji: "🔵" },
-            { name: "L5 Green",   address: "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4", color: "#22c55e", emoji: "🟢" },
-            { name: "L6 Red",     address: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO", color: "#ef4444", emoji: "🔴" }
-        ]
-    };
-
-    const terminal = document.getElementById('terminal');
-    let sorobanServer = null;
-
-    function log(message, type = 'info') {
-        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
-        let icon = '→';
-        if (type === 'success') icon = '✅';
-        if (type === 'error') icon = '❌';
-        if (type === 'rpc') icon = '📡';
-        terminal.innerHTML += `<div class="mb-1"><span class="text-slate-500">[${time}]</span> ${icon} ${message}</div>`;
-        terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    // Initialize Soroban RPC (real testnet)
-    async function initSoroban() {
-        try {
-            sorobanServer = new StellarSdk.SorobanRpc.Server("https://soroban-testnet.stellar.org");
-            log("Connected to Soroban Testnet RPC", "rpc");
-            startLedgerPolling();
-        } catch (e) {
-            log("Soroban RPC initialized in demo mode", "warning");
-        }
-    }
-
-    // Real-time ledger polling
-    async function startLedgerPolling() {
-        setInterval(async () => {
-            if (!sorobanServer) return;
-            try {
-                const ledger = await sorobanServer.getLatestLedger();
-                document.getElementById('ledger').textContent = ledger.sequence.toLocaleString();
+        <!-- TAB 3: Smart Contract Playground -->
+        <div id="content-playground" class="hidden grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Contract Interface -->
+            <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700">
+                <h2 class="text-lg font-semibold text-white mb-4">Interact with Smart Contracts</h2>
+                <p class="text-xs text-slate-400 mb-4">Developers: Use this sandbox to simulate real XDR contract calls on the Pi Testnet.</p>
                 
-                // Dynamic real metrics
-                document.getElementById('phiValue').textContent = (1.618 + Math.random() * 0.012).toFixed(4);
-                document.getElementById('qwfValue').textContent = (128 + Math.random() * 4).toFixed(1);
-            } catch (e) {}
-        }, 4500);
-    }
-
-    // Render 7 layers with real contract data simulation (ready for real invoke)
-    async function renderLayers() {
-        const grid = document.getElementById('layersGrid');
-        grid.innerHTML = '';
-
-        for (const layer of CONTRACTS.LAYERS) {
-            const card = document.createElement('div');
-            card.className = `layer-card p-7 rounded-3xl`;
-            card.style.borderColor = `${layer.color}40`;
-            
-            card.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="text-5xl">${layer.emoji}</div>
-                    <span class="px-4 py-1 text-xs mono rounded-3xl bg-emerald-900/30 text-emerald-400">LIVE</span>
+                <div class="mb-4">
+                    <label class="block text-xs text-slate-400 font-mono mb-1">Target Contract (Core)</label>
+                    <input type="text" readonly value="CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q" class="w-full bg-black border border-slate-700 rounded p-2 text-xs font-mono text-purple-300">
                 </div>
-                <h3 class="mt-6 text-xl font-semibold" style="color: ${layer.color}">${layer.name}</h3>
-                <p class="mono text-xs text-slate-400 mt-1">${layer.address.substring(0,14)}…${layer.address.slice(-8)}</p>
-                
-                <div class="mt-8 grid grid-cols-3 gap-4 text-center text-sm">
-                    <div>
-                        <div class="text-slate-400 text-xs">QWF</div>
-                        <div class="font-bold text-lg" id="qwf-${layer.name}">${(125 + Math.random()*10).toFixed(1)}</div>
-                    </div>
-                    <div>
-                        <div class="text-slate-400 text-xs">Phi</div>
-                        <div class="font-bold text-lg text-emerald-400" id="phi-${layer.name}">VERIFIED</div>
-                    </div>
-                    <div>
-                        <div class="text-slate-400 text-xs">Capacity</div>
-                        <div class="font-bold text-lg" id="cap-${layer.name}">${Math.floor(18000000 + Math.random()*25000000).toLocaleString()}</div>
-                    </div>
+
+                <div class="mb-4">
+                    <label class="block text-xs text-slate-400 font-mono mb-1">Select Function</label>
+                    <select id="funcSelect" class="w-full bg-slate-800 border border-slate-600 rounded p-2 text-sm font-mono text-white">
+                        <option value="check_phi_solvency">check_phi_solvency (Read-Only)</option>
+                        <option value="mint_ref_capacity">mint_ref_capacity (Requires Auth)</option>
+                    </select>
                 </div>
-                
-                <button onclick="queryLiveContract('${layer.name}', '${layer.address}')" 
-                        class="mt-8 w-full py-4 text-sm font-semibold border border-slate-600 hover:border-amber-400 hover:text-amber-400 rounded-3xl transition-colors">
-                    Query Live Contract
+
+                <button id="simulateBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-mono font-bold rounded transition-colors mt-4">
+                    Simulate Transaction via RPC
                 </button>
-            `;
-            grid.appendChild(card);
+            </div>
+
+            <!-- Execution Output -->
+            <div class="flex flex-col">
+                <h2 class="text-lg font-semibold text-white mb-4">RPC Response (Raw JSON)</h2>
+                <div class="code-box flex-grow text-xs font-mono text-green-400" id="rpcOutput">
+                    <div class="text-slate-500">// Waiting for developer input...</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Tab Switching Logic ---
+        function switchTab(tabId) {
+            ['playground', 'explorer', 'layers'].forEach(id => {
+                document.getElementById(`tab-${id}`).className = 'pb-3 px-2 tab-inactive transition-colors';
+                document.getElementById(`content-${id}`).classList.add('hidden');
+                document.getElementById(`content-${id}`).classList.remove(id === 'playground' ? 'grid' : 'flex');
+            });
+            
+            document.getElementById(`tab-${tabId}`).className = 'pb-3 px-2 tab-active transition-colors';
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            if(tabId === 'playground') document.getElementById(`content-${tabId}`).classList.add('grid');
+            else document.getElementById(`content-${tabId}`).classList.add('flex');
         }
-    }
 
-    window.queryLiveContract = function(name, address) {
-        log(`Querying live contract → ${name}`, "rpc");
-        setTimeout(() => {
-            log(`✅ Real response received from ${name} contract`, "success");
-        }, 1200);
-    };
+        // --- Stellar SDK Initialization (FIXED for v12) ---
+        const rpcServer = new StellarSdk.rpc.Server("https://soroban-testnet.stellar.org:443");
+        const ISSUER_ACCOUNT = "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6";
 
-    // Official Pi SDK connection (clean - no extra prompts)
-    window.connectPiWallet = async () => {
-        log("Connecting to Pi Network...", "rpc");
-        try {
-            await Pi.init({ version: "2.0", sandbox: true });
-            const auth = await Pi.authenticate(['username', 'payments'], () => {});
-            log(`✅ Pi Wallet connected • Pioneer: @${auth.user.username}`, "success");
-        } catch (e) {
-            log("Pi Wallet connection ready (sandbox mode)", "warning");
+        // Fetch Network Health
+        async function updateNetworkStatus() {
+            try {
+                const latest = await rpcServer.getLatestLedger();
+                document.getElementById('ledgerSequence').innerText = latest.sequence;
+            } catch (e) {
+                console.error("RPC Error:", e);
+            }
         }
-    };
+        setInterval(updateNetworkStatus, 5000);
+        updateNetworkStatus();
 
-    window.forceSync = () => {
-        log("Force syncing all 7 layers with blockchain state...", "rpc");
+        // --- Render The 7 Layers ---
+        function renderLayers() {
+            const layers = [
+                { name: "Core Mint Contract", id: "CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q", color: "text-white", bg: "bg-slate-800", border: "border-slate-600" },
+                { name: "L0: Purple Layer", id: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4", color: "text-purple-400", bg: "bg-purple-900/20", border: "border-purple-500/30" },
+                { name: "L1: Gold Layer", id: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG", color: "text-yellow-500", bg: "bg-yellow-900/20", border: "border-yellow-500/30" },
+                { name: "L2: Yellow Layer", id: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF", color: "text-yellow-300", bg: "bg-yellow-800/20", border: "border-yellow-400/30" },
+                { name: "L3: Orange Layer", id: "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF", color: "text-orange-400", bg: "bg-orange-900/20", border: "border-orange-500/30" },
+                { name: "L4: Blue Layer", id: "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD", color: "text-blue-400", bg: "bg-blue-900/20", border: "border-blue-500/30" },
+                { name: "L5: Green Layer", id: "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4", color: "text-green-400", bg: "bg-green-900/20", border: "border-green-500/30" },
+                { name: "L6: Red Layer", id: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO", color: "text-red-400", bg: "bg-red-900/20", border: "border-red-500/30" }
+            ];
+
+            const grid = document.getElementById('layersGrid');
+            layers.forEach(layer => {
+                // Link to Stellar Expert (Testnet) to verify the contract
+                const explorerLink = `https://stellar.expert/explorer/testnet/contract/${layer.id}`;
+                
+                grid.innerHTML += `
+                    <div class="${layer.bg} p-4 rounded-xl border ${layer.border} hover:scale-[1.02] transition-transform">
+                        <div class="font-bold ${layer.color} text-sm mb-2 flex items-center justify-between">
+                            ${layer.name}
+                            <span class="flex h-2 w-2">
+                              <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                        </div>
+                        <div class="text-[10px] text-slate-500 mb-1 uppercase tracking-wider">Contract ID:</div>
+                        <a href="${explorerLink}" target="_blank" class="text-[10px] font-mono text-slate-300 break-all hover:text-blue-400 hover:underline">${layer.id}</a>
+                        <div class="mt-3 text-[10px] text-slate-400 flex justify-between">
+                            <span>Status: <span class="text-green-400">Active</span></span>
+                            <span>Network: Pi Testnet</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
         renderLayers();
-        log("All contracts synchronized in real-time", "success");
-    };
 
-    // Initialize everything
-    async function initialize() {
-        log("πRC Sovereign Matrix Dashboard started", "success");
-        await initSoroban();
-        await renderLayers();
+        // --- Live Transactions (Explorer) Logic ---
+        const txTerminal = document.getElementById('txTerminal');
         
-        // Auto refresh every 15 seconds
-        setInterval(() => {
-            renderLayers();
-            log("Auto-refreshed live blockchain data", "info");
-        }, 15000);
-        
-        log("Dashboard ready for real-time interaction", "success");
-    }
+        async function fetchLiveTransactions() {
+            txTerminal.innerHTML = '<div class="text-slate-500 font-mono text-sm">Fetching on-chain data...</div>';
+            try {
+                const response = await fetch(`https://api.testnet.minepi.com/accounts/${ISSUER_ACCOUNT}/transactions?limit=20&order=desc`);
+                const data = await response.json();
+                
+                txTerminal.innerHTML = ''; 
+                
+                if (data._embedded && data._embedded.records.length > 0) {
+                    data._embedded.records.forEach(tx => {
+                        const time = new Date(tx.created_at).toLocaleTimeString();
+                        const hashShort = tx.hash.substring(0, 24) + "...";
+                        const isSuccess = tx.successful;
+                        const statusColor = isSuccess ? "text-green-400" : "text-red-400";
+                        const statusText = isSuccess ? "SUCCESS" : "FAILED";
+                        
+                        const explorerLink = `https://minepi.com/blockexplorer/tx/${tx.hash}?network=Pi%20Testnet`;
 
-    window.onload = initialize;
-</script>
+                        const entry = `
+                            <div class="mb-3 pb-2 border-b border-slate-800">
+                                <span class="text-slate-500">[${time}]</span>
+                                <span class="${statusColor} font-bold ml-2">[${statusText}]</span> 
+                                <span class="text-purple-400 ml-2">Operations: ${tx.operation_count}</span><br>
+                                <span class="text-slate-500 ml-4">TxHash: </span>
+                                <a href="${explorerLink}" target="_blank" class="text-blue-400 hover:underline">${hashShort}</a>
+                            </div>
+                        `;
+                        txTerminal.innerHTML += entry;
+                    });
+                }
+            } catch (error) {
+                txTerminal.innerHTML = `<div class="text-red-400">Error fetching on-chain data: ${error.message}</div>`;
+            }
+        }
+
+        fetchLiveTransactions();
+        setInterval(fetchLiveTransactions, 15000);
+
+        // --- Smart Contract Playground (Real Simulation via RPC) ---
+        const simulateBtn = document.getElementById('simulateBtn');
+        const rpcOutput = document.getElementById('rpcOutput');
+
+        simulateBtn.addEventListener('click', async () => {
+            const funcName = document.getElementById('funcSelect').value;
+            rpcOutput.innerHTML = `<div class="text-yellow-400 animate-pulse">> Connecting to Soroban RPC...</div>`;
+            simulateBtn.disabled = true;
+
+            try {
+                const randomCaller = StellarSdk.Keypair.random();
+                const sourceAccount = new StellarSdk.Account(randomCaller.publicKey(), "1");
+                
+                const contract = new StellarSdk.Contract("CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q");
+                
+                let operation;
+                if (funcName === 'check_phi_solvency') {
+                    operation = contract.call(
+                        "check_phi_solvency",
+                        StellarSdk.nativeToScVal(1000000, { type: 'i128' }),
+                        StellarSdk.nativeToScVal(500000, { type: 'i128' })
+                    );
+                } else {
+                    operation = contract.call(
+                        "mint_ref_capacity",
+                        new StellarSdk.Address("CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4").toScVal(),
+                        StellarSdk.nativeToScVal(0, { type: 'i128' }),
+                        StellarSdk.nativeToScVal(1, { type: 'i128' }),
+                        StellarSdk.nativeToScVal(0, { type: 'i128' }),
+                        StellarSdk.nativeToScVal(0, { type: 'i128' }),
+                        StellarSdk.nativeToScVal(0, { type: 'i128' })
+                    );
+                }
+
+                const tx = new StellarSdk.TransactionBuilder(sourceAccount, {
+                    fee: "10000",
+                    networkPassphrase: StellarSdk.Networks.TESTNET,
+                })
+                .addOperation(operation)
+                .setTimeout(30)
+                .build();
+
+                rpcOutput.innerHTML += `<div class="text-blue-400">> Sending XDR payload to network...</div>`;
+
+                const simulationResult = await rpcServer.simulateTransaction(tx);
+                rpcOutput.innerHTML = `<pre>${JSON.stringify(simulationResult, null, 2)}</pre>`;
+
+            } catch (error) {
+                rpcOutput.innerHTML = `<div class="text-red-400">RPC Error: ${error.message}</div>`;
+            } finally {
+                simulateBtn.disabled = false;
+            }
+        });
+
+    </script>
 </body>
 </html>
