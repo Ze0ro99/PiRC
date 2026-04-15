@@ -21,18 +21,19 @@ jobs:
       - name: Install Soroban CLI
         run: |
           echo "Installing Soroban CLI..."
-          cargo install --locked soroban-cli --features opt
+          # FIX: Removed --features opt and using standard cargo install
+          cargo install --locked stellar-cli
 
       - name: Configure Soroban Network & Identity
         run: |
           echo "Configuring Testnet..."
-          soroban config network add --global testnet \
+          stellar network add --global testnet \
             --rpc-url https://soroban-testnet.stellar.org:443 \
             --network-passphrase "Test SDF Network ; September 2015"
           
           echo "Setting up Identity..."
           # Using a temporary generated identity for the invocation
-          soroban config identity generate --global pirc-admin
+          stellar keys generate --global pirc-admin
 
       - name: Invoke & Activate Contracts
         run: |
@@ -54,7 +55,7 @@ jobs:
             echo "🔄 Activating $layer_name -> $layer_id..."
             
             # Note: We use || true so if one fails, the pipeline continues
-            soroban contract invoke \
+            stellar contract invoke \
               --id "$CORE_ID" \
               --source pirc-admin \
               --network testnet \
