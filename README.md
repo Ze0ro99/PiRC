@@ -1,6 +1,4 @@
 
-
-```markdown
 # πRC Sovereign Matrix
 
 **The First Sovereign Monetary System on Pi Network + Stellar Soroban**
@@ -142,4 +140,3 @@ git commit -m "docs: update README with prominent Core Mint Contract GA3ECRFJ6SO
 git push origin main
 ```
 
-هل تريد أي تعديل إضافي (مثل إضافة صور أو قسم جديد)؟
