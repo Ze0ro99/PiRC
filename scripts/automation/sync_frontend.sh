@@ -4,7 +4,7 @@
 # Description: Automatically updates Master Contract IDs across all files.
 # ==============================================================================
 
-MASTER_CONTRACT="CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q"
+MASTER_CONTRACT="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 
 echo "[INFO] Starting Universal Sync for Sovereign OS..."
 echo "[INFO] Target Master Contract: $MASTER_CONTRACT"

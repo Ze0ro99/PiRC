@@ -27,7 +27,7 @@ git merge origin/feat/pirc-236-243-compliance --no-edit || echo "⚠️ Merge sk
 # ------------------------------------------------------------------------------
 echo "📝 [3/8] Updating LIVE_MATRIX_REGISTRY.csv and sovereign_manifest.json..."
 
-CORE_CONTRACT="CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q"
+CORE_CONTRACT="GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 LAYER_YELLOW="CANL...SDFF" # Replace with actual Yellow Layer ID
 
 # Create or update LIVE_MATRIX_REGISTRY.csv

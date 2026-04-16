@@ -1,7 +1,7 @@
 # PiRC System Status - FINAL
 **Date:** Thu Apr 16 00:33:43 UTC 2026
 **Status:** ALL SYSTEMS GO 🟢
-**Core Contract:** CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q
+**Core Contract:** GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6
 **Network:** TESTNET (Ready for Mainnet)
 
 - [x] Feature branches merged

@@ -172,7 +172,7 @@
         // --- Render The 7 Layers ---
         function renderLayers() {
             const layers = [
-                { name: "Core Mint Contract", id: "CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q", color: "text-white", bg: "bg-slate-800", border: "border-slate-600" },
+                { name: "Core Mint Contract", id: "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6", color: "text-white", bg: "bg-slate-800", border: "border-slate-600" },
                 { name: "L0: Purple Layer", id: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4", color: "text-purple-400", bg: "bg-purple-900/20", border: "border-purple-500/30" },
                 { name: "L1: Gold Layer", id: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG", color: "text-yellow-500", bg: "bg-yellow-900/20", border: "border-yellow-500/30" },
                 { name: "L2: Yellow Layer", id: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF", color: "text-yellow-300", bg: "bg-yellow-800/20", border: "border-yellow-400/30" },
@@ -262,7 +262,7 @@
                 const randomCaller = StellarSdk.Keypair.random();
                 const sourceAccount = new StellarSdk.Account(randomCaller.publicKey(), "1");
                 
-                const contract = new StellarSdk.Contract("CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q");
+                const contract = new StellarSdk.Contract("GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6");
                 
                 let operation;
                 if (funcName === 'check_phi_solvency') {
