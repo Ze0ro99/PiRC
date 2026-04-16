@@ -14,7 +14,7 @@
 ## 🌟 Core Minting Engine (Live)
 
 **Main Smart Contract (Core Mint + Intelligence Engine):**  
-**`CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q`**
+**`GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6`**
 
 - **Deployed:** April 12, 2026  
 - **Creator:** GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6  
@@ -55,7 +55,7 @@ Every colored token now has **dynamic skills and attributes** powered directly b
 ## ✅ Key Achievements (Verified April 13, 2026)
 
 - All 7 colored layers successfully deployed via GitHub Actions (green pipelines)
-- Core Mint Contract `CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q` fully operational
+- Core Mint Contract `GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6` fully operational
 - Real-time state synchronization between Pi PRC Testnet and Stellar Soroban
 - Full compliance with **PIRC-101 to PIRC-260** standards
 - Professional Pioneer Dashboard with live contract queries
@@ -138,7 +138,7 @@ The dashboard includes a **Live Soroban RPC Terminal** that shows real blockchai
 
 ```bash
 git add README.md
-git commit -m "docs: update README with prominent Core Mint Contract CAL6AOUF55OPDWO54EZAXQY2DZC3Y3WJBVIDRRJSAGWGKDRRGHGW6N6Q"
+git commit -m "docs: update README with prominent Core Mint Contract GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
 git push origin main
 ```
 
