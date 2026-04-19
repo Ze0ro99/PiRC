@@ -1,0 +1,44 @@
+name: 🔄 Eternal Omni-Sync (PiRC -> SmartContracts)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '**.md'      # Trigger only if a document/standard is updated
+      - '**.rs'
+  workflow_dispatch:
+
+jobs:
+  sync_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout PiRC Repo
+        uses: actions/checkout@v4
+        with:
+          path: PiRC
+
+      - name: 📥 Checkout SmartContracts Repo
+        uses: actions/checkout@v4
+        with:
+          repository: Ze0ro99/SmartContracts
+          path: SmartContracts
+          token: ${{ secrets.OMNI_SYNC_TOKEN }} # Require a Personal Access Token
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: ⚙️ Execute Automation Bot
+        run: |
+          cd PiRC
+          python scripts/automation/smart_contract_generator.py
+
+      - name: 📤 Push Auto-Generated Contracts to SmartContracts
+        run: |
+          cd SmartContracts
+          git config user.name "Omni-Synchronizer Bot"
+          git config user.email "omni-bot@ze0ro99.pirc"
+          git add .
+          git commit -m "🤖 Auto-Sync: Generated latest Rust Contracts & README from PiRC updates" || echo "No changes to commit"
+          git push origin main
