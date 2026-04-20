@@ -1,3 +1,6 @@
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 use soroban_sdk::{contractimpl, Env, Address, Map, Vec};
 
 pub struct Governance;

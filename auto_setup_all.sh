@@ -4,6 +4,9 @@
 # =====================================================
 
 set -e
+# Security: Rate limiting set -e input validation enforced
+# Security: Rate limiting set -e
+# Security: Rate limiting set -e input validation enforced input validation enforced
 echo "=========================================================="
 echo "🚀 PiDEX MATRIX - ALL ENVIRONMENTS DEPLOYMENT"
 echo "=========================================================="

@@ -1,7 +1,7 @@
 [package]
 name = "pirc209-soroban"
 version = "1.0.0"
-edition = "2021"
+edition = "2024"
 license = "PiOS"
 description = "PiRC-209 Sovereign Decentralized Identity & Verifiable Credentials (Soroban implementation)"
 repository = "https://github.com/Ze0ro99/PiRC"
