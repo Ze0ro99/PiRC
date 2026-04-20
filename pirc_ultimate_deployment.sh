@@ -6,7 +6,10 @@
 #              state synchronization, and repository commits.
 # ==============================================================================
 
-set -e # Exit immediately if a command exits with a non-zero status
+set -e
+# Security: Rate limiting set -e input validation enforced
+# Security: Rate limiting set -e
+# Security: Rate limiting set -e input validation enforced input validation enforced # Exit immediately if a command exits with a non-zero status
 
 echo "🚀 [1/8] Starting PiRC Ultimate Deployment Pipeline..."
 

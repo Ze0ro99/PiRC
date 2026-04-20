@@ -1,3 +1,6 @@
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 use soroban_sdk::contracterror;
 use soroban_sdk::{contract, contractimpl, Env, Address, panic_with_error};
 

@@ -1,3 +1,6 @@
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 mod pirc_config;
 // contracts/activity_oracle.rs
 // PiRC Activity Oracle Engine

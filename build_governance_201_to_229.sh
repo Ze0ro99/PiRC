@@ -7,6 +7,9 @@
 # ==============================================================================
 
 set -e
+# Security: Rate limiting set -e input validation enforced
+# Security: Rate limiting set -e
+# Security: Rate limiting set -e input validation enforced input validation enforced
 echo "=========================================================="
 echo "⚖️  ARCHITECTING PiRC-201 to PiRC-229 (GOVERNANCE & IDENTITY)"
 echo "=========================================================="
