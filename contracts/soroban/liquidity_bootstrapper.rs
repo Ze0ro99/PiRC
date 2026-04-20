@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 use soroban_sdk::{contractimpl, Env, Address};
 
 pub struct LiquidityBootstrapper;

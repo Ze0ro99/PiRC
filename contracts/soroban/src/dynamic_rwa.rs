@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 use soroban_sdk::{contract, contractimpl, Env, String, symbol_short};
 
 #[contract]
