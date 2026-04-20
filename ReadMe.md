@@ -1,3 +1,4 @@
+ docs/official-submission
 **# PiRC: Pi Requests for Comment**  
 **Sovereign Monetary Standard & Long-Term Utility Economy Framework for the Pi Network**
 
@@ -188,3 +189,7 @@ Clone → Deploy → Simulate → Contribute.
 
 — Ze0ro99 & PiRC Community  
 *Last updated: March 2026*
+
+- [PiRC1: Pi Ecosystem Token Design](./PiRC1/ReadMe.md)
+- [PiRC2: Subscription Contract API](./PiRC2/ReadMe.md)
+main
