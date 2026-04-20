@@ -2,7 +2,7 @@
  * Luxamir RWA SDK for PiRC Omni Sovereign Architecture
  * Auto-tokenization of physical products → NFT-style ownership proof
  * Compatible with rwa_garden Soroban contract
- * Version: 1.1 | Date: 2026-04-20
+ * Version: 1.3 | Date: 2026-04-20
  */
 
 import { SorobanClient, nativeToScVal } from '@soroban/client';
