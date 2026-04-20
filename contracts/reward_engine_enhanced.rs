@@ -1,7 +1,4 @@
- core/reward-logic
-
 mod pirc_config;
- main
 pub struct RewardEngineEnhanced;
 
 impl RewardEngineEnhanced {
