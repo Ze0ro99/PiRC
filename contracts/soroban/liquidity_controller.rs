@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 // contracts/activity_oracle.rs
 // PiRC Activity Oracle
 // Advanced Activity Measurement Engine
