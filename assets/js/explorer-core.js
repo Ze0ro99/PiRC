@@ -1,5 +1,7 @@
 import { ALGORITHM_BASE_MICROS } from './constants.js';
 import { normalizeMicrosToMacro, calculateWcfParity } from './calculations.js';
+ api/merchant-frontend
+
 rwa-conceptual-auth-extension
 import { fetchBalances } from './wallet-balance.js';
 
@@ -13,6 +15,7 @@ let connectedWallet = null;
 const translations = {
     en: {
 
+ main
 
 // Configuration
 const REFRESH_INTERVAL_MS = 5000; // 5 seconds for simulation fidelity
@@ -29,17 +32,23 @@ const translations = {
         col_macro: "MACRO PI",
         col_ref: "WEIGHTED (REF)",
         chart_title: "IOU Price Visualization (Simulation)",
+ api/merchant-frontend
+
         Backup-copy
+ main
         telemetry_status: "Live Technical Telemetry",
         cex_price: "External Market (Speculative IOU)",
         wcf_parity: "Vanguard Justice Parity (WCF)",
         pioneer_equity: "Pioneer Equity (Ref)",
         bridge_cap: "Bridge Liquidity Cap",
+ api/merchant-frontend
+
         rwa-conceptual-auth-extension
         ledger_title: "Vanguard Bridge Real-Time Ledger"
     },
     id: {
 
+ main
         ledger_title: "Vanguard Bridge Real-Time Ledger",
         footer_disclaimer: "This interface is a research prototype visualizing PiRC-101 conceptual modeling. It is NOT an official Pi Network utility."
     },
@@ -89,12 +98,17 @@ const translations = {
         col_macro: "MACRO PI",
         col_ref: "TERBOBOT (REF)",
         chart_title: "Visualisasi Harga IOU (Simulasi)",
+ api/merchant-frontend
+
         Backup-copy
+ main
         telemetry_status: "Telemetri Teknis Langsung",
         cex_price: "Pasar Eksternal (IOU Spekulatif)",
         wcf_parity: "Paritas Keadilan (WCF)",
         pioneer_equity: "Ekuitas Pionir (Ref)",
         bridge_cap: "Batas Likuiditas Jembatan",
+ api/merchant-frontend
+
         rwa-conceptual-auth-extension
         ledger_title: "Buku Besar Telemetri Keadilan"
     }
@@ -141,6 +155,7 @@ export function changeLanguage(lang) {
     document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
 
 
+ main
         ledger_title: "Buku Besar Telemetri Keadilan",
         footer_disclaimer: "Antarmuka ini adalah prototipe penelitian yang memvisualisasikan pemodelan konseptual PiRC-101. Ini BUKAN utilitas resmi Pi Network."
     },
@@ -204,7 +219,10 @@ export function changeLanguage(lang) {
     currentLang = lang;
     // Ar requires full Right-to-Left interface flip
     document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+ api/merchant-frontend
+
       Backup-copy
+ main
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
@@ -213,6 +231,7 @@ export function changeLanguage(lang) {
     });
 }
 
+api/merchant-frontend
 
  rwa-conceptual-auth-extension
 // ================= CURRENCY =================
@@ -260,6 +279,7 @@ async function syncTelemetry() {
 
         // ================= LEDGER =================
 
+ main
 /**
  * Handles currency switching for the entire dashboard
  */
@@ -332,11 +352,16 @@ async function syncTelemetry() {
         pircLineSeries.update({ time: now, value: convertedWcfParity });
 
         // Ledger population - transform real trades into Micro/Macro visualization
+ api/merchant-frontend
+
    Backup-copy
+ main
         const ledgerBody = document.getElementById('ledger-body');
         ledgerBody.innerHTML = '';
 
         const trades = tradeData.trades || [];
+ api/merchant-frontend
+
  rwa-conceptual-auth-extension
 
         trades.slice(0, 10).forEach(t => {
@@ -354,6 +379,7 @@ async function syncTelemetry() {
             </tr>
             `;
 
+ main
         trades.slice(0, 15).forEach(t => {
             // Convert trade amount to micro units (each trade unit = 1 Micro on CEX)
             const microAmount = Math.round(t.amount * ALGORITHM_BASE_MICROS);
@@ -373,11 +399,16 @@ async function syncTelemetry() {
                 <td class="tx-cell" style="font-family: monospace; font-weight: bold;">${parseFloat(macroPi).toLocaleString(undefined, { maximumFractionDigits: 4 })} π</td>
                 <td class="tx-cell" style="color: #3fb950; font-weight: bold;">${currencyInfo.symbol}${convertedVal.toLocaleString(undefined, { maximumFractionDigits: 2 })} (WCF)</td>
             </tr>`;
+ api/merchant-frontend
+
   Backup-copy
+ main
             ledgerBody.insertAdjacentHTML('beforeend', row);
         });
 
     } catch (e) {
+ api/merchant-frontend
+
  rwa-conceptual-auth-extension
         console.error("Telemetry error:", e);
     }
@@ -395,6 +426,7 @@ setInterval(() => {
 
 // ================= INIT =================
 
+ main
         console.error("Telemetry sync failed:", e);
     }
 }
@@ -405,6 +437,9 @@ window.updateCurrency = updateCurrency;
 
 // Initial Start
 setInterval(syncTelemetry, REFRESH_INTERVAL_MS);
+ api/merchant-frontend
+
  Backup-copy
+ main
 syncTelemetry();
 changeLanguage('en');
