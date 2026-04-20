@@ -1,4 +1,4 @@
-name: 🔄 V4 Eternal Context-Aware Sync
+name: 🏭 V3 Enterprise Auto-PR Factory
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync_and_push:
+  run-pr-factory:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout PiRC
@@ -28,12 +28,13 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: ⚙️ Execute Context-Aware PR Factory
+      - name: ⚙️ Execute PR Factory & Hardware Scaffolder
         env:
+          # This token provides the GitHub CLI (gh) the permissions to open PRs 
           GH_TOKEN: ${{ secrets.OMNI_SYNC_TOKEN }}
         run: |
           cd SmartContracts
-          git config user.name "Omni-Synchronizer V4"
-          git config user.email "v4-bot@ze0ro99.pirc"
+          git config user.name "Omni-Synchronizer Bot"
+          git config user.email "omni-bot@ze0ro99.pirc"
           cd ../PiRC
-          python scripts/automation/v4_context_aware_factory.py
+          python scripts/automation/enterprise_pr_factory.py
