@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: PiOS
 pragma solidity ^0.8.28;
-import "./PiRC_7Layers_Config.sol";
 
 /**
  * @dev Interface to verify that the Auditor has a valid Sovereign DID.

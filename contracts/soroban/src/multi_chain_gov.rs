@@ -1,8 +1,4 @@
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
+#![no_std]
 use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env, Bytes, BytesN};
 
 #[contract]

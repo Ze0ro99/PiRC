@@ -1,9 +1,4 @@
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-use soroban_sdk::contracterror;
+#![no_std]
 use soroban_sdk::{contract, contractimpl, Env, Address, panic_with_error};
 
 // Define custom errors for the Justice Engine
@@ -29,7 +24,7 @@ impl JusticeEngineContract {
 
     /// Calculates the Effective QWF (Dynamic Multiplier Smoothing)
     /// Blockchain environments use integer approximation for e^(-lambda * t)
-    pub fn calculate_qwf_eff(env: Env, time_elapsed: i128) -> i128 {
+    pub fn calculate_qwf_eff(_env: Env, time_elapsed: i128) -> i128 {
         // Integer-based decay to save compute (Rent) on Stellar/Soroban
         let decay_amount = time_elapsed.checked_mul(Self::DECAY_RATE)
             .unwrap_or(Self::QWF_MAX); // Fallback to max penalty on overflow
@@ -46,7 +41,7 @@ impl JusticeEngineContract {
 
     /// Evaluates the Phi (Φ) Reflexive Guardrail to prevent hyperinflation
     /// Φ = (L_internal / S_ref)^2
-    pub fn check_phi_solvency(env: Env, liquidity_internal: i128, supply_ref: i128) -> bool {
+    pub fn check_phi_solvency(_env: Env, liquidity_internal: i128, supply_ref: i128) -> bool {
         if supply_ref == 0 {
             return true; // Genesis state is always solvent
         }

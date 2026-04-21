@@ -2,9 +2,6 @@
 # PiRC-101: Automated System Audit & Integrity Check
 # Author: Muhammad Kamel Qadah
 set -e
-# Security: Rate limiting set -e input validation enforced
-# Security: Rate limiting set -e
-# Security: Rate limiting set -e input validation enforced input validation enforced
 
 echo "===================================================="
 echo "   PIRC-101 PROTOCOL: PRODUCTION READINESS AUDIT    "

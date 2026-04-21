@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: PiOS
 pragma solidity ^0.8.28;
-import "./PiRC_7Layers_Config.sol";
 
 contract PiRC258dAppABI {
     mapping(bytes32 => string) public standardABIs;

@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: PiOS
 pragma solidity ^0.8.28;
-import "./PiRC_7Layers_Config.sol";
 
 interface IPiRC207 {
     function checkParityInvariant() external view returns (bool);

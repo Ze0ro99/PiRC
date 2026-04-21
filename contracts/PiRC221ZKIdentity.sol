@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: PiOS
 pragma solidity ^0.8.28;
-import "./PiRC_7Layers_Config.sol";
 
 contract PiRC221ZKIdentity {
     mapping(address => bytes32) public nullifiers;

@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "./PiRC_7Layers_Config.sol";
 
 /**
  * @title PiRC2 Justice Engine
