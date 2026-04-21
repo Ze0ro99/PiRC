@@ -173,14 +173,14 @@ graph TD
 A structural representation of how the Python AI wrappers connect to the Soroban Rust Smart Contracts.
 ```mermaid
 flowchart LR
-    subgraph Terminal Interface
+    subgraph TerminalInterface ["Terminal Interface"]
         UI(Termux / Automation Scripts) -->|1. activate_pirc_full.sh| Bridge
     end
-    subgraph The Intelligence Layer
+    subgraph IntelligenceLayer ["The Intelligence Layer"]
         Bridge -->|Python| DG[core/math/differential_geometry.py]
         Bridge -->|Python| QS[core/crypto/quantum_sim.py]
     end
-    subgraph The Execution Layer (Soroban Wasm)
+    subgraph ExecutionLayer ["The Execution Layer (Soroban Wasm)"]
         DG -->|Tensors| R1[(Omni_Sovereign_Architecture)]
         QS -->|Kyber Keys| R1
         R1 -->|Contracts 45-260| Soroban[Soroban Blockchain Testnet]
