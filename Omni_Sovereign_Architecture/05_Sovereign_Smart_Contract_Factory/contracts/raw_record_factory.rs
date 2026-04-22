@@ -1,3 +1,4 @@
+mod pirc_config;
 /**
  * Sovereign Smart Contract Factory with Differential Engineering + Post-Quantum Encryption
  * PiRC Omni Sovereign Architecture v2.1
