@@ -13,7 +13,6 @@ jobs:
         run: |
           curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz -o stellar.tar.gz
           tar -xzf stellar.tar.gz
-          # Bulletproof extraction: dynamically find the binary regardless of folder name
           sudo find . -name "stellar" -type f -exec mv {} /usr/local/bin/ \;
           sudo chmod +x /usr/local/bin/stellar
           
@@ -27,23 +26,23 @@ jobs:
           MERCH=$(stellar keys address bot_merchant)
           SUB=$(stellar keys address bot_subscriber)
           
-          echo "🟠 LAYER 1 (ORANGE): Registering Differential Service"
+          echo -e "\e[38;5;208m🟠 LAYER 1 (ORANGE): Registering Differential Service\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- register_service --merchant $MERCH --name "Live Colors" --price 10000000 --period_secs 2592000 --trial_period_secs 3600 --approve_periods 3 || true
           
-          echo "🟡 LAYER 2 (YELLOW): Quantum Subscribe"
+          echo -e "\e[33m🟡 LAYER 2 (YELLOW): Quantum Subscribe\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- subscribe --subscriber $SUB --service_id 0 --auto_renew true || true
           
-          echo "🔵 LAYER 3 (BLUE): Extend Subscription Boundary"
+          echo -e "\e[34m🔵 LAYER 3 (BLUE): Extend Subscription Boundary\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- extend_subscription --subscriber $SUB --sub_id 0 || true
           
-          echo "🟢 LAYER 4 (GREEN): Omnipotent Batch Settlement"
+          echo -e "\e[32m🟢 LAYER 4 (GREEN): Omnipotent Batch Settlement\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- process --merchant $MERCH --service_id 0 --offset 0 --limit 50 || true
           
-          echo "🟣 LAYER 5 (PURPLE): State Toggle Verification"
+          echo -e "\e[35m🟣 LAYER 5 (PURPLE): State Toggle Verification\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- toggle_auto_renew --subscriber $SUB --sub_id 0 || true
           
-          echo "🔴 LAYER 6 (RED): Terminal Cancellation Phase"
+          echo -e "\e[31m🔴 LAYER 6 (RED): Terminal Cancellation Phase\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- cancel --subscriber $SUB --sub_id 0 || true
           
-          echo "🏅 LAYER 7 (GOLD): Global Logic Integrity Read"
+          echo -e "\e[33;1m🏅 LAYER 7 (GOLD): Global Logic Integrity Read\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- version
