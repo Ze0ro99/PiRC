@@ -1,3 +1,8 @@
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 pub struct AIPolicyHooks;
 
 impl AIPolicyHooks {

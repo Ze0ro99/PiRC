@@ -1,3 +1,8 @@
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 pub struct RewardEngineEnhanced;
 
 impl RewardEngineEnhanced {

@@ -1,3 +1,14 @@
-[workspace]
-resolver = "2"
-members = ["soroban"]
+[package]
+name = "subscription-contract"
+version = "0.3.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = "22"
+
+
+
+

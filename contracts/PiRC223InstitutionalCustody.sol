@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: PiOS
 pragma solidity ^0.8.28;
+import "./PiRC_7Layers_Config.sol";
 
 /**
  * @dev Interface for PiRC-209 DID Registry to verify institutional identity.
