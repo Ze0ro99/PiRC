@@ -1,7 +1,7 @@
 name: 🌈 7-Color Matrix Live RPC Integrator
 on:
   push:
-    branches: [ "omni-v2-main" ]
+    branches: [ "omni-v2-main", "main" ]
   workflow_dispatch:
 
 jobs:
@@ -9,9 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
-          sudo mv stellar-cli-22.0.0-x86_64-unknown-linux-gnu/stellar /usr/local/bin/
+      - name: ⚙️ Bootstrap Stellar Quantum Environment
+        run: |
+          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz -o stellar.tar.gz
+          tar -xzf stellar.tar.gz
+          # Bulletproof extraction: dynamically find the binary regardless of folder name
+          sudo find . -name "stellar" -type f -exec mv {} /usr/local/bin/ \;
+          sudo chmod +x /usr/local/bin/stellar
+          
           stellar network add --global pi_testnet --rpc-url "https://rpc.testnet.minepi.com" --network-passphrase "Pi Testnet"
           stellar keys generate --global bot_merchant --network pi_testnet
           stellar keys generate --global bot_subscriber --network pi_testnet
