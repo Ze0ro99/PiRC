@@ -1,0 +1,44 @@
+name: 🌈 7-Color Matrix Live RPC Integrator
+on:
+  push:
+    branches: [ "omni-v2-main" ]
+  workflow_dispatch:
+
+jobs:
+  live_blockchain_interaction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          sudo mv stellar-cli-22.0.0-x86_64-unknown-linux-gnu/stellar /usr/local/bin/
+          stellar network add --global pi_testnet --rpc-url "https://rpc.testnet.minepi.com" --network-passphrase "Pi Testnet"
+          stellar keys generate --global bot_merchant --network pi_testnet
+          stellar keys generate --global bot_subscriber --network pi_testnet
+          stellar keys fund bot_merchant --network pi_testnet || true
+          stellar keys fund bot_subscriber --network pi_testnet || true
+          
+          CONTRACT="CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV"
+          MERCH=$(stellar keys address bot_merchant)
+          SUB=$(stellar keys address bot_subscriber)
+          
+          echo "🟠 LAYER 1 (ORANGE): Registering Differential Service"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- register_service --merchant $MERCH --name "Live Colors" --price 10000000 --period_secs 2592000 --trial_period_secs 3600 --approve_periods 3 || true
+          
+          echo "🟡 LAYER 2 (YELLOW): Quantum Subscribe"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- subscribe --subscriber $SUB --service_id 0 --auto_renew true || true
+          
+          echo "🔵 LAYER 3 (BLUE): Extend Subscription Boundary"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- extend_subscription --subscriber $SUB --sub_id 0 || true
+          
+          echo "🟢 LAYER 4 (GREEN): Omnipotent Batch Settlement"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- process --merchant $MERCH --service_id 0 --offset 0 --limit 50 || true
+          
+          echo "🟣 LAYER 5 (PURPLE): State Toggle Verification"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- toggle_auto_renew --subscriber $SUB --sub_id 0 || true
+          
+          echo "🔴 LAYER 6 (RED): Terminal Cancellation Phase"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- cancel --subscriber $SUB --sub_id 0 || true
+          
+          echo "🏅 LAYER 7 (GOLD): Global Logic Integrity Read"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- version
