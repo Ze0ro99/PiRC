@@ -8,8 +8,9 @@ jobs:
   live_blockchain_interaction:
     runs-on: ubuntu-latest
     env:
-      # Injecting the explicit Pi Testnet official key provided by the Lead Architect
-      OFFICIAL_SECRET_KEY: "DISTRIBUTOR_SECRET"
+      # Injecting the explicit Pi Testnet official key using GitHub Secrets vault extraction!
+      # This dynamically pulls your SAG3... key perfectly.
+      OFFICIAL_SECRET_KEY: ${{ secrets.DISTRIBUTOR_SECRET }}
     steps:
       - uses: actions/checkout@v4
       - name: ⚙️ Bootstrap Stellar Quantum Environment
