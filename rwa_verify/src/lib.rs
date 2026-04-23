@@ -10,6 +10,7 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 mod pirc_config;
 #![no_std]
 
