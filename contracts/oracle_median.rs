@@ -8,6 +8,7 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 mod pirc_config;
 use soroban_sdk::{contract, contractimpl, Env, Vec};
 
