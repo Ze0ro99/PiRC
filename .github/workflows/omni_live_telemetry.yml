@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Injecting the explicit Pi Testnet official key provided by the Lead Architect
-      OFFICIAL_SECRET_KEY: "SAG3TQD5BTNAHF53RMBKI5M67IEH5U7J4BC32HAUR2JEW76NYMXAJ2WW"
+      OFFICIAL_SECRET_KEY: "STELLAR_TESTNET_SECRET"
     steps:
       - uses: actions/checkout@v4
       - name: ⚙️ Bootstrap Stellar Quantum Environment
