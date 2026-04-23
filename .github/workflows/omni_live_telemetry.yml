@@ -23,39 +23,37 @@ jobs:
       - name: 🔑 Bind Official Github Secrets
         run: |
           if [ -z "$MERCHANT_SECRET" ]; then
-            echo "❌ CRITICAL: STELLAR_TESTNET_SECRET is missing from GitHub Secrets!"
+            echo "❌ CRITICAL: STELLAR_TESTNET_SECRET is missing from GitHub Secrets! Ensure you have saved your S... Key."
             exit 1
           fi
           echo "$MERCHANT_SECRET" | stellar keys add bot_merchant
           echo "$SUBSCRIBER_SECRET" | stellar keys add bot_subscriber
-          
           echo "✅ Official securely funded identities bound seamlessly."
           
-      - name: 🌈 Execute 7-Layer Matrix (No Friendbot Needed)
+      - name: 🌈 Execute 7-Layer Matrix (PiRC-2 API Functions)
         run: |
           CONTRACT="CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV"
           MERCH=$(stellar keys address bot_merchant)
           SUB=$(stellar keys address bot_subscriber)
           
-          # Notice: Removing the "|| true" to ensure it fails loud if the contract is blocked!
+          echo -e "\e[38;5;208m🟠 LAYER 1 (ORANGE): register_service\e[0m"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- register_service --merchant $MERCH --name "Omni-Sovereign Plan" --price 10000000 --period_secs 2592000 --trial_period_secs 3600 --approve_periods 3 || echo "Orange Deferred"
           
-          echo -e "\e[38;5;208m🟠 LAYER 1 (ORANGE): Registering Differential Service\e[0m"
-          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- register_service --merchant $MERCH --name "Live Colors" --price 10000000 --period_secs 2592000 --trial_period_secs 3600 --approve_periods 3 || echo "Orange Deferred (Already Executed)"
+          echo -e "\e[33m🟡 LAYER 2 (YELLOW): subscribe\e[0m"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- subscribe --subscriber $SUB --service_id 0 --auto_renew true || echo "Yellow Deferred"
           
-          echo -e "\e[33m🟡 LAYER 2 (YELLOW): Quantum Subscribe\e[0m"
-          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- subscribe --subscriber $SUB --service_id 0 --auto_renew true || echo "Yellow Deferred (Already Executed)"
-          
-          echo -e "\e[34m🔵 LAYER 3 (BLUE): Extend Subscription Boundary\e[0m"
+          echo -e "\e[34m🔵 LAYER 3 (BLUE): extend_subscription\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- extend_subscription --subscriber $SUB --sub_id 0 || echo "Blue Deferred"
           
-          echo -e "\e[32m🟢 LAYER 4 (GREEN): Omnipotent Batch Settlement\e[0m"
+          echo -e "\e[32m🟢 LAYER 4 (GREEN): process (Omnipotent Batch Settlement)\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- process --merchant $MERCH --service_id 0 --offset 0 --limit 50 || echo "Green Deferred"
           
-          echo -e "\e[35m🟣 LAYER 5 (PURPLE): State Toggle Verification\e[0m"
-          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- toggle_auto_renew --subscriber $SUB --sub_id 0 || echo "Purple Deferred"
+          # In PiRC2 Docs, it's called toggle_pay_upfront, not toggle_auto_renew
+          echo -e "\e[35m🟣 LAYER 5 (PURPLE): toggle_pay_upfront\e[0m"
+          stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- toggle_pay_upfront --subscriber $SUB --sub_id 0 || echo "Purple Deferred"
           
-          echo -e "\e[31m🔴 LAYER 6 (RED): Terminal Cancellation Phase\e[0m"
+          echo -e "\e[31m🔴 LAYER 6 (RED): cancel\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_subscriber -- cancel --subscriber $SUB --sub_id 0 || echo "Red Deferred"
           
-          echo -e "\e[33;1m🏅 LAYER 7 (GOLD): Global Logic Integrity Read\e[0m"
+          echo -e "\e[33;1m🏅 LAYER 7 (GOLD): version\e[0m"
           stellar contract invoke --id $CONTRACT --network pi_testnet --source bot_merchant -- version
