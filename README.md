@@ -104,12 +104,12 @@ The mandated PiRC-2 standard for non-custodial recurring commerce on the Pi Netw
 
 ```mermaid
 flowchart TD
-    L1(1. ORANGE: Register Service) --> L2(2. YELLOW: Subscribe)
-    L2 --> L3(3. BLUE: Extend Subscription)
-    L3 --> L4(4. GREEN: Process Batch Ops)
-    L4 --> L5(5. PURPLE: Toggle Pay Upfront)
-    L5 --> L6(6. RED: Cancel Auth)
-    L6 --> L7{7. GOLD: Validate Version/State}
+    L1(1. ORANGE: register_service) --> L2(2. YELLOW: subscribe)
+    L2 --> L3(3. BLUE: extend_subscription)
+    L3 --> L4(4. GREEN: process)
+    L4 --> L5(5. PURPLE: toggle_pay_upfront)
+    L5 --> L6(6. RED: cancel)
+    L6 --> L7{7. GOLD: is_subscription_active}
 ```
 
 ---
@@ -120,8 +120,8 @@ Displays how the internal routing operates without taking custody of user keys a
 ```mermaid
 graph LR
     A[Subscriber Wallet] -->|Signs TX| B(PiRC-2 Router)
-    B -->|Delegates Auth| C[Subscription Contract]
-    C -->|Escrows/Processes| D[Merchant Wallet]
+    B -->|Calls `do_approve` Allowance| C[Subscription Contract]
+    C -->|`try_transfer_from` Escrows/Processes| D[Merchant Wallet]
     C -->|Cross-Invokes| E[Registry Contract]
 ```
 
