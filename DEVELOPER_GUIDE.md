@@ -1,46 +1,52 @@
-# 🛠️ PiRC Developer Integration Guide (V19)
+# PiRC Developer Integration Guide (vFinal)
 
-Welcome Pioneer. To integrate your app into the Sovereign System:
+This guide describes how to verify and integrate against the PiRC Sovereign Architecture on Pi Testnet.
 
-### 1. Auto-Import Merchandise
-Call the `rwa_garden` contract using your App-ID. The system will automatically tokenize your items as RWAs.
+## Public on-chain identifiers
 
-### 2. Claim Your 5000 Token Reward
-Once your app is registered, the system triggers an automatic airdrop of **5000 tokens from all 7 layers** to your liquidity pool.
+| Role | Address | Network |
+|------|---------|---------|
+| Master Issuer (7 Project Packets) | `GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6` | Pi Testnet (Stellar) |
+| PiRC2 Subscription Contract | `CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV` | Pi Testnet (Soroban) |
 
-### 3. Payment Gateway & Compliance
-Whether your customers pay via **Visa** or **Sovereign Tokens**, the system automatically swaps them for your App-Native Token.
-* **AML Tracking:** Every transaction logs the Source, Product Type, and Day/Time for maximum transparency and trust.
+Both are public — safe to commit, log, and link. Secret keys must come from `.env` (see `.env.example`) and are never read by the orchestrator helpers.
 
----
+## The 7 colored Project Packets
 
-## 🚀 Post-Deployment & Operations (Live Network)
+`7_layer_packets.json` is the authoritative registry. The dashboard, the `/api/status` endpoint, and the Python orchestrator all read from the same set of contract IDs.
 
-### 1. Generating System Verification Report
-Run this script and read `PI_RC_VERIFICATION_REPORT.txt`:
+## Verifying live status
+
 ```bash
-./scripts/generate_verification_report.sh
+# Read-only public reads against Horizon + Soroban RPC. Exits non-zero on failure.
+./activate_pirc_full_final.sh
+
+# Or just the JSON status payload:
+python3 pi_rc_master_orchestrator_final.py status
 ```
 
-### 2. Manual Soroban CLI Interactions
-To interact with deployed PiRC contracts directly via terminal:
+In the browser, open `/` and inspect the three tiles below the header (issuer sequence, subscription network, latest ledger). The tiles are populated by `/api/status`, which is implemented by `netlify/functions/status.js` and reads only public chain data.
 
-**Minting an RWA Token (Example PiRC-105 equivalent):**
+## Subscribing via PiRC2
+
+The recurring-payment flow uses the Soroban `do_approve` allowance pattern so subscribers do not re-sign each charge. Documentation of the lifecycle, error codes, query methods, and admin methods lives in `PiRC2/` (files `1-introduction.md` through `9-subscription-setup-guide.md`).
+
+To invoke the subscription contract from the Soroban CLI:
+
 ```bash
-soroban contract invoke   --id <YOUR_CONTRACT_ID>   --source <YOUR_SECRET_KEY>   --network testnet   -- mint --to <RECIPIENT_ADDRESS> --amount 10000000
+soroban contract invoke \
+  --id CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV \
+  --source <YOUR_SECRET_KEY> \
+  --network testnet \
+  -- <method> <args...>
 ```
 
-**Check Token Balance:**
-```bash
-soroban contract invoke   --id <YOUR_CONTRACT_ID>   --source <YOUR_SECRET_KEY>   --network testnet   -- balance --id <TARGET_ADDRESS>
-```
+`<method>` should be one of those documented in `PiRC2/8-admin-methods.md` and `PiRC2/7-query-methods.md`.
 
-### 3. Running Production via Docker Compose
-For isolation or running on a cloud VPS (AWS, DigitalOcean):
-```bash
-docker-compose up -d --build
-```
-This will instantly spin up your Rust compiler environment, Python Quantum Simulators, and Frontend interface.
+## CI / GitHub Actions
 
-### 4. CI/CD (GitHub Actions)
-Every push to the `main` branch will now automatically trigger a build phase on GitHub's cloud, compiling all contracts to WASM and executing the Python topological models to ensure code integrity.
+The vFinal orchestrator is read-only by design. CI may run `python3 pi_rc_master_orchestrator_final.py status` to gate deploys on issuer reachability and Soroban RPC health. CI must not be granted the issuer's secret seed.
+
+## Out of scope
+
+This guide deliberately does not document an "auto-merge any branch" flow, an autonomous PR-creation bot, or a self-healing rewriter. Those patterns are unsafe to run inside automated agents against a production-bound repository and have been removed from the vFinal scope.

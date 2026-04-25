@@ -79,6 +79,25 @@
             <button onclick="switchTab('playground')" id="tab-playground" class="pb-3 px-2 tab-inactive transition-colors">🚀 Developer Sandbox</button>
         </div>
 
+        <!-- Orchestrator Live Status Panel (read-only, served by /api/status) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 font-mono text-xs">
+            <div class="glass-panel p-4">
+                <div class="text-slate-500 mb-1">Master Issuer · Sequence</div>
+                <div id="statusIssuerSeq" class="text-white text-lg">—</div>
+                <div class="text-slate-500 mt-2 break-all" id="statusIssuerId">GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6</div>
+            </div>
+            <div class="glass-panel p-4">
+                <div class="text-slate-500 mb-1">PiRC2 Subscription Contract</div>
+                <div id="statusSubNet" class="text-white text-lg">—</div>
+                <div class="text-slate-500 mt-2 break-all">CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV</div>
+            </div>
+            <div class="glass-panel p-4">
+                <div class="text-slate-500 mb-1">Soroban Latest Ledger</div>
+                <div id="statusLedger" class="text-white text-lg">—</div>
+                <div class="text-slate-500 mt-2" id="statusEnv">Env: …</div>
+            </div>
+        </div>
+
         <!-- TAB 1: Live Transactions (Explorer) -->
         <div id="content-explorer" class="flex flex-col h-[500px]">
             <div class="flex justify-between items-center mb-4">
@@ -172,14 +191,15 @@
         // --- Render The 7 Layers ---
         function renderLayers() {
             const layers = [
-                { name: "Core Mint Contract", id: "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6", color: "text-white", bg: "bg-slate-800", border: "border-slate-600" },
-                { name: "L0: Purple Layer", id: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4", color: "text-purple-400", bg: "bg-purple-900/20", border: "border-purple-500/30" },
-                { name: "L1: Gold Layer", id: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG", color: "text-yellow-500", bg: "bg-yellow-900/20", border: "border-yellow-500/30" },
-                { name: "L2: Yellow Layer", id: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF", color: "text-yellow-300", bg: "bg-yellow-800/20", border: "border-yellow-400/30" },
-                { name: "L3: Orange Layer", id: "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF", color: "text-orange-400", bg: "bg-orange-900/20", border: "border-orange-500/30" },
-                { name: "L4: Blue Layer", id: "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD", color: "text-blue-400", bg: "bg-blue-900/20", border: "border-blue-500/30" },
-                { name: "L5: Green Layer", id: "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4", color: "text-green-400", bg: "bg-green-900/20", border: "border-green-500/30" },
-                { name: "L6: Red Layer", id: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO", color: "text-red-400", bg: "bg-red-900/20", border: "border-red-500/30" }
+                { name: "Core Mint Contract (Master Issuer)", id: "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6", color: "text-white", bg: "bg-slate-800", border: "border-slate-600" },
+                { name: "PiRC2 Subscription Contract", id: "CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV", color: "text-pink-300", bg: "bg-pink-900/20", border: "border-pink-500/30" },
+                { name: "Red Layer · Governance",   id: "CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO", color: "text-red-400",    bg: "bg-red-900/20",    border: "border-red-500/30" },
+                { name: "Green Layer · Pi Cash",    id: "CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4", color: "text-green-400",  bg: "bg-green-900/20",  border: "border-green-500/30" },
+                { name: "Orange Layer · Register",  id: "CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF", color: "text-orange-400", bg: "bg-orange-900/20", border: "border-orange-500/30" },
+                { name: "Yellow Layer · Subscribe", id: "CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF", color: "text-yellow-300", bg: "bg-yellow-800/20", border: "border-yellow-400/30" },
+                { name: "Blue Layer · Extend",      id: "CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD", color: "text-blue-400",   bg: "bg-blue-900/20",   border: "border-blue-500/30" },
+                { name: "Purple Layer · Pay Upfront", id: "CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4", color: "text-purple-400", bg: "bg-purple-900/20", border: "border-purple-500/30" },
+                { name: "Gold Layer · Status",      id: "CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG", color: "text-yellow-500", bg: "bg-yellow-900/20", border: "border-yellow-500/30" }
             ];
 
             const grid = document.getElementById('layersGrid');
@@ -248,6 +268,35 @@
 
         fetchLiveTransactions();
         setInterval(fetchLiveTransactions, 15000);
+
+        // --- Orchestrator Live Status (read-only, /api/status) ---
+        async function fetchOrchestratorStatus() {
+            try {
+                const r = await fetch('/api/status');
+                if (!r.ok) return;
+                const s = await r.json();
+                const seq = s.issuer && s.issuer.sequence ? s.issuer.sequence : 'unavailable';
+                document.getElementById('statusIssuerSeq').innerText = seq;
+                const net = s.soroban && s.soroban.network && s.soroban.network.passphrase
+                  ? s.soroban.network.passphrase.replace('Test SDF Network ; September 2015', 'Stellar Testnet')
+                  : 'unavailable';
+                document.getElementById('statusSubNet').innerText = net;
+                const ledger = s.soroban && s.soroban.latest_ledger && s.soroban.latest_ledger.sequence
+                  ? s.soroban.latest_ledger.sequence
+                  : 'unavailable';
+                document.getElementById('statusLedger').innerText = ledger;
+                if (s.env) {
+                    const flags = [
+                        'STELLAR_TESTNET_SECRET=' + (s.env.stellar_secret_present ? 'set' : 'missing'),
+                        'PI_API_KEY=' + (s.env.pi_api_key_present ? 'set' : 'missing'),
+                        'OMNI_SYNC_TOKEN=' + (s.env.omni_sync_token_present ? 'set' : 'missing')
+                    ];
+                    document.getElementById('statusEnv').innerText = flags.join(' · ');
+                }
+            } catch (e) { /* leave placeholders */ }
+        }
+        fetchOrchestratorStatus();
+        setInterval(fetchOrchestratorStatus, 30000);
 
         // --- Smart Contract Playground (Real Simulation via RPC) ---
         const simulateBtn = document.getElementById('simulateBtn');

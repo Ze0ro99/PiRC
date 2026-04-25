@@ -24,6 +24,11 @@
   to = "/.netlify/functions/orderbook"
   status = 200
 
+[[redirects]]
+  from = "/api/status"
+  to = "/.netlify/functions/status"
+  status = 200
+
 # Security Headers
 [[headers]]
   for = "/*"
