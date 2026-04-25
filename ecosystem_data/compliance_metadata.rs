@@ -9,6 +9,8 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 mod pirc_config;
 // Metadata structure for AML/KYC tracking on every transaction
 struct TransactionAudit {

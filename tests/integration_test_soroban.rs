@@ -9,6 +9,8 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 mod pirc_config;
 // Integration Test: Verifying Walled Garden & 10M:1 Multiplier
 #[test]
