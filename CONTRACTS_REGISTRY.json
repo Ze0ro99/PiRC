@@ -1,4 +1,25 @@
 {
+  "core": {
+    "schema": "pirc.contracts-registry/v2",
+    "master_issuer": {
+      "address": "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6",
+      "network": "Pi Testnet (Stellar/Soroban)",
+      "role": "Issuer for the 7 colored Project Packets",
+      "horizon": "https://api.testnet.minepi.com",
+      "explorer": "https://stellar.expert/explorer/testnet/account/GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6"
+    },
+    "pirc2_subscription": {
+      "address": "CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV",
+      "network": "Pi Testnet (Soroban)",
+      "role": "Recurring payments via Soroban token allowance (no re-signing)",
+      "soroban_rpc": "https://soroban-testnet.stellar.org:443",
+      "explorer": "https://stellar.expert/explorer/testnet/contract/CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV"
+    },
+    "packets": {
+      "registry": "7_layer_packets.json",
+      "colors": ["RED", "GREEN", "ORANGE", "YELLOW", "BLUE", "PURPLE", "GOLD"]
+    }
+  },
   "pirc_1": {
     "id": "1",
     "path": "Omni_Sovereign_Architecture/Compiled_Ecosystem/pirc_1",
