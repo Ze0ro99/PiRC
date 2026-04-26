@@ -9,8 +9,6 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
 mod pirc_config;
 #[derive(Debug)]
 pub struct ProjectMetrics {

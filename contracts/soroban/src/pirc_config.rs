@@ -4,8 +4,6 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
 #![no_std]
 pub const ISSUER_ACCOUNT: &str = "GA3ECRFJ6S05BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6";
 pub const REGISTRY_CONTRACT: &str = "CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B";

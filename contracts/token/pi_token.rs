@@ -9,8 +9,6 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
 mod pirc_config;
  rwa-conceptual-auth-extension
 use soroban_sdk::{Env, Address, Map, symbol_short};
