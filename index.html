@@ -87,13 +87,25 @@
                     <p class="text-sm text-slate-400 font-mono mt-1">Live PiDEX · Soroban Pi Testnet · Spherical Hybrid Tokens</p>
                 </div>
             </div>
-            <div class="flex flex-col items-end gap-2">
-                <div class="px-4 py-1.5 rounded-full bg-green-900/30 border border-green-500/50 text-green-400 text-sm font-mono flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                    <span id="rpcStatus">RPC Connected</span>
+            <div class="flex flex-col items-end gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="flex flex-col text-right">
+                        <span id="usernameDisplay" class="text-sm font-bold text-yellow-400 leading-tight">Guest</span>
+                        <span id="statusDisplay" class="text-[10px] text-slate-400 uppercase tracking-wider">Connecting...</span>
+                    </div>
+                    <div id="userAvatar" class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-slate-900 font-extrabold text-sm">?</div>
+                    <button id="payBtn" class="ml-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5">
+                        Support 1 Pi
+                    </button>
                 </div>
-                <div class="text-xs font-mono text-slate-500">
-                    Network Ledger: <span id="ledgerSequence" class="text-slate-300">Syncing…</span>
+                <div class="flex items-center gap-3 text-xs font-mono">
+                    <div class="px-3 py-1 rounded-full bg-green-900/30 border border-green-500/50 text-green-400 flex items-center gap-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
+                        <span id="rpcStatus">RPC Connected</span>
+                    </div>
+                    <div class="text-slate-500">
+                        Ledger: <span id="ledgerSequence" class="text-slate-300">Syncing…</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -667,6 +679,97 @@
 
     setLogFilter('all');
     logEvent('user', 'Dashboard initialised', { layers: LAYERS.length });
+
+    /* ============================================================
+       PI PAYMENT SUPPORT
+       ============================================================ */
+    (function() {
+        async function postJson(url, body) {
+          const r = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body || {}),
+          });
+          const txt = await r.text();
+          return { ok: r.ok, status: r.status, text: txt };
+        }
+
+        async function initPay() {
+          const userEl = document.getElementById('usernameDisplay');
+          const statusEl = document.getElementById('statusDisplay');
+          const btn = document.getElementById('payBtn');
+
+          if (!window.Pi) {
+            statusEl.textContent = "Pi SDK not found";
+            return;
+          }
+
+          try {
+            statusEl.textContent = "Authenticating...";
+            const auth = await window.Pi.authenticate(["username", "payments"], function(incomplete) {
+               console.log("Incomplete payment found", incomplete);
+               logEvent('user', 'Incomplete payment found', incomplete);
+            });
+            
+            const username = auth.user.username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            userEl.textContent = username;
+            statusEl.textContent = "Ready";
+
+            btn.onclick = async () => {
+              try {
+                statusEl.textContent = "Creating payment...";
+                const paymentData = {
+                  amount: 1.0,
+                  memo: "Support Developer",
+                  metadata: { kind: "support" }
+                };
+
+                const callbacks = {
+                  onReadyForServerApproval: (id) => {
+                    statusEl.textContent = "Approving...";
+                    postJson("/.netlify/functions/pi-approve", { paymentId: id, accessToken: auth.accessToken })
+                      .then(res => {
+                          statusEl.textContent = res.ok ? "Approved" : "Approve failed";
+                          logEvent('user', 'Payment approval status', { id, ok: res.ok });
+                      });
+                  },
+                  onReadyForServerCompletion: (id, txid) => {
+                    statusEl.textContent = "Completing...";
+                    postJson("/.netlify/functions/pi-complete", { paymentId: id, txid, accessToken: auth.accessToken })
+                      .then(res => {
+                          statusEl.textContent = res.ok ? "Done! Thank you." : "Complete failed";
+                          logEvent('user', 'Payment completion status', { id, txid, ok: res.ok });
+                      });
+                  },
+                  onCancel: () => {
+                      statusEl.textContent = "Cancelled";
+                      logEvent('user', 'Payment cancelled');
+                  },
+                  onError: (err) => {
+                      statusEl.textContent = "Error: " + err.message;
+                      logEvent('user', 'Payment error', { error: err.message });
+                  }
+                };
+
+                window.Pi.createPayment(paymentData, callbacks);
+              } catch (e) {
+                statusEl.textContent = "Failed: " + e.message;
+                logEvent('user', 'Payment creation failed', { error: e.message });
+              }
+            };
+          } catch (e) {
+            statusEl.textContent = "Auth failed: " + e.message;
+            logEvent('user', 'Auth failed', { error: e.message });
+          }
+        }
+        
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initPay);
+        } else {
+          initPay();
+        }
+    })();
     </script>
 </body>
 </html>
