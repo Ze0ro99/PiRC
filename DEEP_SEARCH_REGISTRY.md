@@ -6,3 +6,5 @@ The intelligent engine has scanned all historical and parallel branches to extra
 ### 💠 Solidity (EVM) Bridged Contracts Found: 2186
 ### 📄 Architectural Documents Found: 11083
 
+
+> **Notice:** Current scope is Testnet-only, manual signing via Soroban CLI, operator-driven flows.
