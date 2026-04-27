@@ -7,4 +7,4 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-soroban-sdk = "21.7.0"
+soroban-sdk = "25.3.1"
