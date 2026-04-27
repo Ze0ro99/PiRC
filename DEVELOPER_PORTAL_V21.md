@@ -9,3 +9,5 @@ Each successfully integrated Pioneer receives a **5000 token reward from each of
 ## 3. The Sovereign Swap & AML
 * **Interoperability:** Customers can pay with **Visa** or any of the **7 Sovereign Tokens**. The system automatically swaps these for your app's native token.
 * **Compliance (AML):** Every transaction logs the **Source, Product Type, Day, and Time** to prevent illegal trade and ensure 100% trust.
+
+> **Notice:** Current scope is Testnet-only, manual signing via Soroban CLI, operator-driven flows.

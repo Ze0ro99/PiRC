@@ -11,3 +11,8 @@ Simply run the master activation script. It will automatically compile all 150+ 
 ```bash
 ./activate_pirc_full.sh
 ```
+
+## One-Command v2 Deployment
+Run PiRC v2.0 Operations Engine Active.
+Executing consolidated Testnet deployment... to bootstrap the entire environment.
+

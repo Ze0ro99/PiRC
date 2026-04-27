@@ -150,3 +150,5 @@ graph TD
     C -->|Calls `stellar invoke`| D[Pi Network RPC: rpc.testnet.minepi.com]
     D -->|Returns SUCCESS: Code 0| E((Valid On-Chain TX Synchronized))
 ```
+
+> **Notice:** Current scope is Testnet-only, manual signing via Soroban CLI, operator-driven flows.
