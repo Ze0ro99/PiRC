@@ -152,3 +152,34 @@ graph TD
 ```
 
 > **Notice:** Current scope is Testnet-only, manual signing via Soroban CLI, operator-driven flows.
+
+## Stellar Production & Testnet Architecture
+The PiRC repository has been validated against the Core Stellar Network using robust array limitation tests and minting mechanism validations.
+
+### Ecosystem Cryptographic Footprint
+The primary `pirc_deployer` (`GA3EC...EN6`) has authored seven distinct contractual assets across the testnet architecture to secure PiRC features. 
+
+### Visual Pipeline Architecture
+*The following visual schematics diagram the complete workflow processing units (20 active architectural flows).*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+See  for exact on-chain TX hashes and Contract IDs.
