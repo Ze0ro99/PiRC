@@ -43,20 +43,32 @@ export function encodeBigIntFromBits(parts, size, unsigned) {
     throw new TypeError(`expected bigint-like values, got: ${parts} (${e})`);
   }
 
-  // check for sign mismatches for single inputs (this is a special case to
-  // handle one parameter passed to e.g. UnsignedHyper et al.)
-  // see https://github.com/stellar/js-xdr/pull/100#discussion_r1228770845
-  if (unsigned && parts.length === 1 && parts[0] < 0n) {
-    throw new RangeError(`expected a positive value, got: ${parts}`);
+  // fast path: single value — validate and return directly without assembly
+  if (parts.length === 1) {
+    const value = parts[0];
+    if (unsigned && value < 0n) {
+      throw new RangeError(`expected a positive value, got: ${parts}`);
+    }
+    const [min, max] = calculateBigIntBoundaries(size, unsigned);
+    if (value < min || value > max) {
+      throw new RangeError(
+        `bigint value ${value} for ${formatIntName(
+          size,
+          unsigned
+        )} out of range [${min}, ${max}]`
+      );
+    }
+    return value;
   }
 
-  // encode in big-endian fashion, shifting each slice by the slice size
-  let result = BigInt.asUintN(sliceSize, parts[0]); // safe: len >= 1
-  for (let i = 1; i < parts.length; i++) {
+  // multi-part assembly: encode in big-endian fashion, shifting each slice
+  let result = 0n;
+
+  for (let i = 0; i < parts.length; i++) {
+    assertSliceFits(parts[i], sliceSize);
     result |= BigInt.asUintN(sliceSize, parts[i]) << BigInt(i * sliceSize);
   }
 
-  // interpret value as signed if necessary and clamp it
   if (!unsigned) {
     result = BigInt.asIntN(size, result);
   }
@@ -68,7 +80,7 @@ export function encodeBigIntFromBits(parts, size, unsigned) {
   }
 
   // failed to encode
-  throw new TypeError(
+  throw new RangeError(
     `bigint values [${parts}] for ${formatIntName(
       size,
       unsigned
@@ -83,7 +95,7 @@ export function encodeBigIntFromBits(parts, size, unsigned) {
  * @param {bigint} value - Single bigint value to decompose
  * @param {64|128|256} iSize - Number of bits represented by `value`
  * @param {32|64|128} sliceSize - Number of chunks to decompose into
- * @return {bigint[]}
+ * @return {bigint[]} List of signed bigint chunks in big-endian order (i.e. earlier elements are higher bits)
  */
 export function sliceBigInt(value, iSize, sliceSize) {
   if (typeof value !== 'bigint') {
@@ -138,4 +150,22 @@ export function calculateBigIntBoundaries(size, unsigned) {
 
   const boundary = 1n << BigInt(size - 1);
   return [0n - boundary, boundary - 1n];
+}
+
+/**
+ * Asserts that a given part fits within the specified slice size.
+ * @param {bigint | number | string} part - The part to check.
+ * @param {number} sliceSize - The size of the slice in bits (e.g., 32, 64, 128)
+ * @returns {void}
+ * @throws {RangeError} If the part does not fit within the slice size.
+ */
+function assertSliceFits(part, sliceSize) {
+  const fitsSigned = BigInt.asIntN(sliceSize, part) === part;
+  const fitsUnsigned = BigInt.asUintN(sliceSize, part) === part;
+
+  if (!fitsSigned && !fitsUnsigned) {
+    throw new RangeError(
+      `slice value ${part} does not fit in ${sliceSize} bits`
+    );
+  }
 }
