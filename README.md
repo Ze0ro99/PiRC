@@ -69,5 +69,24 @@ PiRC stands for "Pi Requests for Comment." It acts similarly to traditional RFCs
 **Why is a fork like Ze0ro99/PiRC important?**
 Forks like Ze0ro99/PiRC represent active development, experimental features, and community-driven enhancements based on official PiRC standards.
 
-## 6. Conclusion
+## 6. Firebase (FairBaes) DB SDK Integration
+
+The PiRC project relies on structured DB Telemetry powered by Firebase (FairBaes).
+Developers interact with this via the `firebase-applet-config.json` SDK file provided.
+
+### Implementation Script
+
+```javascript
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import config from './firebase-applet-config.json';
+
+const app = initializeApp(config);
+const db = getFirestore(app);
+console.log("Firebase Telemetry Activated.");
+```
+
+This ensures proper tracking of script executions, profiles, and application information.
+
+## 7. Conclusion
 By executing these professional improvements, `Ze0ro99/PiRC` successfully transitions to a secure, community-ready hub.
