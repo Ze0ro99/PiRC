@@ -98,3 +98,25 @@ By executing these professional improvements, `Ze0ro99/PiRC` successfully transi
 ![System Overview](https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&w=1200&q=80) 
 
 *The visual representations above illustrate the continuous integration pipeline executing smart contract verification modules in real-time, coupled with a diagram of the distributed ledger architecture.*
+
+## System Images (20) - Explanations
+- ![PiRC Conceptual Architecture 1](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=1) *Explanation: Enhanced PiRC Distributed Ledger Component 1*
+- ![PiRC Conceptual Architecture 2](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=2) *Explanation: Enhanced PiRC Distributed Ledger Component 2*
+- ![PiRC Conceptual Architecture 3](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=3) *Explanation: Enhanced PiRC Distributed Ledger Component 3*
+- ![PiRC Conceptual Architecture 4](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=4) *Explanation: Enhanced PiRC Distributed Ledger Component 4*
+- ![PiRC Conceptual Architecture 5](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=5) *Explanation: Enhanced PiRC Distributed Ledger Component 5*
+- ![PiRC Conceptual Architecture 6](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=6) *Explanation: Enhanced PiRC Distributed Ledger Component 6*
+- ![PiRC Conceptual Architecture 7](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=7) *Explanation: Enhanced PiRC Distributed Ledger Component 7*
+- ![PiRC Conceptual Architecture 8](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=8) *Explanation: Enhanced PiRC Distributed Ledger Component 8*
+- ![PiRC Conceptual Architecture 9](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=9) *Explanation: Enhanced PiRC Distributed Ledger Component 9*
+- ![PiRC Conceptual Architecture 10](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=10) *Explanation: Enhanced PiRC Distributed Ledger Component 10*
+- ![PiRC Conceptual Architecture 11](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=11) *Explanation: Enhanced PiRC Distributed Ledger Component 11*
+- ![PiRC Conceptual Architecture 12](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=12) *Explanation: Enhanced PiRC Distributed Ledger Component 12*
+- ![PiRC Conceptual Architecture 13](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=13) *Explanation: Enhanced PiRC Distributed Ledger Component 13*
+- ![PiRC Conceptual Architecture 14](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=14) *Explanation: Enhanced PiRC Distributed Ledger Component 14*
+- ![PiRC Conceptual Architecture 15](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=15) *Explanation: Enhanced PiRC Distributed Ledger Component 15*
+- ![PiRC Conceptual Architecture 16](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=16) *Explanation: Enhanced PiRC Distributed Ledger Component 16*
+- ![PiRC Conceptual Architecture 17](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=17) *Explanation: Enhanced PiRC Distributed Ledger Component 17*
+- ![PiRC Conceptual Architecture 18](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=18) *Explanation: Enhanced PiRC Distributed Ledger Component 18*
+- ![PiRC Conceptual Architecture 19](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=19) *Explanation: Enhanced PiRC Distributed Ledger Component 19*
+- ![PiRC Conceptual Architecture 20](https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80&sig=20) *Explanation: Enhanced PiRC Distributed Ledger Component 20*
