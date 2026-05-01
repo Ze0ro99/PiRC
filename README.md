@@ -90,3 +90,11 @@ This ensures proper tracking of script executions, profiles, and application inf
 
 ## 7. Conclusion
 By executing these professional improvements, `Ze0ro99/PiRC` successfully transitions to a secure, community-ready hub.
+
+---
+
+## 8. System Architecture Visuals
+
+![System Overview](https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&w=1200&q=80) 
+
+*The visual representations above illustrate the continuous integration pipeline executing smart contract verification modules in real-time, coupled with a diagram of the distributed ledger architecture.*
