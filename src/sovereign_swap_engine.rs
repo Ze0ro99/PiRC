@@ -11,6 +11,7 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
 #![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 mod pirc_config;
 // Sovereign Swap Engine (V22)
 // Automated conversion of Visa/Sovereign tokens into App-Native Tokens.
