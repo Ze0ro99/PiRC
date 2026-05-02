@@ -3,97 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>PiRC Protocol | Admin Control Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <style>
     body { font-family: 'Courier New', monospace; background: #020617; color: #38bdf8; margin: 0; padding: 20px; }
-    .header { border-bottom: 1px solid #1e293b; padding-bottom: 20px; margin-bottom: 20px; }
     h1 { margin: 0; color: #f8fafc; font-size: 1.8rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-    .panel { background: #0f172a; border: 1px solid #1e293b; padding: 20px; border-radius: 8px; }
-    .panel h2 { margin-top: 0; font-size: 1.2rem; color: #94a3b8; margin-bottom: 15px; }
-    .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981; margin-right: 8px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #1e293b; font-size: 0.9rem; }
-    th { color: #64748b; }
-    .btn { background: #38bdf8; color: #0f172a; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-    .btn:hover { background: #7dd3fc; }
-    pre { background: #020617; padding: 10px; border-radius: 4px; overflow-x: auto; color: #a5b4fc; border: 1px solid #1e293b; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1><span class="status-indicator"></span> PiRC Omni-Node Control Center</h1>
-    <p style="color: #64748b; margin-top: 5px;">Authenticated Core Team Access Only. Connected to Soroban RPC.</p>
-  </div>
-
-  <div class="grid">
-    <div class="panel">
-      <h2>Network Status</h2>
-      <p><strong>Environment:</strong> <span id="envVal" style="color: #cbd5e1;">Loading...</span></p>
-      <p><strong>Gateway Response:</strong> <span style="color:#10b981">Online</span></p>
-      <p><strong>Authentication:</strong> <span id="authStatus" style="color: #cbd5e1;">Unverified</span></p>
-      <button class="btn" onclick="fetchMatrix()">Refresh Telemetry</button>
-      <button class="btn" onclick="authenticatePi()" style="background:#10b981; margin-left:10px;">Login with Pi</button>
-    </div>
-
-    <div class="panel" style="grid-column: span 2;">
-      <h2>7-Layer Matrix Nodes</h2>
-      <table>
-        <thead>
-          <tr><th>Layer / Matrix Name</th><th>Hash Address</th><th>Status</th></tr>
-        </thead>
-        <tbody id="matrixTable">
-          <tr><td colspan="3">Initializing secure connection to Vercel Gateway...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="panel" style="margin-top: 20px;">
-    <h2>Live Gateway Response Payload</h2>
-    <pre id="jsonOutput">Fetching...</pre>
-  </div>
-
-  <script>
-    async function fetchMatrix() {
-      try {
-        const res = await fetch('/api/pirc_matrix');
-        const data = await res.json();
-        document.getElementById('envVal').innerText = data.ENVIRONMENT.toUpperCase();
-        document.getElementById('jsonOutput').innerText = JSON.stringify(data, null, 2);
-        
-        let tableHTML = '';
-        if (data.CONTRACT_ADDRESSES) {
-          for (const [layer, address] of Object.entries(data.CONTRACT_ADDRESSES)) {
-            tableHTML += `<tr>
-              <td><strong>${layer}</strong></td>
-              <td style="color: #cbd5e1; font-family: monospace;">${address}</td>
-              <td style="color: #10b981;">Active</td>
-            </tr>`;
-          }
-        }
-        document.getElementById('matrixTable').innerHTML = tableHTML;
-      } catch (e) {
-        document.getElementById('matrixTable').innerHTML = '<tr><td colspan="3" style="color: red;">Error fetching ledger state. Ensure Gateway is deployed.</td></tr>';
-        document.getElementById('jsonOutput').innerText = e.toString();
-      }
-    }
-
-    async function authenticatePi() {
-      try {
-        Pi.init({ version: "2.0", sandbox: true });
-        const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, function(incompletePayment) { });
-        document.getElementById('authStatus').innerText = "Verified (" + auth.user.username + ")";
-        document.getElementById('authStatus').style.color = "#10b981";
-      } catch (e) {
-        alert("Pi Sandbox Authentication Failed.\n\nPlease access from Pi Browser or Sandbox correctly.");
-        console.error(e);
-      }
-    }
-    
-    document.addEventListener('DOMContentLoaded', fetchMatrix);
-  </script>
+  <h1>PiRC Omni-Node Control Center</h1>
+  <p>Status: Online | Telemetry Active</p>
 </body>
 </html>
