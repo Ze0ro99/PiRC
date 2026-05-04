@@ -1,22 +1,14 @@
 import { ALGORITHM_BASE_MICROS } from './constants.js';
 import { normalizeMicrosToMacro, calculateWcfParity } from './calculations.js';
-rwa-conceptual-auth-extension
 import { fetchBalances } from './wallet-balance.js';
 
 // ================= CONFIG =================
-const REFRESH_INTERVAL_MS = 5000;
+const REFRESH_INTERVAL_MS = 5000; // 5 seconds for simulation fidelity
 
 // ================= WALLET STATE =================
 let connectedWallet = null;
 
 // ================= TRANSLATIONS =================
-const translations = {
-    en: {
-
-
-// Configuration
-const REFRESH_INTERVAL_MS = 5000; // 5 seconds for simulation fidelity
-
 // Multilingual translations database
 const translations = {
     en: {
@@ -29,13 +21,11 @@ const translations = {
         col_macro: "MACRO PI",
         col_ref: "WEIGHTED (REF)",
         chart_title: "IOU Price Visualization (Simulation)",
-        Backup-copy
         telemetry_status: "Live Technical Telemetry",
         cex_price: "External Market (Speculative IOU)",
         wcf_parity: "Vanguard Justice Parity (WCF)",
         pioneer_equity: "Pioneer Equity (Ref)",
         bridge_cap: "Bridge Liquidity Cap",
-        rwa-conceptual-auth-extension
         ledger_title: "Vanguard Bridge Real-Time Ledger"
     },
     id: {
@@ -89,13 +79,11 @@ const translations = {
         col_macro: "MACRO PI",
         col_ref: "TERBOBOT (REF)",
         chart_title: "Visualisasi Harga IOU (Simulasi)",
-        Backup-copy
         telemetry_status: "Telemetri Teknis Langsung",
         cex_price: "Pasar Eksternal (IOU Spekulatif)",
         wcf_parity: "Paritas Keadilan (WCF)",
         pioneer_equity: "Ekuitas Pionir (Ref)",
         bridge_cap: "Batas Likuiditas Jembatan",
-        rwa-conceptual-auth-extension
         ledger_title: "Buku Besar Telemetri Keadilan"
     }
 };
