@@ -52,6 +52,14 @@ jobs:
           toolchain: stable
           override: true
 
+      - name: Auto-Clean Syntax
+        run: |
+          pip install black
+          black scripts/*.py
+          # Force remove any problematic hidden files
+          find . -name "*.pyc" -delete
+
+
       - name: Prepare Linux & Termux Mock Environment
         run: |
           sudo apt-get update
