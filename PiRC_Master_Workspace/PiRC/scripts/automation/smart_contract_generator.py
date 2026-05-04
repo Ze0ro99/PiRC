@@ -11,10 +11,10 @@ target_dir.mkdir(parents=True, exist_ok=True)
 # Scan PiRC for updated standards (Looking for PiRC-XXX in any .md file)
 standards = set()
 for file in pirc_dir.rglob("*.md"):
-    content = file.read_text(errors='ignore')
-    matches = re.findall(r'(?i)PiRC[-_]?(\d{1,3})', content)
-    for match in matches:
-        standards.add(match)
+content = file.read_text(errors='ignore')
+matches = re.findall(r'(?i)PiRC[-_]?(\d{1,3})', content)
+for match in matches:
+standards.add(match)
 
 standards = sorted(list(set(int(x) for x in standards)))
 print(f"🔍 Discovered {len(standards)} Standards demanding Smart Contract compilation.")
@@ -22,11 +22,11 @@ print(f"🔍 Discovered {len(standards)} Standards demanding Smart Contract comp
 # Generate the Rust Contracts
 lib_rs = "#![no_std]\n\n"
 for std in standards:
-    mod_name = f"pirc_{std}"
-    lib_rs += f"pub mod {mod_name};\n"
-    
-    contract_file = target_dir / f"{mod_name}.rs"
-    contract_file.write_text(f"""#![no_std]
+mod_name = f"pirc_{std}"
+lib_rs += f"pub mod {mod_name};\n"
+
+contract_file = target_dir / f"{mod_name}.rs"
+contract_file.write_text(f"""#![no_std]
 use soroban_sdk::{{contract, contractimpl, Address, Env}};
 
 /// Auto-Generated Smart Contract for PiRC-{std}
@@ -35,11 +35,11 @@ pub struct PiRC{std}Contract;
 
 #[contractimpl]
 impl PiRC{std}Contract {{
-    pub fn process_logic(env: Env, caller: Address) -> bool {{
-        caller.require_auth();
-        // Insert compiled logic here mapped from PiRC-{std} specs.
-        true
-    }}
+pub fn process_logic(env: Env, caller: Address) -> bool {{
+caller.require_auth();
+// Insert compiled logic here mapped from PiRC-{std} specs.
+true
+}}
 }}
 """)
 
