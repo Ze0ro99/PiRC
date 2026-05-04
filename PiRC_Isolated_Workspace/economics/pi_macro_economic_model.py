@@ -19,22 +19,22 @@ from dataclasses import dataclass
 @dataclass
 class MacroState:
 
-    year: int
+year: int
 
-    population: int
-    adoption_rate: float
-    pioneers: int
+population: int
+adoption_rate: float
+pioneers: int
 
-    circulating_supply: float
-    locked_supply: float
+circulating_supply: float
+locked_supply: float
 
-    velocity: float
-    transactions_value: float
+velocity: float
+transactions_value: float
 
-    apps: int
-    utility_index: float
+apps: int
+utility_index: float
 
-    price: float
+price: float
 
 
 # -----------------------------
@@ -43,164 +43,164 @@ class MacroState:
 
 class PiMacroEconomicModel:
 
-    def __init__(self):
+def __init__(self):
 
-        global_population = 8_000_000_000
+global_population = 8_000_000_000
 
-        pioneers = 17_700_000
+pioneers = 17_700_000
 
-        self.state = MacroState(
+self.state = MacroState(
 
-            year=0,
+year=0,
 
-            population=global_population,
-            adoption_rate=pioneers / global_population,
-            pioneers=pioneers,
+population=global_population,
+adoption_rate=pioneers / global_population,
+pioneers=pioneers,
 
-            circulating_supply=3_000_000_000,
-            locked_supply=7_000_000_000,
+circulating_supply=3_000_000_000,
+locked_supply=7_000_000_000,
 
-            velocity=2.0,
-            transactions_value=0,
+velocity=2.0,
+transactions_value=0,
 
-            apps=300,
-            utility_index=0.2,
+apps=300,
+utility_index=0.2,
 
-            price=0.5
-        )
+price=0.5
+)
 
-    # -------------------------
-    # Adoption
-    # -------------------------
+# -------------------------
+# Adoption
+# -------------------------
 
-    def simulate_adoption(self):
+def simulate_adoption(self):
 
-        growth = random.uniform(0.02, 0.10)
+growth = random.uniform(0.02, 0.10)
 
-        new_users = int(self.state.pioneers * growth)
+new_users = int(self.state.pioneers * growth)
 
-        self.state.pioneers += new_users
+self.state.pioneers += new_users
 
-        self.state.adoption_rate = self.state.pioneers / self.state.population
-
-
-    # -------------------------
-    # App ecosystem
-    # -------------------------
-
-    def simulate_apps(self):
-
-        growth = int(self.state.apps * random.uniform(0.05, 0.20))
-
-        self.state.apps += growth
-
-        self.state.utility_index = min(
-            1.0,
-            self.state.apps / 10000
-        )
+self.state.adoption_rate = self.state.pioneers / self.state.population
 
 
-    # -------------------------
-    # Supply dynamics
-    # -------------------------
+# -------------------------
+# App ecosystem
+# -------------------------
 
-    def simulate_supply(self):
+def simulate_apps(self):
 
-        inflation = random.uniform(0.01, 0.03)
+growth = int(self.state.apps * random.uniform(0.05, 0.20))
 
-        minted = self.state.circulating_supply * inflation
+self.state.apps += growth
 
-        self.state.circulating_supply += minted
-
-        lock_ratio = random.uniform(0.01, 0.05)
-
-        locked = self.state.circulating_supply * lock_ratio
-
-        self.state.circulating_supply -= locked
-        self.state.locked_supply += locked
+self.state.utility_index = min(
+1.0,
+self.state.apps / 10000
+)
 
 
-    # -------------------------
-    # Velocity of money
-    # -------------------------
+# -------------------------
+# Supply dynamics
+# -------------------------
 
-    def simulate_velocity(self):
+def simulate_supply(self):
 
-        activity_factor = self.state.utility_index * 5
+inflation = random.uniform(0.01, 0.03)
 
-        self.state.velocity = 1 + activity_factor
+minted = self.state.circulating_supply * inflation
 
+self.state.circulating_supply += minted
 
-    # -------------------------
-    # Transaction value
-    # -------------------------
+lock_ratio = random.uniform(0.01, 0.05)
 
-    def simulate_transactions(self):
+locked = self.state.circulating_supply * lock_ratio
 
-        avg_payment = random.uniform(0.5, 5)
-
-        self.state.transactions_value = (
-            self.state.pioneers *
-            avg_payment *
-            self.state.velocity
-        )
+self.state.circulating_supply -= locked
+self.state.locked_supply += locked
 
 
-    # -------------------------
-    # Price equilibrium
-    # -------------------------
+# -------------------------
+# Velocity of money
+# -------------------------
 
-    def equilibrium_price(self):
+def simulate_velocity(self):
 
-        demand = self.state.transactions_value
+activity_factor = self.state.utility_index * 5
 
-        supply = self.state.circulating_supply
-
-        equilibrium = demand / supply
-
-        network_effect = 1 + (self.state.adoption_rate * 20)
-
-        self.state.price = equilibrium * network_effect
+self.state.velocity = 1 + activity_factor
 
 
-    # -------------------------
-    # One year step
-    # -------------------------
+# -------------------------
+# Transaction value
+# -------------------------
 
-    def run_year(self):
+def simulate_transactions(self):
 
-        self.state.year += 1
+avg_payment = random.uniform(0.5, 5)
 
-        self.simulate_adoption()
-        self.simulate_apps()
-        self.simulate_supply()
-        self.simulate_velocity()
-        self.simulate_transactions()
-        self.equilibrium_price()
+self.state.transactions_value = (
+self.state.pioneers *
+avg_payment *
+self.state.velocity
+)
 
 
-    # -------------------------
-    # Summary
-    # -------------------------
+# -------------------------
+# Price equilibrium
+# -------------------------
 
-    def summary(self):
+def equilibrium_price(self):
 
-        return {
+demand = self.state.transactions_value
 
-            "year": self.state.year,
-            "pioneers": self.state.pioneers,
-            "adoption_rate": round(self.state.adoption_rate, 6),
-            "apps": self.state.apps,
+supply = self.state.circulating_supply
 
-            "velocity": round(self.state.velocity, 2),
+equilibrium = demand / supply
 
-            "circulating_supply": round(self.state.circulating_supply, 2),
-            "locked_supply": round(self.state.locked_supply, 2),
+network_effect = 1 + (self.state.adoption_rate * 20)
 
-            "transaction_value": round(self.state.transactions_value, 2),
+self.state.price = equilibrium * network_effect
 
-            "price_estimate": round(self.state.price, 4)
-        }
+
+# -------------------------
+# One year step
+# -------------------------
+
+def run_year(self):
+
+self.state.year += 1
+
+self.simulate_adoption()
+self.simulate_apps()
+self.simulate_supply()
+self.simulate_velocity()
+self.simulate_transactions()
+self.equilibrium_price()
+
+
+# -------------------------
+# Summary
+# -------------------------
+
+def summary(self):
+
+return {
+
+"year": self.state.year,
+"pioneers": self.state.pioneers,
+"adoption_rate": round(self.state.adoption_rate, 6),
+"apps": self.state.apps,
+
+"velocity": round(self.state.velocity, 2),
+
+"circulating_supply": round(self.state.circulating_supply, 2),
+"locked_supply": round(self.state.locked_supply, 2),
+
+"transaction_value": round(self.state.transactions_value, 2),
+
+"price_estimate": round(self.state.price, 4)
+}
 
 
 # -----------------------------
@@ -209,12 +209,12 @@ class PiMacroEconomicModel:
 
 if __name__ == "__main__":
 
-    model = PiMacroEconomicModel()
+model = PiMacroEconomicModel()
 
-    YEARS = 50
+YEARS = 50
 
-    for _ in range(YEARS):
+for _ in range(YEARS):
 
-        model.run_year()
+model.run_year()
 
-        print(model.summary())
+print(model.summary())
