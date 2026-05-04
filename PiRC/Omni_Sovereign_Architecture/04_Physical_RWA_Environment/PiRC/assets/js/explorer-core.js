@@ -148,28 +148,6 @@ const FIAT_CURRENCY_DATA = {
     JPY: { symbol: "¥", rate: 150.45 }
 };
 
-let currentLang = 'en';
-let selectedCurrency = 'USD';
-
-/**
- * Changes the interface language and adjusts text direction
- * @param {string} lang - The language code (en, ar, etc.).
- */
-export function changeLanguage(lang) {
-    currentLang = lang;
-    // Ar requires full Right-to-Left interface flip
-    document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-      Backup-copy
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-            el.innerText = translations[lang][key];
-        }
-    });
-}
-
-
- rwa-conceptual-auth-extension
 // ================= CURRENCY =================
 export function updateCurrency() {
     selectedCurrency = document.getElementById('currency-select')?.value || 'USD';
