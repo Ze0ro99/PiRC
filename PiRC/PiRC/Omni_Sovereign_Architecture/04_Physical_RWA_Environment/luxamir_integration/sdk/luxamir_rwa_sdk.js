@@ -3,7 +3,7 @@
  * Auto-tokenization of physical products → NFT-style ownership proof
  * Version: 1.5 | Date: 2026-04-20
  */
-import { SorobanClient, nativeToScVal } from '@soroban/client';
+import { SorobanClient } from '@soroban/client';
 
 const RPC_URL = "https://soroban-testnet.stellar.org";
 const NETWORK_PASSPHRASE = SorobanClient.Networks.TESTNET;
