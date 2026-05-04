@@ -4,11 +4,16 @@
     "@stellar/stellar-sdk": "^15.0.1",
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "follow-redirects": "^1.16.0",
+    "minimatch": "^10.2.5",
+    "path-to-regexp": "^8.4.2",
+    "tar": "^7.5.13",
+    "undici": "^8.2.0"
   },
   "type": "module",
   "devDependencies": {
-    "vercel": "^53.1.0"
+    "vercel": "^50.41.0"
   },
   "scripts": {
     "vercel-build": "echo \"Vercel build complete - Ready for deployment\"",
