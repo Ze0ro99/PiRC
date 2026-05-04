@@ -23,7 +23,7 @@ jobs:
 
       # 3. Cache Cargo (biar cepat & stabil)
       - name: Cache Cargo
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo
