@@ -128,47 +128,14 @@ export function changeLanguage(lang) {
 
     document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
 
-
-        ledger_title: "Buku Besar Telemetri Keadilan",
-        footer_disclaimer: "Antarmuka ini adalah prototipe penelitian yang memvisualisasikan pemodelan konseptual PiRC-101. Ini BUKAN utilitas resmi Pi Network."
-    },
-    fr: {
-        metrics_iou_price: "Parité spéculative IOU",
-        metrics_wcf_price: "Parité soutenue Vanguard Bridge ($WCF)",
-        metrics_wcf_ref: "Fonds propres conceptuels des Pionniers ($REF)",
-        col_hash: "HASH TX",
-        col_class: "CLASSIFICATION",
-        col_micros: "MICROS CEX",
-        col_macro: "MACRO PI",
-        col_ref: "PONDÉRÉ (REF)",
-        chart_title: "Visualisation du prix IOU (Simulation)",
-        telemetry_status: "Télémétrie technique en direct",
-        cex_price: "Marché externe (IOU spéculatif)",
-        wcf_parity: "Parité de justice (WCF)",
-        pioneer_equity: "Fonds propres Pionnier (Réf)",
-        bridge_cap: "Plafond de liquidité du pont",
-        ledger_title: "Registre de télémétrie de justice",
-        footer_disclaimer: "Cette interface est un prototype de recherche visualisant la modélisation conceptuelle PiRC-101. Ce n'est PAS un utilitaire officiel de Pi Network."
-    },
-    ms: {
-        metrics_iou_price: "Pariti Spekulatif IOU",
-        metrics_wcf_price: "Pariti Disokong Vanguard Bridge ($WCF)",
-        metrics_wcf_ref: "Ekuiti Pionir Konseptual ($REF)",
-        col_hash: "HASH TX",
-        col_class: "KLASIFIKASI",
-        col_micros: "CEX MICROS",
-        col_macro: "MACRO PI",
-        col_ref: "DITIMBANG (REF)",
-        chart_title: "Visualisasi Harga IOU (Simulasi)",
-        telemetry_status: "Telemetri Teknikal Langsung",
-        cex_price: "Pasaran Luaran (IOU Spekulatif)",
-        wcf_parity: "Pariti Keadilan (WCF)",
-        pioneer_equity: "Ekuiti Perintis (Ref)",
-        bridge_cap: "Had Kecairan Jambatan",
-        ledger_title: "Lejar Telemetri Keadilan",
-        footer_disclaimer: "Antaramuka ini adalah prototaip penyelidikan yang memvisualisasikan pemodelan konseptual PiRC-101. Ia BUKAN utiliti rasmi Pi Network."
-    }
-};
+    const langPack = translations[currentLang] || translations.en;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (key && langPack[key]) {
+            el.innerText = langPack[key];
+        }
+    });
+}
 
 // Global Fiat Currency & Exchange Rates (Conceptual Telemetry)
 const FIAT_CURRENCY_DATA = {
