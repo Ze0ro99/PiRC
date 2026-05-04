@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Initialize CodeQL AI Engine
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: python, javascript-typescript, rust
           build-mode: none # Critical: Ensures Rust and scripts scan without build errors
@@ -34,7 +34,7 @@ jobs:
           python scripts/justice_math_validator.py --deep-scan --standards 1-260
 
       - name: Perform AI Security Audit
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/justice-logic-security"
 
