@@ -1,6 +1,5 @@
 // scripts/testnet_validator.js
 const PiNetwork = require('@pinetwork-js/sdk');
-const Stellar = require('stellar-sdk');
 
 async function validateEcosystem() {
     console.log("Connecting to Pi Testnet1/Testnet2...");
