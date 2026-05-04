@@ -8,7 +8,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "vercel": "^52.0.0"
+    "vercel": "^53.1.0"
   },
   "scripts": {
     "vercel-build": "echo \"Vercel build complete - Ready for deployment\"",
