@@ -12,7 +12,7 @@ const rpc = new SorobanClient.Server(RPC_URL);
 
 export async function tokenizePhysicalProduct(appId, productHash, metadata, ownerAddress, proof) {
     console.log("🔄 Tokenizing physical product for Luxamir...");
-    const account = await rpc.getAccount(ownerAddress);
+    await rpc.getAccount(ownerAddress);
     console.log("✅ RWA Tokenized successfully!");
     return "TX_HASH_PLACEHOLDER";
 }
