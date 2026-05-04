@@ -2,7 +2,7 @@ name: Ultimate Justice Orchestrator (PiRC1-PiRC260)
 
 on:
   push:
-    branches: ["**"] # Monitors every single branch automatically
+    branches: ["**"] # Global monitoring for all active and future branches
   pull_request:
     branches: ["**"]
 
@@ -13,63 +13,82 @@ permissions:
 
 jobs:
   AI_Audit_and_Logic_Repair:
+    name: AI Security & PiRC Audit
     runs-on: ubuntu-latest
     steps:
-      - name: Comprehensive Repo Scan
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Step 1: Initialize CodeQL (This was the missing link)
       - name: Initialize CodeQL AI Engine
         uses: github/codeql-action/init@v3
         with:
           languages: python, javascript-typescript, rust
-          build-mode: none # Ensures Rust and Scripts are scanned without compilation errors
+          build-mode: none # Critical: Ensures Rust and scripts scan without build errors
 
-      # Step 2: Custom PiRC Compliance Check
-      - name: AI Compliance (PiRC1 to PiRC-260)
+      - name: PiRC Standards Compliance (1-260)
         run: |
-          # Enforcing high-precision math (10^-7) across all branches
+          # Enforcing financial precision and weight ratios (10M:1)
+          # Ensure scripts/justice_math_validator.py exists in your repo
           python scripts/justice_math_validator.py --deep-scan --standards 1-260
 
-      # Step 3: Perform Security Analysis
-      - name: Security Patching & AI Audit
+      - name: Perform AI Security Audit
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/logic-and-security"
+          category: "/justice-logic-security"
 
   Blockchain_Testnet_Validation:
+    name: Blockchain & Environment Validation
     needs: AI_Audit_and_Logic_Repair
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Stellar & Pi Network SDK Auth
-        run: |
-          # Authenticating with Real Testnet environments
-          npm install @pinetwork-js/sdk stellar-sdk
-          node scripts/testnet_validator.js --env Testnet1 --env Testnet2
+      - name: Setup Rust Toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
 
-      - name: Smart Contract Deployment (Validation)
+      - name: Prepare Linux & Termux Mock Environment
         run: |
-          # Deploying Justice Engine contracts to Pi Testnet
-          python scripts/contract_generator.py --deploy --network pi_testnet
+          sudo apt-get update
+          # Fixed: libarchive-tools provides bsdtar on Ubuntu runners
+          sudo apt-get install -y jq curl git libarchive-tools ncurses-bin
+          bsdtar --version
+
+      - name: Install Blockchain Dependencies
+        run: |
+          npm install stellar-sdk
+          # Local Pi SDK verification to avoid NPM 404 errors
+          if [ -f "./lib/pi-sdk.js" ]; then
+            echo "Pi SDK detected locally. ✅"
+          else
+            echo "ERROR: Missing /lib/pi-sdk.js. System cannot verify Pi transactions. ❌"
+            exit 1
+          fi
+
+      - name: Execute Testnet Transaction Proof
+        run: |
+          # Proving real-time consensus to the community
+          node scripts/testnet_validator.js --env production --proof real-time
 
   Frontend_Backend_Build:
+    name: Production Deployment (Vercel)
     needs: Blockchain_Testnet_Validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Automatic HTML/UI Assembly
+      - name: Automated UI Assembly
         run: |
           npm install
-          npm run build # Prepares the app for Vercel
+          npm run build
 
-      - name: Vercel Production Deployment
+      - name: Vercel Production Sync
         uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
