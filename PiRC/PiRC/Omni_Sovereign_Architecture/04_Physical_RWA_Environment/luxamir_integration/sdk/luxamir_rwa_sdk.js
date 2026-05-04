@@ -6,7 +6,6 @@
 import { SorobanClient } from '@soroban/client';
 
 const RPC_URL = "https://soroban-testnet.stellar.org";
-const NETWORK_PASSPHRASE = SorobanClient.Networks.TESTNET;
 const RWA_GARDEN_CONTRACT_ID = "CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
 const rpc = new SorobanClient.Server(RPC_URL);
