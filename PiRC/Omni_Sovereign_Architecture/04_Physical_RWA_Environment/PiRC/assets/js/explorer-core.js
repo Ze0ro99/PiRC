@@ -265,27 +265,10 @@ async function syncTelemetry() {
         pircLineSeries.update({ time: now, value: convertedWcfParity });
 
         // Ledger population - transform real trades into Micro/Macro visualization
-   Backup-copy
         const ledgerBody = document.getElementById('ledger-body');
         ledgerBody.innerHTML = '';
 
         const trades = tradeData.trades || [];
- rwa-conceptual-auth-extension
-
-        trades.slice(0, 10).forEach(t => {
-            const micro = Math.round(t.amount * ALGORITHM_BASE_MICROS);
-            const macro = normalizeMicrosToMacro(micro);
-            const wcfVal = calculateWcfParity(parseFloat(macro), t.price);
-
-            const row = `
-            <tr class="tx-row">
-                <td class="tx-cell">${String(t.tradeId).slice(0,6)}...</td>
-                <td class="tx-cell">${t.side}</td>
-                <td class="tx-cell">${micro}</td>
-                <td class="tx-cell">${macro}</td>
-                <td class="tx-cell">$${wcfVal.toFixed(2)}</td>
-            </tr>
-            `;
 
         trades.slice(0, 15).forEach(t => {
             // Convert trade amount to micro units (each trade unit = 1 Micro on CEX)
@@ -306,12 +289,11 @@ async function syncTelemetry() {
                 <td class="tx-cell" style="font-family: monospace; font-weight: bold;">${parseFloat(macroPi).toLocaleString(undefined, { maximumFractionDigits: 4 })} π</td>
                 <td class="tx-cell" style="color: #3fb950; font-weight: bold;">${currencyInfo.symbol}${convertedVal.toLocaleString(undefined, { maximumFractionDigits: 2 })} (WCF)</td>
             </tr>`;
-  Backup-copy
+
             ledgerBody.insertAdjacentHTML('beforeend', row);
         });
 
     } catch (e) {
- rwa-conceptual-auth-extension
         console.error("Telemetry error:", e);
     }
 }
@@ -327,17 +309,5 @@ setInterval(() => {
 }, REFRESH_INTERVAL_MS);
 
 // ================= INIT =================
-
-        console.error("Telemetry sync failed:", e);
-    }
-}
-
-// Global scope definition for HTML onclick triggers
-window.changeLanguage = changeLanguage;
-window.updateCurrency = updateCurrency;
-
-// Initial Start
-setInterval(syncTelemetry, REFRESH_INTERVAL_MS);
- Backup-copy
 syncTelemetry();
 changeLanguage('en');
