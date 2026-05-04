@@ -36,7 +36,7 @@ export async function tokenizePhysicalProduct(appId, productHash, metadata, owne
     .build();
 
     console.log("✅ RWA Tokenized successfully! (TX ready for signing)");
-    return "TX_HASH_PLACEHOLDER";
+    return tx;
 }
 
 export default { tokenizePhysicalProduct };
