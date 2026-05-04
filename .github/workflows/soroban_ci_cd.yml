@@ -21,7 +21,10 @@ jobs:
           override: true
 
       - name: Install Termux Environment Mock (for script testing)
-        run: sudo apt-get install -y jq curl git jq bsdtar ncurses-bin
+        run: |
+          sudo apt-get update
+          # Fixed: libarchive-tools provides the bsdtar command on Ubuntu
+          sudo apt-get install -y jq curl git libarchive-tools ncurses-bin
 
       - name: Install Stellar CLI
         run: cargo install stellar-cli@22.0.0 || echo "Cargo install too slow, stubbing for preview tests..."
