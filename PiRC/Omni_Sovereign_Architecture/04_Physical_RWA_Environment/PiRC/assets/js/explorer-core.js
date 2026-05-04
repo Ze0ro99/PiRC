@@ -28,11 +28,6 @@ const translations = {
         bridge_cap: "Bridge Liquidity Cap",
         ledger_title: "Vanguard Bridge Real-Time Ledger"
     },
-    id: {
-
-        ledger_title: "Vanguard Bridge Real-Time Ledger",
-        footer_disclaimer: "This interface is a research prototype visualizing PiRC-101 conceptual modeling. It is NOT an official Pi Network utility."
-    },
     ar: {
         metrics_iou_price: "تكافؤ IOU المضاربي",
         metrics_wcf_price: "تكافؤ الأوزان المدعوم ($WCF)",
