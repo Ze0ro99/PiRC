@@ -11,6 +11,8 @@ import { handleLuxamirScan } from '../integration/luxamir_verify_bridge.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const sanitizeForLog = (value) => String(value ?? '').replace(/[\r\n]/g, '');
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -25,8 +27,9 @@ app.get('/health', (req, res) => {
  */
 app.post('/api/v1/tokenize', async (req, res) => {
     const scanData = req.body;
+    const sanitizedProductIdForLog = sanitizeForLog(scanData.id);
 
-    console.log(`[API] Received tokenization request for Product: ${scanData.id}`);
+    console.log(`[API] Received tokenization request for Product: ${sanitizedProductIdForLog}`);
 
     if (!scanData.id || !scanData.owner) {
         return res.status(400).json({ error: "Missing Product ID or Owner Address" });
