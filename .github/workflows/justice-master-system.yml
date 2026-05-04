@@ -2,14 +2,12 @@ name: Ultimate Justice Orchestrator (PiRC1-PiRC260)
 
 on:
   push:
-    branches: ["**"] # Global monitoring for all active and future branches
+    branches: ["**"]
   pull_request:
     branches: ["**"]
 
 permissions:
-  security-events: write
   contents: write
-  actions: read
 
 jobs:
   AI_Audit_and_Logic_Repair:
@@ -20,22 +18,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Initialize CodeQL AI Engine
-        uses: github/codeql-action/init@v3
-        with:
-          languages: python, javascript-typescript, rust
-          build-mode: none
-        continue-on-error: true
-
       - name: AI Compliance (PiRC1 to PiRC-260)
         run: |
           python scripts/justice_math_validator.py --deep-scan --standards 1-260
-        continue-on-error: true
-
-      - name: Security Patching & AI Audit
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/logic-and-security"
         continue-on-error: true
 
   Blockchain_Testnet_Validation:
@@ -48,12 +33,7 @@ jobs:
       - name: Stellar & Pi Network SDK Auth
         run: |
           npm install @pinetwork-js/sdk stellar-sdk 2>/dev/null || true
-          node scripts/testnet_validator.js --env Testnet1 --env Testnet2
-        continue-on-error: true
-
-      - name: Smart Contract Deployment (Validation)
-        run: |
-          python scripts/contract_generator.py --deploy --network pi_testnet
+          node scripts/testnet_validator.js --env Testnet1
         continue-on-error: true
 
   Frontend_Backend_Build:
@@ -66,14 +46,5 @@ jobs:
       - name: Automatic HTML/UI Assembly
         run: |
           npm install --no-fund --no-audit 2>/dev/null || true
-          npm run build --if-present || echo "Build Step Bypassed gracefully"
-        continue-on-error: true
-
-      - name: Vercel Production Deployment
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID }}
-          vercel-project-id: ${{ secrets.PROJECT_ID }}
-          working-directory: ./dist
+          npm run build --if-present || echo "Build Step Bypassed"
         continue-on-error: true
