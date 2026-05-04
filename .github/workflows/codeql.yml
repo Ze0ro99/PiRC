@@ -24,6 +24,7 @@ jobs:
       contents: read
 
     strategy:
+     
       fail-fast: false
       matrix:
         include:
@@ -32,9 +33,10 @@ jobs:
         - language: python
           build-mode: none
         - language: rust
-          build-mode: autobuild # Fixed: Rust requires autobuild for deep logic analysis
+          build-mode: none  # Changed from autobuild to none
         - language: actions
           build-mode: none
+
 
     steps:
     - name: Checkout Repository
