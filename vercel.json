@@ -1,11 +1,5 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
-  ],
+  "framework": "nextjs",
   "headers": [
     {
       "source": "/api/(.*)",
