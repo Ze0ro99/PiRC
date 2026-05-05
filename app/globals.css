@@ -1,32 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  /* Core surfaces */
-  --color-background: oklch(0.16 0.02 250);
-  --color-foreground: oklch(0.97 0.01 250);
+  /* Core surfaces — deep black with subtle warm undertone */
+  --color-background: oklch(0.10 0.012 285);
+  --color-foreground: oklch(0.97 0.012 90);
 
-  --color-card: oklch(0.20 0.02 250);
-  --color-card-foreground: oklch(0.97 0.01 250);
+  --color-card: oklch(0.14 0.014 285);
+  --color-card-foreground: oklch(0.97 0.012 90);
 
-  --color-muted: oklch(0.24 0.02 250);
-  --color-muted-foreground: oklch(0.70 0.02 250);
+  --color-muted: oklch(0.18 0.014 285);
+  --color-muted-foreground: oklch(0.70 0.018 90);
 
-  --color-border: oklch(0.28 0.02 250);
-  --color-input: oklch(0.24 0.02 250);
+  --color-border: oklch(0.24 0.018 285);
+  --color-input: oklch(0.18 0.014 285);
 
-  /* Brand: cyan (Pi Network feel) */
-  --color-primary: oklch(0.78 0.14 210);
-  --color-primary-foreground: oklch(0.16 0.02 250);
+  /* Brand: imperial GOLD (sovereign reserve) */
+  --color-primary: oklch(0.82 0.14 85);
+  --color-primary-foreground: oklch(0.10 0.012 285);
 
-  /* Accent: amber/gold (sovereign reserve) */
-  --color-accent: oklch(0.82 0.14 85);
-  --color-accent-foreground: oklch(0.16 0.02 250);
+  /* Accent: royal PURPLE (governance / divine justice) */
+  --color-accent: oklch(0.62 0.18 295);
+  --color-accent-foreground: oklch(0.97 0.012 90);
 
-  /* Destructive */
-  --color-destructive: oklch(0.65 0.20 25);
-  --color-destructive-foreground: oklch(0.97 0.01 250);
+  /* Destructive / status critical */
+  --color-destructive: oklch(0.62 0.20 25);
+  --color-destructive-foreground: oklch(0.97 0.012 90);
 
-  /* 7-layer packet semantic tokens (data viz only — not UI chrome) */
+  /* Status indicators */
+  --color-status-online:    oklch(0.74 0.17 145);
+  --color-status-warning:   oklch(0.80 0.15 75);
+  --color-status-critical:  oklch(0.62 0.20 25);
+  --color-status-pending:   oklch(0.62 0.18 295);
+
+  /* 7-layer packet semantic tokens (data viz only) */
   --color-layer-red:    oklch(0.65 0.20 25);
   --color-layer-orange: oklch(0.74 0.16 55);
   --color-layer-yellow: oklch(0.84 0.16 95);
@@ -66,6 +72,7 @@
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
 
+  /* Subtle grid for hero/empty surfaces */
   .bg-grid {
     background-image:
       linear-gradient(to right, color-mix(in oklab, var(--color-border) 60%, transparent) 1px, transparent 1px),
@@ -73,15 +80,56 @@
     background-size: 48px 48px;
   }
 
-  .glow-primary {
+  /* Imperial radial vignette behind heroes */
+  .bg-imperial {
+    background-image:
+      radial-gradient(60% 50% at 30% 0%, color-mix(in oklab, var(--color-primary) 18%, transparent), transparent 70%),
+      radial-gradient(60% 50% at 80% 30%, color-mix(in oklab, var(--color-accent) 22%, transparent), transparent 70%);
+  }
+
+  .glow-gold {
     box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--color-primary) 30%, transparent),
-      0 8px 32px -8px color-mix(in oklab, var(--color-primary) 35%, transparent);
+      0 0 0 1px color-mix(in oklab, var(--color-primary) 35%, transparent),
+      0 8px 36px -8px color-mix(in oklab, var(--color-primary) 45%, transparent);
+  }
+  .glow-purple {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-accent) 35%, transparent),
+      0 8px 36px -8px color-mix(in oklab, var(--color-accent) 45%, transparent);
+  }
+
+  /* Pulse dot used for live indicators */
+  .pulse-dot {
+    position: relative;
+  }
+  .pulse-dot::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: 0.5;
+    animation: pirc-pulse 1.6s ease-out infinite;
+  }
+  @keyframes pirc-pulse {
+    0%   { transform: scale(0.8); opacity: 0.55; }
+    100% { transform: scale(2.2); opacity: 0; }
   }
 
   .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background: color-mix(in oklab, var(--color-border) 80%, transparent);
     border-radius: 6px;
+  }
+
+  /* Gold gradient text used for hero titles */
+  .text-imperial {
+    background: linear-gradient(110deg,
+      var(--color-primary) 0%,
+      color-mix(in oklab, var(--color-primary) 70%, var(--color-accent) 30%) 55%,
+      var(--color-accent) 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
   }
 }

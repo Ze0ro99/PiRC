@@ -18,13 +18,27 @@ const TONE: Record<NonNullable<StatusTileProps["tone"]>, string> = {
 };
 
 const DOT: Record<NonNullable<StatusTileProps["tone"]>, string> = {
-  default: "bg-muted-foreground",
-  primary: "bg-primary",
-  accent: "bg-accent",
-  destructive: "bg-destructive",
+  default: "bg-muted-foreground text-muted-foreground",
+  primary: "bg-primary text-primary",
+  accent: "bg-accent text-accent",
+  destructive: "bg-destructive text-destructive",
 };
 
-export function StatusTile({ label, value, hint, icon: Icon, tone = "default", loading }: StatusTileProps) {
+const TONE_LABEL: Record<NonNullable<StatusTileProps["tone"]>, string> = {
+  default: "INIT",
+  primary: "ONLINE",
+  accent: "READY",
+  destructive: "DOWN",
+};
+
+export function StatusTile({
+  label,
+  value,
+  hint,
+  icon: Icon,
+  tone = "default",
+  loading,
+}: StatusTileProps) {
   return (
     <div
       className={clsx(
@@ -35,24 +49,34 @@ export function StatusTile({ label, value, hint, icon: Icon, tone = "default", l
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           {Icon ? <Icon className="h-4 w-4 text-muted-foreground" aria-hidden /> : null}
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             {label}
           </span>
         </div>
-        <span className="relative flex h-2 w-2">
-          <span className={clsx("absolute inline-flex h-full w-full animate-ping rounded-full opacity-75", DOT[tone])} />
-          <span className={clsx("relative inline-flex h-2 w-2 rounded-full", DOT[tone])} />
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            aria-hidden
+            className={clsx(
+              "relative inline-flex h-1.5 w-1.5 rounded-full pulse-dot",
+              DOT[tone],
+            )}
+          />
+          <span className={clsx("font-mono text-[9px] uppercase tracking-[0.2em]", DOT[tone].split(" ")[1])}>
+            {TONE_LABEL[tone]}
+          </span>
         </span>
       </div>
-      <div className="mt-3 min-h-[2.5rem]">
+      <div className="mt-3 min-h-[2.25rem]">
         {loading ? (
           <div className="h-7 w-32 animate-pulse rounded-md bg-muted" />
         ) : (
-          <div className="font-mono text-2xl tracking-tight text-foreground">{value}</div>
+          <div className="font-mono text-2xl tabular-nums tracking-tight text-foreground">
+            {value}
+          </div>
         )}
       </div>
       {hint ? (
-        <div className="mt-1 font-mono text-[11px] text-muted-foreground">{hint}</div>
+        <div className="mt-1 truncate font-mono text-[11px] text-muted-foreground">{hint}</div>
       ) : null}
     </div>
   );
