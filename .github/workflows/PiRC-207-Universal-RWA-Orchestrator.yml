@@ -38,7 +38,7 @@ jobs:
           git commit -m "chore: professional synthesis of 23 ecosystem branches" || echo "Stable"
 
       - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
