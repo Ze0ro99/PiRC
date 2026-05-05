@@ -1,3 +1,0 @@
-PiRC Live Contract Deployments - Sun Apr 12 16:18:48 UTC 2026
----------------------------------------------------
-soroban : GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6

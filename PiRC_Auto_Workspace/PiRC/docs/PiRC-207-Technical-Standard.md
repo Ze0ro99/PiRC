@@ -1,1 +1,0 @@
-# PiRC-207 Technical Standard\n\n1 Mined Pi = 10 GCV Units.
