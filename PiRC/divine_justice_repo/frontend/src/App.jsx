@@ -11,12 +11,8 @@ export default function App() {
         body: JSON.stringify({
           religion: "islam",
           estate: 1000,
-          heirs: [
-            { type: "wife" },
-            { type: "son" },
-            { type: "daughter" }
-          ]
-        })
+          heirs: [{ type: "wife" }, { type: "son" }, { type: "daughter" }],
+        }),
       });
       const data = await res.json();
       setResult(data.result);
@@ -28,9 +24,14 @@ export default function App() {
   const calculateZakat = async () => {
     try {
       const res = await fetch("http://localhost:3000/zakat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ cash: 1000, gold: 500, investments: 300, debts: 100 })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cash: 1000,
+          gold: 500,
+          investments: 300,
+          debts: 100,
+        }),
       });
       const data = await res.json();
       alert("Zakat: " + data.zakat);
@@ -42,11 +43,11 @@ export default function App() {
   return (
     <div style={{ padding: 20 }}>
       <h1>Divine Justice Dashboard</h1>
-      <button onClick={calculate} style={{marginRight: 10}}>Calculate Inheritance</button>
+      <button onClick={calculate} style={{ marginRight: 10 }}>
+        Calculate Inheritance
+      </button>
       <button onClick={calculateZakat}>Calculate Zakat</button>
-      {result && (
-        <pre>{JSON.stringify(result, null, 2)}</pre>
-      )}
+      {result && <pre>{JSON.stringify(result, null, 2)}</pre>}
     </div>
   );
-}\n
+}

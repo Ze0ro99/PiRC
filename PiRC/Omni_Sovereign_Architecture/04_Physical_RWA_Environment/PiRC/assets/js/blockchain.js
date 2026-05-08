@@ -11,8 +11,8 @@ export async function getTokenBalance(address, contractId) {
         method: "simulateTransaction",
         params: {
           // simplified
-        }
-      })
+        },
+      }),
     });
 
     const data = await res.json();

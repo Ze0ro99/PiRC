@@ -1,4 +1,9 @@
-import { Server, Contract, TransactionBuilder, Networks } from "https://cdn.jsdelivr.net/npm/@stellar/soroban-client/+esm";
+import {
+  Server,
+  Contract,
+  TransactionBuilder,
+  Networks,
+} from "https://cdn.jsdelivr.net/npm/@stellar/soroban-client/+esm";
 
 const server = new Server("https://soroban-testnet.stellar.org");
 
@@ -10,8 +15,8 @@ export async function getBalance(contractId, address) {
       { accountId: address, sequence: "0" },
       {
         fee: "100",
-        networkPassphrase: Networks.TESTNET
-      }
+        networkPassphrase: Networks.TESTNET,
+      },
     )
       .addOperation(contract.call("balance", address))
       .setTimeout(30)
@@ -20,7 +25,6 @@ export async function getBalance(contractId, address) {
     const sim = await server.simulateTransaction(tx);
 
     return sim?.result?.retval || 0;
-
   } catch (e) {
     console.error("Soroban error:", e);
     return 0;

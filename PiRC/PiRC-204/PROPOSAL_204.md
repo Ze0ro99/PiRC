@@ -33,5 +33,6 @@ Extends reward engine allocation so active participation reflexively increases r
 ## Implementation
 
 Reference files:
+
 - `contracts/reward_engine_enhanced.rs`
 - `economics/reward_projection.py`

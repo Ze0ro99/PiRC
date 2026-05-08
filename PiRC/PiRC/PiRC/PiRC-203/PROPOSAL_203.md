@@ -17,7 +17,7 @@ Real-time USD/PI oracle for merchants using the median of Kraken, KuCoin, and Bi
 ## Invariant (KaTeX)
 
 \[
-P_{\text{final}} = \operatorname{median}(P_K, P_{Ku}, P_B) \times (1 + \Phi), \quad \Phi < 1
+P*{\text{final}} = \operatorname{median}(P_K, P*{Ku}, P_B) \times (1 + \Phi), \quad \Phi < 1
 \]
 
 ## Security and Threat Model
@@ -29,5 +29,6 @@ P_{\text{final}} = \operatorname{median}(P_K, P_{Ku}, P_B) \times (1 + \Phi), \q
 ## Implementation
 
 Reference files:
+
 - `contracts/oracle_median.rs`
 - `economics/merchant_pricing_sim.py`

@@ -18,9 +18,9 @@ function equalDistribution(data) {
   const { estate, heirs } = data;
   if (!heirs || heirs.length === 0) return [];
   const share = estate / heirs.length;
-  return heirs.map(h => ({ ...h, share }));
+  return heirs.map((h) => ({ ...h, share }));
 }
 
 function jewishPriorityDistribution(data) {
   return equalDistribution(data);
-}\n
+}

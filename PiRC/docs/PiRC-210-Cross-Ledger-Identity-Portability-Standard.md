@@ -5,6 +5,7 @@
 **PiRC-210** defines the official standard for **Cross-Ledger Sovereign Identity Portability** and **Interoperability** within the Pi Network ecosystem and beyond.
 
 Built directly upon:
+
 - **PiRC-207 Sovereign Sync** (Registry Layer + 7-Layer Colored Token System)
 - **PiRC-208 AI Integration Standard**
 - **PiRC-209 Sovereign Decentralized Identity & Verifiable Credentials**
@@ -37,6 +38,7 @@ $$
 $$
 
 Where:
+
 - $DID_n$ = Base Decentralized Identifier
 - $VC_n$ = Verifiable Credentials set
 - $ZKP_n$ = Zero-Knowledge Proof bundle
@@ -74,6 +76,7 @@ All port operations are enforced by the extended **Justice Engine** with slashin
 **Phase 4 (2027)**: Multi-ledger marketplace for sovereign identity services
 
 **Reference Implementations**:
+
 - Solidity: `contracts/PiRC210Portability.sol`
 - Soroban: `contracts/soroban/src/portability.rs` (to be added)
 

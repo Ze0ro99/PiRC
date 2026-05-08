@@ -11,11 +11,14 @@ Built directly on top of **PiRC-207 Sovereign Sync** and **PiRC-208 AI Integrati
 **Reference Implementations** (dual-language support for maximum compatibility):
 
 ### Solidity (EVM-compatible)
+
 - [`contracts/PiRC209DIDRegistry.sol`](../contracts/PiRC209DIDRegistry.sol)
 - [`contracts/PiRC209VCVerifier.sol`](../contracts/PiRC209VCVerifier.sol)
 
 ### Rust / Soroban (Stellar-native)
+
 **Full project structure:**
+
 - [`contracts/soroban/Cargo.toml`](../contracts/soroban/Cargo.toml)
 - [`contracts/soroban/src/lib.rs`](../contracts/soroban/src/lib.rs)
 - [`contracts/soroban/src/did_registry.rs`](../contracts/soroban/src/did_registry.rs)

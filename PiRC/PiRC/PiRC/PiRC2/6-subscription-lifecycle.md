@@ -6,9 +6,9 @@
 
 Creates a subscription. Requires `subscriber` authorization. Behavior depends on trial period and `pay_upfront`:
 
-|  | `pay_upfront = true` | `pay_upfront = false` |
-|---|---|---|
-| **With trial** | No immediate payment. Approves token for `approve_periods` future periods. After trial, `process()` charges each cycle. | Trial only. No approval, no payment. Subscription expires when the trial ends. |
+|                   | `pay_upfront = true`                                                                                                         | `pay_upfront = false`                                                                                                                                                              |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **With trial**    | No immediate payment. Approves token for `approve_periods` future periods. After trial, `process()` charges each cycle.      | Trial only. No approval, no payment. Subscription expires when the trial ends.                                                                                                     |
 | **Without trial** | Immediately transfers 1st period price. Approves token for `approve_periods` future periods. `process()` charges each cycle. | Immediately transfers 1st period price. Approves token for 1 period. `process()` skips this subscription; expires after the paid period unless extended via `extend_subscription`. |
 
 **Errors:** `ServiceNotFound`, `AlreadySubscribed`, `TimestampOverflow`
@@ -54,12 +54,14 @@ Refreshes the token approval and sets `pay_upfront = true`. Use this when your a
 Merchant-initiated batch charge. Iterates all subscriptions for the given service and charges those that are due (`pay_upfront = true` and `now >= next_charge_ts`). Uses `transfer_from` with the pre-approved allowance. Requires `merchant` authorization.
 
 For each subscription:
+
 - **Success:** advances `next_charge_ts` and `service_end_ts` by `period_secs` (no drift — based on previous `next_charge_ts`, not current time).
 - **Failure:** sets `pay_upfront = false` (auto-cancels).
 
 **Errors:** `ServiceNotFound`, `NotServiceOwner`, `TimestampOverflow`
 
 **Events per subscription:**
+
 - `charge` — successful payment
 - `trl_end` — first charge after trial ended
 - `low_alw` — remaining allowance < price

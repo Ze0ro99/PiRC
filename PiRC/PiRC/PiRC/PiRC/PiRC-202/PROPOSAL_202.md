@@ -34,5 +34,6 @@ Allocation multiplier is clamped at `3.14`.
 ## Implementation
 
 Reference files:
+
 - `contracts/adaptive_gate.rs`
 - `economics/utility_simulator.py`

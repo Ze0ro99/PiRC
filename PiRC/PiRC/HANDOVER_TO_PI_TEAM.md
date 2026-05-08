@@ -9,13 +9,15 @@
 **Next Steps**: Immediate integration into Pi Network matrix.
 
 ### Documentation & Quick Start
+
 - **Activation Script**: `./activate_pirc_full.sh`
 - **System Status**: `SYSTEM_STATUS_FINAL.md`
 - **Developer Guide**: `DEVELOPER_GUIDE.md`
 - **Installation**: `INSTALL.md`
 
 ### Maintainer & Architect
+
 - **Contact**: kamelkadah910@gmail.com
 - **GitHub**: https://github.com/Ze0ro99
 
-*Prepared automatically via PiRC Ultimate Auto-Ops.*
+_Prepared automatically via PiRC Ultimate Auto-Ops._

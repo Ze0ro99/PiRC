@@ -1,8 +1,10 @@
 # Sovereign Smart Contract Factory
-Part of the PiRC2 Omni-Sovereign Architecture. 
+
+Part of the PiRC2 Omni-Sovereign Architecture.
 This module automates RWA (Real World Asset) tokenization.
 
 ---
+
 # Sovereign Smart Contract Factory
 
 **The Intelligent Factory Layer of PiRC Omni Sovereign Architecture**
@@ -13,9 +15,9 @@ This module automates RWA (Real World Asset) tokenization.
 
 ## Vision
 
-The **Sovereign Smart Contract Factory** represents the next evolutionary leap in the PiDEX Sovereign Matrix.  
+The **Sovereign Smart Contract Factory** represents the next evolutionary leap in the PiDEX Sovereign Matrix.
 
-It transforms the existing **Sovereign Raw Record** from a passive immutable ledger into a **proactive, self-executing smart contract factory**.  
+It transforms the existing **Sovereign Raw Record** from a passive immutable ledger into a **proactive, self-executing smart contract factory**.
 
 **Core Idea**:  
 Any good or service displayed in the Pi Network ecosystem — whether physical (luxury goods, real estate, commodities) or digital (services, intellectual property, subscriptions) — automatically receives its own dedicated Soroban smart contract upon first registration or first purchase transaction.
@@ -27,14 +29,14 @@ No manual deployment. No developer intervention.
 
 ## Why This Changes Everything for Pi Network
 
-| Aspect                  | Before (Traditional PiRC)          | After (Sovereign Smart Contract Factory) |
-|-------------------------|------------------------------------|------------------------------------------|
-| Product Representation  | Static Raw Record                  | Dynamic, self-owning smart contract      |
-| Liquidity               | Manual or off-chain                | On-chain, fractional, and instantly tradable |
-| Transaction History     | Centralized logs                   | Immutable on-chain record per product    |
-| Merchant Experience     | Manual data management             | Zero-touch — first purchase triggers everything |
-| Ecosystem Scalability   | Limited by manual contracts        | Millions of autonomous contracts possible |
-| RWA Integration         | Partial (via rwa_verify)           | Full end-to-end tokenization + liquidity |
+| Aspect                 | Before (Traditional PiRC)   | After (Sovereign Smart Contract Factory)        |
+| ---------------------- | --------------------------- | ----------------------------------------------- |
+| Product Representation | Static Raw Record           | Dynamic, self-owning smart contract             |
+| Liquidity              | Manual or off-chain         | On-chain, fractional, and instantly tradable    |
+| Transaction History    | Centralized logs            | Immutable on-chain record per product           |
+| Merchant Experience    | Manual data management      | Zero-touch — first purchase triggers everything |
+| Ecosystem Scalability  | Limited by manual contracts | Millions of autonomous contracts possible       |
+| RWA Integration        | Partial (via rwa_verify)    | Full end-to-end tokenization + liquidity        |
 
 This module directly fulfills the **PiRC-260 Keeper Protocol** vision: full automation, sovereign ownership, and decentralized execution at global scale.
 
@@ -111,6 +113,7 @@ This factory turns Pi Network from a simple cryptocurrency ecosystem into the **
 <img width="1408" height="768" alt="1000100907" src="https://github.com/user-attachments/assets/d0a70a31-4edc-46d8-ad45-53ca778b8d83" />
 
 ---
+
 ## Getting Started
 
 ```bash

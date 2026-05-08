@@ -9,8 +9,11 @@ Environment Setup
 1. Install Stellar CLI
 
 # macOS
+
 brew install stellar-cli
+
 # Linux / Windows (WSL)
+
 cargo install --locked stellar-cli --features opt
 
 Full guide: Install the CLI | Stellar Docs
@@ -30,20 +33,20 @@ export NETWORK=pi-testnet
 
 Error Codes
 
-| Code | Name               | Description                                                    |
-|------|--------------------|----------------------------------------------------------------|
-| 1    | InvalidPrice       | Price must be greater than 0                                   |
-| 2    | InvalidPeriod      | Period must be greater than 0; approve_periods must also be > 0|
-| 3    | AlreadySubscribed  | Active subscription already exists, or free trial already used |
-| 4    | SubscriptionNotFound | No subscription found with the given ID                      |
-| 5    | ServiceNotFound    | No service found with the given ID                             |
-| 6    | Unauthorized       | Caller is not the owner of the subscription                    |
-| 7    | AlreadyCancelled   | Subscription is already cancelled (auto_renew = false)         |
-| 8    | TimestampOverflow  | Overflow when computing timestamps                             |
-| 9    | NotServiceOwner    | Caller is not the owner of the service                         |
-| 10   | InvalidServiceName | Service name cannot be empty                                   |
-| 11   | SubscriptionExpired| Subscription has expired                                       |
-| 12   | ServiceNotActive   | Service has been deactivated                                   |
+| Code | Name                 | Description                                                     |
+| ---- | -------------------- | --------------------------------------------------------------- |
+| 1    | InvalidPrice         | Price must be greater than 0                                    |
+| 2    | InvalidPeriod        | Period must be greater than 0; approve_periods must also be > 0 |
+| 3    | AlreadySubscribed    | Active subscription already exists, or free trial already used  |
+| 4    | SubscriptionNotFound | No subscription found with the given ID                         |
+| 5    | ServiceNotFound      | No service found with the given ID                              |
+| 6    | Unauthorized         | Caller is not the owner of the subscription                     |
+| 7    | AlreadyCancelled     | Subscription is already cancelled (auto_renew = false)          |
+| 8    | TimestampOverflow    | Overflow when computing timestamps                              |
+| 9    | NotServiceOwner      | Caller is not the owner of the service                          |
+| 10   | InvalidServiceName   | Service name cannot be empty                                    |
+| 11   | SubscriptionExpired  | Subscription has expired                                        |
+| 12   | ServiceNotActive     | Service has been deactivated                                    |
 
 Contract Methods
 
@@ -53,14 +56,14 @@ Creates a new paid service. Called by the merchant.
 
 Parameters:
 
-| Parameter        | Type    | Description                              |
-|------------------|---------|------------------------------------------|
-| merchant         | Address | Merchant address (requires auth)         |
-| name             | String  | Service name (must not be empty)         |
-| price            | i128    | Price per period in token units (> 0)    |
-| period_secs      | u64     | Period duration in seconds (> 0)         |
-| trial_period_secs| u64     | Trial duration in seconds (0 = no trial) |
-| approve_periods  | u64     | Number of periods to pre-approve (> 0)   |
+| Parameter         | Type    | Description                              |
+| ----------------- | ------- | ---------------------------------------- |
+| merchant          | Address | Merchant address (requires auth)         |
+| name              | String  | Service name (must not be empty)         |
+| price             | i128    | Price per period in token units (> 0)    |
+| period_secs       | u64     | Period duration in seconds (> 0)         |
+| trial_period_secs | u64     | Trial duration in seconds (0 = no trial) |
+| approve_periods   | u64     | Number of periods to pre-approve (> 0)   |
 
 Returns: Service object
 
@@ -86,18 +89,18 @@ Subscribes a user to a service. Called by the subscriber.
 
 Parameters:
 
-| Parameter  | Type    | Description                              |
-|------------|---------|------------------------------------------|
-| subscriber | Address | Subscriber address (requires auth)       |
-| service_id | u64     | Service ID                               |
-| auto_renew | bool    | Enable automatic renewal via process()   |
+| Parameter  | Type    | Description                            |
+| ---------- | ------- | -------------------------------------- |
+| subscriber | Address | Subscriber address (requires auth)     |
+| service_id | u64     | Service ID                             |
+| auto_renew | bool    | Enable automatic renewal via process() |
 
 Behavior matrix:
 
-|               | auto_renew = true                                                                             | auto_renew = false                                                                  |
-|---------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| With trial    | Approves approve_periods + trial duration. No immediate payment. Charges begin after trial.   | Trial only. No approval, no payment. Expires when trial ends.                       |
-| Without trial | Immediately transfers first period + approves approve_periods periods.                        | Immediately transfers first period + approves 1 period. Will not auto-renew.        |
+|               | auto_renew = true                                                                           | auto_renew = false                                                           |
+| ------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| With trial    | Approves approve_periods + trial duration. No immediate payment. Charges begin after trial. | Trial only. No approval, no payment. Expires when trial ends.                |
+| Without trial | Immediately transfers first period + approves approve_periods periods.                      | Immediately transfers first period + approves 1 period. Will not auto-renew. |
 
 Returns: Subscription object
 
@@ -131,10 +134,10 @@ Disables auto-renewal. Any remaining paid time is preserved.
 
 Parameters:
 
-| Parameter  | Type    | Description                              |
-|------------|---------|------------------------------------------|
-| subscriber | Address | Subscriber address (requires auth)       |
-| sub_id     | u64     | Subscription ID                          |
+| Parameter  | Type    | Description                        |
+| ---------- | ------- | ---------------------------------- |
+| subscriber | Address | Subscriber address (requires auth) |
+| sub_id     | u64     | Subscription ID                    |
 
 ```bash
 stellar contract invoke \
@@ -154,10 +157,10 @@ Flips auto_renew on or off. Cannot be re-enabled on an expired subscription.
 
 Parameters:
 
-| Parameter  | Type    | Description                              |
-|------------|---------|------------------------------------------|
-| subscriber | Address | Subscriber address (requires auth)       |
-| sub_id     | u64     | Subscription ID                          |
+| Parameter  | Type    | Description                        |
+| ---------- | ------- | ---------------------------------- |
+| subscriber | Address | Subscriber address (requires auth) |
+| sub_id     | u64     | Subscription ID                    |
 
 Returns: bool — new value of auto_renew
 
@@ -179,10 +182,10 @@ Renews the token allowance without changing the subscription period. Use this wh
 
 Parameters:
 
-| Parameter  | Type    | Description                              |
-|------------|---------|------------------------------------------|
-| subscriber | Address | Subscriber address (requires auth)       |
-| sub_id     | u64     | Subscription ID                          |
+| Parameter  | Type    | Description                        |
+| ---------- | ------- | ---------------------------------- |
+| subscriber | Address | Subscriber address (requires auth) |
+| sub_id     | u64     | Subscription ID                    |
 
 Returns: updated Subscription object
 
@@ -204,12 +207,12 @@ Charges all due subscribers of a service. Called by the merchant (or an automate
 
 Parameters:
 
-| Parameter  | Type    | Description                              |
-|------------|---------|------------------------------------------|
-| merchant   | Address | Merchant address (requires auth)         |
-| service_id | u64     | Service ID                               |
-| offset     | u32     | Pagination offset                        |
-| limit      | u32     | Number of subscriptions to process       |
+| Parameter  | Type    | Description                        |
+| ---------- | ------- | ---------------------------------- |
+| merchant   | Address | Merchant address (requires auth)   |
+| service_id | u64     | Service ID                         |
+| offset     | u32     | Pagination offset                  |
+| limit      | u32     | Number of subscriptions to process |
 
 Returns: ProcessResult object (charged, failed, skipped, total)
 
@@ -356,17 +359,17 @@ Typical Flow
 
 Events
 
-| Topic    | Emitted When              | Payload                                                          |
-|----------|---------------------------|------------------------------------------------------------------|
-| approve  | Token approval issued     | (subscriber, service_id, amount, expiration_ledger, token)       |
-| srv_reg  | Service registered        | Service object                                                   |
-| sub      | Subscription created      | (subscriber, service_id, sub_id)                                 |
-| cancel   | Subscription cancelled    | (subscriber, sub_id, service_id, remaining_secs)                 |
-| renew    | auto_renew toggled        | (subscriber, sub_id, service_id, auto_renew)                     |
-| extend   | Approval refreshed        | (subscriber, sub_id, service_id)                                 |
-| charge   | Payment succeeded         | (subscriber, service_id, price)                                  |
-| chg_fail | Payment failed            | (subscriber, service_id, sub_id)                                 |
-| trl_end  | Trial period ended        | (subscriber, service_id, sub_id)                                 |
-| low_alw  | Allowance running low     | (subscriber, service_id, remaining_allowance, price)             |
-| low_bal  | Balance running low       | (subscriber, service_id, balance, price)                         |
-| upgrade  | Contract upgraded         | new_wasm_hash                                                    |
+| Topic    | Emitted When           | Payload                                                    |
+| -------- | ---------------------- | ---------------------------------------------------------- |
+| approve  | Token approval issued  | (subscriber, service_id, amount, expiration_ledger, token) |
+| srv_reg  | Service registered     | Service object                                             |
+| sub      | Subscription created   | (subscriber, service_id, sub_id)                           |
+| cancel   | Subscription cancelled | (subscriber, sub_id, service_id, remaining_secs)           |
+| renew    | auto_renew toggled     | (subscriber, sub_id, service_id, auto_renew)               |
+| extend   | Approval refreshed     | (subscriber, sub_id, service_id)                           |
+| charge   | Payment succeeded      | (subscriber, service_id, price)                            |
+| chg_fail | Payment failed         | (subscriber, service_id, sub_id)                           |
+| trl_end  | Trial period ended     | (subscriber, service_id, sub_id)                           |
+| low_alw  | Allowance running low  | (subscriber, service_id, remaining_allowance, price)       |
+| low_bal  | Balance running low    | (subscriber, service_id, balance, price)                   |
+| upgrade  | Contract upgraded      | new_wasm_hash                                              |

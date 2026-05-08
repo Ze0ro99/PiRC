@@ -77,21 +77,23 @@
     </main>
     <script>
       async function load() {
-        const res = await fetch('/.netlify/functions/dashboard');
+        const res = await fetch("/.netlify/functions/dashboard");
         const data = await res.json();
 
-        const layers = document.getElementById('layers');
-        layers.innerHTML = data.layers.map((layer) => `<li>${layer}</li>`).join('');
+        const layers = document.getElementById("layers");
+        layers.innerHTML = data.layers
+          .map((layer) => `<li>${layer}</li>`)
+          .join("");
 
-        const meta = document.getElementById('meta');
+        const meta = document.getElementById("meta");
         meta.innerHTML = [
           `<span class="pill">${data.compliance}</span>`,
-          `<span class="pill warn">Engagement: ${data.engagementScore}</span>`
-        ].join('');
+          `<span class="pill warn">Engagement: ${data.engagementScore}</span>`,
+        ].join("");
       }
 
       load().catch((err) => {
-        const meta = document.getElementById('meta');
+        const meta = document.getElementById("meta");
         meta.innerHTML = `<span class="pill warn">Dashboard error: ${err.message}</span>`;
       });
     </script>

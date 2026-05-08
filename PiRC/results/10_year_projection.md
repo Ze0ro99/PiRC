@@ -61,6 +61,7 @@ PiRC Plugin Extension Snapshot (2026-03-19)
 The 10-year analysis was extended with plugin modules PiRC-202 through PiRC-206.
 
 Key additions:
+
 - Utility gating scenarios from `economics/utility_simulator.py`
 - Merchant oracle pricing bands from `economics/merchant_pricing_sim.py`
 - Reflexive reward path from `economics/reward_projection.py`

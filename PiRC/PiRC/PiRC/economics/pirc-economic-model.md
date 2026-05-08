@@ -1,6 +1,6 @@
 Effective Liquidity Model
 
-L_eff = Wm * Pm + We * Pe
+L*eff = Wm * Pm + We \_ Pe
 
 Pm = mined Pi supply  
 Pe = external Pi supply  

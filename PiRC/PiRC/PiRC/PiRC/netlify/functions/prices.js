@@ -14,7 +14,9 @@ exports.handler = async (event) => {
     const [okxRes, mexcRes, mexcKlineRes] = await Promise.allSettled([
       fetch("https://www.okx.com/api/v5/market/ticker?instId=PI-USDT"),
       fetch("https://api.mexc.com/api/v3/ticker/24hr?symbol=PIUSDT"),
-      fetch("https://api.mexc.com/api/v3/klines?symbol=PIUSDT&interval=1m&limit=60"),
+      fetch(
+        "https://api.mexc.com/api/v3/klines?symbol=PIUSDT&interval=1m&limit=60",
+      ),
     ]);
 
     let okxData = null;
@@ -31,7 +33,11 @@ exports.handler = async (event) => {
           low24h: parseFloat(t.low24h),
           vol24h: parseFloat(t.vol24h),
           change24h: parseFloat(t.last) - parseFloat(t.open24h),
-          changePct: (((parseFloat(t.last) - parseFloat(t.open24h)) / parseFloat(t.open24h)) * 100).toFixed(2),
+          changePct: (
+            ((parseFloat(t.last) - parseFloat(t.open24h)) /
+              parseFloat(t.open24h)) *
+            100
+          ).toFixed(2),
           bid: parseFloat(t.bidPx),
           ask: parseFloat(t.askPx),
         };
@@ -66,7 +72,10 @@ exports.handler = async (event) => {
 
     // Compute aggregated price
     const prices = [okxData?.price, mexcData?.price].filter(Boolean);
-    const avgPrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : null;
+    const avgPrice =
+      prices.length > 0
+        ? prices.reduce((a, b) => a + b, 0) / prices.length
+        : null;
 
     return {
       statusCode: 200,
@@ -86,7 +95,10 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: "Failed to fetch prices", detail: err.message }),
+      body: JSON.stringify({
+        error: "Failed to fetch prices",
+        detail: err.message,
+      }),
     };
   }
 };

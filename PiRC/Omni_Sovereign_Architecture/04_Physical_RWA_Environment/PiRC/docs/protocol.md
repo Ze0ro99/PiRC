@@ -24,15 +24,15 @@ Core Economic Loop
 The PiRC protocol operates through a cyclic economic process.
 
 Pioneer Supply
-      ↓
+↓
 Liquidity Contribution
-      ↓
+↓
 Economic Activity
-      ↓
+↓
 Fee Generation
-      ↓
+↓
 Reward Distribution
-      ↓
+↓
 Pioneer Incentives
 
 This reflexive loop ensures that reward generation is linked to real ecosystem participation rather than purely inflationary issuance.

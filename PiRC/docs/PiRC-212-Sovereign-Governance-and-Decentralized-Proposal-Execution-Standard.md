@@ -5,6 +5,7 @@
 **PiRC-212** defines the official standard for **Sovereign Governance** and **Decentralized Proposal Execution** within the Pi Network ecosystem.
 
 Built directly upon:
+
 - PiRC-207 Sovereign Sync (Registry Layer + 7-Layer Colored Token System)
 - PiRC-209 Sovereign Decentralized Identity
 - PiRC-210 Cross-Ledger Identity Portability
@@ -66,6 +67,7 @@ Where $\Psi_n$ is the Parity Invariant that must remain satisfied after executio
 **Phase 4 (2027)**: Full DAO activation for all PiRC standards
 
 **Reference Implementations**:
+
 - Solidity: `contracts/PiRC212Governance.sol`
 - Soroban: `contracts/soroban/src/governance.rs`
 
@@ -77,6 +79,7 @@ PiRC-212 completes the sovereign governance layer of the Pi Network, transformin
 **Proposed By**: Ze0ro99/PiRC Contributors (April 2026)
 
 ---
+
 # PiRC-212: Sovereign Governance and Decentralized Proposal Execution Standard
 
 ## 1. Executive Summary
@@ -109,6 +112,6 @@ This standard establishes a fully sovereign, on-chain governance system for the 
 4. Automatic Execution or Rejection
 5. Justice Engine final review
 
-**License**: PiOS
----
+## **License**: PiOS
+
 **License**: PiOS License (same as repository)

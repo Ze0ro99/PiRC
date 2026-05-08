@@ -20,6 +20,7 @@ This extension is designed to integrate seamlessly with the existing PiRC struct
 ## Goal
 
 Provide a trust layer for:
+
 - Merchants
 - Buyers
 - Cross-border commerce

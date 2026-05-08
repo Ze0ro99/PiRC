@@ -29,7 +29,7 @@ exports.handler = async (event) => {
             side: t.side,
             timestamp: parseInt(t.ts),
             tradeId: t.tradeId,
-          }))
+          })),
         );
       }
     }
@@ -45,7 +45,7 @@ exports.handler = async (event) => {
             side: t.isBuyerMaker ? "sell" : "buy",
             timestamp: t.time,
             tradeId: String(t.id),
-          }))
+          })),
         );
       }
     }
@@ -66,7 +66,10 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: "Failed to fetch trades", detail: err.message }),
+      body: JSON.stringify({
+        error: "Failed to fetch trades",
+        detail: err.message,
+      }),
     };
   }
 };

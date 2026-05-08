@@ -5,6 +5,7 @@
 **PiRC-211** defines the official standard for a **Sovereign EVM Bridge** and **Cross-Ledger Token Portability** within the Pi Network ecosystem.
 
 Built directly upon:
+
 - PiRC-207 Sovereign Sync (Registry Layer + 7-Layer Colored Token System)
 - PiRC-209 Sovereign Decentralized Identity
 - PiRC-210 Cross-Ledger Identity Portability
@@ -63,9 +64,11 @@ Where $\Psi_n$ enforces Mathematical + Reflexive + Economic Parity.
 **Reference Implementations:**
 
 **Solidity (EVM):**
+
 - [`contracts/PiRC211EVMBridge.sol`](../contracts/PiRC211EVMBridge.sol) ← Already created
 
 **Soroban (Stellar):**
+
 - `contracts/soroban/src/bridge.rs` (will be added in next step if needed)
 
 **Status**: Draft → Ready for Community Review & Pi Core Team Approval  

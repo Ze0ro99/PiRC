@@ -1,5 +1,6 @@
 📋 Active Branches:
-* main
+
+- main
   remotes/origin/Backup-copy
   remotes/origin/Deploy
   remotes/origin/HEAD -> origin/main
@@ -88,6 +89,7 @@
   remotes/origin/tests/verification-suite
 
 ## FULL REPOSITORY STRUCTURE
+
 .
 ./.git
 ./.git/hooks
@@ -240,41 +242,42 @@
 ./contracts/README.md
 ✅ Found existing differential/quantum references
 ./docs/PiRC-230-Parity-Registry-v2.md:- Automated supply vs. reserve differential analysis.
-./node_modules/@noble/curves/README.md:  [post-quantum](https://github.com/paulmillr/noble-post-quantum),
+./node_modules/@noble/curves/README.md: [post-quantum](https://github.com/paulmillr/noble-post-quantum),
 ./node_modules/@noble/curves/README.md:Cryptographically relevant quantum computer, if built, will allow to
 ./node_modules/@noble/curves/README.md:[noble-post-quantum](https://github.com/paulmillr/noble-post-quantum).
-./node_modules/@noble/hashes/README.md:  [post-quantum](https://github.com/paulmillr/noble-post-quantum),
+./node_modules/@noble/hashes/README.md: [post-quantum](https://github.com/paulmillr/noble-post-quantum),
 ./node_modules/@noble/hashes/README.md:Cryptographically relevant quantum computer, if built, will allow to
-./node_modules/safer-buffer/Porting-Buffer.md:  program source code to passwords and encryption keys.
+./node_modules/safer-buffer/Porting-Buffer.md: program source code to passwords and encryption keys.
 ./node_modules/safer-buffer/Porting-Buffer.md:- Read uninitialized memory. This **will** leak passwords, encryption keys and other
-./scripts/deploy/deploy_pirc_v5_engine.sh:    def generate_quantum_key(self) -> str:
-./scripts/deploy/deploy_pirc_v5_engine.sh:        quantum_key = self.q_enc.generate_quantum_key()
-./scripts/deploy/deploy_pirc_v5_engine.sh:        encrypted = self.q_enc.encrypt(input_data, quantum_key)
+./scripts/deploy/deploy_pirc_v5_engine.sh: def generate_quantum_key(self) -> str:
+./scripts/deploy/deploy_pirc_v5_engine.sh: quantum_key = self.q_enc.generate_quantum_key()
+./scripts/deploy/deploy_pirc_v5_engine.sh: encrypted = self.q_enc.encrypt(input_data, quantum_key)
 ./PiRC/docs/PiRC-230-Parity-Registry-v2.md:- Automated supply vs. reserve differential analysis.
-./PiRC/node_modules/@noble/curves/README.md:  [post-quantum](https://github.com/paulmillr/noble-post-quantum),
+./PiRC/node_modules/@noble/curves/README.md: [post-quantum](https://github.com/paulmillr/noble-post-quantum),
 ./PiRC/node_modules/@noble/curves/README.md:Cryptographically relevant quantum computer, if built, will allow to
 ./PiRC/node_modules/@noble/curves/README.md:[noble-post-quantum](https://github.com/paulmillr/noble-post-quantum).
-./PiRC/node_modules/@noble/hashes/README.md:  [post-quantum](https://github.com/paulmillr/noble-post-quantum),
+./PiRC/node_modules/@noble/hashes/README.md: [post-quantum](https://github.com/paulmillr/noble-post-quantum),
 ./PiRC/node_modules/@noble/hashes/README.md:Cryptographically relevant quantum computer, if built, will allow to
-./PiRC/node_modules/safer-buffer/Porting-Buffer.md:  program source code to passwords and encryption keys.
+./PiRC/node_modules/safer-buffer/Porting-Buffer.md: program source code to passwords and encryption keys.
 ./PiRC/node_modules/safer-buffer/Porting-Buffer.md:- Read uninitialized memory. This **will** leak passwords, encryption keys and other
-./PiRC/scripts/deploy/deploy_pirc_v5_engine.sh:    def generate_quantum_key(self) -> str:
-./PiRC/scripts/deploy/deploy_pirc_v5_engine.sh:        quantum_key = self.q_enc.generate_quantum_key()
-./PiRC/scripts/deploy/deploy_pirc_v5_engine.sh:        encrypted = self.q_enc.encrypt(input_data, quantum_key)
+./PiRC/scripts/deploy/deploy_pirc_v5_engine.sh: def generate_quantum_key(self) -> str:
+./PiRC/scripts/deploy/deploy_pirc_v5_engine.sh: quantum_key = self.q_enc.generate_quantum_key()
+./PiRC/scripts/deploy/deploy_pirc_v5_engine.sh: encrypted = self.q_enc.encrypt(input_data, quantum_key)
 ./pi_rc_audit_report.md:✅ Found existing differential/quantum references
 ./pi_rc_audit_report.md:./docs/PiRC-230-Parity-Registry-v2.md:- Automated supply vs. reserve differential analysis.
-./pi_rc_audit_report.md:./node_modules/@noble/curves/README.md:  [post-quantum](https://github.com/paulmillr/noble-post-quantum),
+./pi_rc_audit_report.md:./node_modules/@noble/curves/README.md: [post-quantum](https://github.com/paulmillr/noble-post-quantum),
 ./pi_rc_audit_report.md:./node_modules/@noble/curves/README.md:Cryptographically relevant quantum computer, if built, will allow to
 ./pi_rc_audit_report.md:./node_modules/@noble/curves/README.md:[noble-post-quantum](https://github.com/paulmillr/noble-post-quantum).
-./pi_rc_audit_report.md:./node_modules/@noble/hashes/README.md:  [post-quantum](https://github.com/paulmillr/noble-post-quantum),
+./pi_rc_audit_report.md:./node_modules/@noble/hashes/README.md: [post-quantum](https://github.com/paulmillr/noble-post-quantum),
 ./pi_rc_audit_report.md:./node_modules/@noble/hashes/README.md:Cryptographically relevant quantum computer, if built, will allow to
-./pi_rc_audit_report.md:./node_modules/safer-buffer/Porting-Buffer.md:  program source code to passwords and encryption keys.
+./pi_rc_audit_report.md:./node_modules/safer-buffer/Porting-Buffer.md: program source code to passwords and encryption keys.
 ./pi_rc_audit_report.md:./node_modules/safer-buffer/Porting-Buffer.md:- Read uninitialized memory. This **will** leak passwords, encryption keys and other
-./pi_rc_audit_report.md:./scripts/deploy/deploy_pirc_v5_engine.sh:    def generate_quantum_key(self) -> str:
-./pi_rc_audit_report.md:./scripts/deploy/deploy_pirc_v5_engine.sh:        quantum_key = self.q_enc.generate_quantum_key()
-./pi_rc_audit_report.md:./scripts/deploy/deploy_pirc_v5_engine.sh:        encrypted = self.q_enc.encrypt(input_data, quantum_key)
+./pi_rc_audit_report.md:./scripts/deploy/deploy_pirc_v5_engine.sh: def generate_quantum_key(self) -> str:
+./pi_rc_audit_report.md:./scripts/deploy/deploy_pirc_v5_engine.sh: quantum_key = self.q_enc.generate_quantum_key()
+./pi_rc_audit_report.md:./scripts/deploy/deploy_pirc_v5_engine.sh: encrypted = self.q_enc.encrypt(input_data, quantum_key)
 
 ## VERSION & VULNERABILITY AUDIT
+
 Cargo file found: ./Cargo.toml
 [package]
 name = "rwa_verify"
@@ -297,9 +300,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 soroban-sdk = "22"
-
-
-
 
 Cargo file found: ./contracts/pidex_core/Cargo.toml
 [package]
@@ -374,9 +374,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 soroban-sdk = "22"
-
-
-
 
 Cargo file found: ./PiRC/contracts/pidex_core/Cargo.toml
 [package]

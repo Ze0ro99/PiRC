@@ -23,8 +23,14 @@ exports.handler = async (event) => {
       if (json.data && json.data[0]) {
         const book = json.data[0];
         result.okx = {
-          bids: book.bids.map((b) => ({ price: parseFloat(b[0]), amount: parseFloat(b[1]) })),
-          asks: book.asks.map((a) => ({ price: parseFloat(a[0]), amount: parseFloat(a[1]) })),
+          bids: book.bids.map((b) => ({
+            price: parseFloat(b[0]),
+            amount: parseFloat(b[1]),
+          })),
+          asks: book.asks.map((a) => ({
+            price: parseFloat(a[0]),
+            amount: parseFloat(a[1]),
+          })),
           timestamp: parseInt(book.ts),
         };
       }
@@ -33,15 +39,23 @@ exports.handler = async (event) => {
     if (mexcBookRes.status === "fulfilled" && mexcBookRes.value.ok) {
       const json = await mexcBookRes.value.json();
       result.mexc = {
-        bids: (json.bids || []).map((b) => ({ price: parseFloat(b[0]), amount: parseFloat(b[1]) })),
-        asks: (json.asks || []).map((a) => ({ price: parseFloat(a[0]), amount: parseFloat(a[1]) })),
+        bids: (json.bids || []).map((b) => ({
+          price: parseFloat(b[0]),
+          amount: parseFloat(b[1]),
+        })),
+        asks: (json.asks || []).map((a) => ({
+          price: parseFloat(a[0]),
+          amount: parseFloat(a[1]),
+        })),
         timestamp: json.lastUpdateId,
       };
     }
 
     // Compute summary across exchanges
-    let totalBidVol = 0, totalAskVol = 0;
-    let bestBid = 0, bestAsk = Infinity;
+    let totalBidVol = 0,
+      totalAskVol = 0;
+    let bestBid = 0,
+      bestAsk = Infinity;
 
     for (const src of [result.okx, result.mexc]) {
       if (!src) continue;
@@ -58,11 +72,20 @@ exports.handler = async (event) => {
     result.summary = {
       bestBid: bestBid || null,
       bestAsk: bestAsk === Infinity ? null : bestAsk,
-      spread: bestAsk !== Infinity && bestBid > 0 ? (bestAsk - bestBid).toFixed(4) : null,
-      spreadPct: bestAsk !== Infinity && bestBid > 0 ? (((bestAsk - bestBid) / bestBid) * 100).toFixed(3) : null,
+      spread:
+        bestAsk !== Infinity && bestBid > 0
+          ? (bestAsk - bestBid).toFixed(4)
+          : null,
+      spreadPct:
+        bestAsk !== Infinity && bestBid > 0
+          ? (((bestAsk - bestBid) / bestBid) * 100).toFixed(3)
+          : null,
       totalBidVolume: totalBidVol,
       totalAskVolume: totalAskVol,
-      buyPressure: totalBidVol + totalAskVol > 0 ? ((totalBidVol / (totalBidVol + totalAskVol)) * 100).toFixed(1) : null,
+      buyPressure:
+        totalBidVol + totalAskVol > 0
+          ? ((totalBidVol / (totalBidVol + totalAskVol)) * 100).toFixed(1)
+          : null,
     };
 
     return {
@@ -74,7 +97,10 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: "Failed to fetch order book", detail: err.message }),
+      body: JSON.stringify({
+        error: "Failed to fetch order book",
+        detail: err.message,
+      }),
     };
   }
 };

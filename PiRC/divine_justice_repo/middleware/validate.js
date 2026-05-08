@@ -3,4 +3,4 @@ export function validate(req, res, next) {
     return res.status(400).json({ error: "Invalid input" });
   }
   next();
-}\n
+}

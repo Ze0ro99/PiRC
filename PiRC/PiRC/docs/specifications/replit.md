@@ -9,6 +9,7 @@
 - **Warehouse Mechanism**: Real-time data from OKX + MEXC + Kraken
 
 ### Quick Commands for the Team:
+
 1. `./scripts/launch_platform_check.sh`
 2. Open the live dashboard: https://c5d0b78a-8ece-460f-b8b4-64709c799a5e-00-3ag91petmaehl.pike.replit.dev
 

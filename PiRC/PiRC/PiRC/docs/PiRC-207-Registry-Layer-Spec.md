@@ -12,7 +12,7 @@
 
 ### 1. Executive Summary
 
-The **Registry Layer** is the central on-chain governance and tracking component of the PiRC-207 7-Layer Colored Token System.  
+The **Registry Layer** is the central on-chain governance and tracking component of the PiRC-207 7-Layer Colored Token System.
 
 It provides a single source of truth for all issued tokens across the seven layers (Purple, Gold, Yellow, Orange, Blue, Green, Red), enables secure issuer validation, and lays the foundation for full Real World Asset (RWA) integration.
 
@@ -32,6 +32,7 @@ This layer completes the transition from isolated token contracts to a cohesive,
 The Registry is a single Soroban smart contract that interacts with the 7 existing token contracts.
 
 **Key Components:**
+
 - **Registry Contract** (new)
 - 7 existing **PiRC-207 Token Contracts** (already deployed)
 - Off-chain verification layer (merchant/issuer KYC + physical asset proof)
@@ -54,16 +55,16 @@ pub enum DataKey {
 
 ### 5. Core Functions
 
-| Function                  | Description                                      | Access       |
-|---------------------------|--------------------------------------------------|--------------|
-| `register_issuer`         | Add trusted issuer for a specific layer          | Admin only   |
-| `issue_tokens`            | Mint tokens after successful issuer validation   | Authorized issuer |
-| `bind_rwa`                | Bind real-world asset proof to token ID          | Issuer       |
-| `verify_rwa`              | Public verification of RWA binding               | Anyone       |
-| `get_layer_metadata`      | Return full metadata for any layer               | Public       |
-| `get_total_issued`        | Return cumulative issued supply per layer        | Public       |
-| `update_parity`           | Update mathematical layer value (governance)     | Admin        |
-| `transfer_ownership`      | Change admin or issuer                           | Admin only   |
+| Function             | Description                                    | Access            |
+| -------------------- | ---------------------------------------------- | ----------------- |
+| `register_issuer`    | Add trusted issuer for a specific layer        | Admin only        |
+| `issue_tokens`       | Mint tokens after successful issuer validation | Authorized issuer |
+| `bind_rwa`           | Bind real-world asset proof to token ID        | Issuer            |
+| `verify_rwa`         | Public verification of RWA binding             | Anyone            |
+| `get_layer_metadata` | Return full metadata for any layer             | Public            |
+| `get_total_issued`   | Return cumulative issued supply per layer      | Public            |
+| `update_parity`      | Update mathematical layer value (governance)   | Admin             |
+| `transfer_ownership` | Change admin or issuer                         | Admin only        |
 
 ### 6. Security & Compliance Features
 
@@ -76,6 +77,7 @@ pub enum DataKey {
 ### 7. Integration with Existing 7 Token Contracts
 
 The Registry will:
+
 - Call `mint()` on the appropriate token contract after validation.
 - Store references to the 7 deployed contract IDs (already known).
 - Provide a unified interface so merchants and users interact with one contract instead of seven.
@@ -107,15 +109,17 @@ I am ready to start coding **immediately** upon approval and will provide the fu
 **Ready for Presentation**
 
 You can now:
+
 - Paste the entire document above directly into Discussion #72 as a new comment, or
 - Save it as `PiRC-207-Registry-Layer-Spec.md` in your repo and link to it.
 
 Would you like me to also create:
+
 - A shorter 1-page executive summary version?
 - A GitHub-ready .md file with proper headings and code blocks?
 
 Just say the word and I’ll deliver it instantly.
 
-You are now professionally positioned for the next phase. The community will see a clear, detailed, and actionable plan.  
+You are now professionally positioned for the next phase. The community will see a clear, detailed, and actionable plan.
 
 Let me know how you want to proceed.

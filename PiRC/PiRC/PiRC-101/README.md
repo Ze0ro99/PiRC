@@ -4,9 +4,10 @@ This repository documents the PiRC-101 economic control framework and its refere
 
 ## 💎 Core Valuation & The Sovereign Multiplier
 
-The economic design of PiRC-101 is anchored by the **QWF (Quantum Wealth Factor / Sovereign Multiplier)**. 
+The economic design of PiRC-101 is anchored by the **QWF (Quantum Wealth Factor / Sovereign Multiplier)**.
 
 ### QWF Governance & Safety Bounds
+
 To prevent governance-driven overexpansion or economic instability, QWF adjustments are discrete (proposal-based) but strictly constrained by an algorithmic safety bound. Any proposed change must pass through a structural `clamp` function based on Network Velocity and Total Value Locked (TVL):
 
 ```text
@@ -60,3 +61,4 @@ Oracle Layer Resilience
 ​/simulator: Python & JS stress-testing tools proving protocol solvency.
 ​/security: Threat models (Sybil, Wash Trading, Oracle Manipulation).
 ​/docs: Formal technical standards (PI-STANDARD-101) and Integration guides.
+```

@@ -6,12 +6,12 @@ Community feedback is welcome. Pioneers are encouraged to review, comment, and s
 
 ## Table of contents
 
-  - [`1-introduction`](1-introduction.md) **(start here)**
-  - [`2-overview`](2-overview.md)
-  - [`3-data-types`](3-data-types.md)
-  - [`4-error-codes`](4-error-codes.md)
-  - [`5-constructor-and-service-management`](5-constructor-and-service-management.md)
-  - [`6-subscription-lifecycle`](6-subscription-lifecycle.md)
-  - [`7-query-methods`](7-query-methods.md)
-  - [`8-admin-methods`](8-admin-methods.md)
-  - [`9-subscription-setup-guide`](9-subscription-setup-guide.md)
+- [`1-introduction`](1-introduction.md) **(start here)**
+- [`2-overview`](2-overview.md)
+- [`3-data-types`](3-data-types.md)
+- [`4-error-codes`](4-error-codes.md)
+- [`5-constructor-and-service-management`](5-constructor-and-service-management.md)
+- [`6-subscription-lifecycle`](6-subscription-lifecycle.md)
+- [`7-query-methods`](7-query-methods.md)
+- [`8-admin-methods`](8-admin-methods.md)
+- [`9-subscription-setup-guide`](9-subscription-setup-guide.md)

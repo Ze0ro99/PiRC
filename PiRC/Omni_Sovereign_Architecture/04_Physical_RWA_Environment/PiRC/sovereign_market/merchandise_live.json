@@ -13,7 +13,7 @@
     "name": "Lotus 7-Layer Shelf",
     "description": "Functional accessory mapping the Sovereign Matrix.",
     "contract_binding": "rwa_garden",
-    "base_price": 700.00,
+    "base_price": 700.0,
     "currency_options": ["PiCash", "Justice_Credit"],
     "aml_risk_score": "Low"
   }

@@ -17,4 +17,3 @@
   },
   "required": ["version", "app_id", "payload"]
 }
-

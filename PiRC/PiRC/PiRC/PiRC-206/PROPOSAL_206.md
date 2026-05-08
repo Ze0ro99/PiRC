@@ -33,5 +33,6 @@ Expose a single operational view across all Pinework layers and plugin status to
 ## Implementation
 
 Reference files:
+
 - `netlify/functions/dashboard.js`
 - `assets/js/pinework_dashboard.html`

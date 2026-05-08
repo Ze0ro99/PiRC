@@ -13,7 +13,7 @@
     "name": "7-Layer Sovereign Shelf",
     "category": "RWA_Furniture",
     "contract": "rwa_garden",
-    "price_pichash": 700.00,
+    "price_pichash": 700.0,
     "source_verification": "University_Project_Sync",
     "aml_status": "Compliant"
   }

@@ -24,11 +24,7 @@ async function callRPC(method, params = []) {
   }
 }
 
-const methods = [
-  "getHealth",
-  "getLatestLedger",
-  "getVersion"
-];
+const methods = ["getHealth", "getLatestLedger", "getVersion"];
 
 async function main() {
   for (const m of methods) {

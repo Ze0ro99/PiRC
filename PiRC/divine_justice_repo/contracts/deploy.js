@@ -8,4 +8,4 @@ export async function deployContract(abi, bytecode) {
   const contract = await factory.deploy();
   await contract.waitForDeployment();
   return contract.target;
-}\n
+}

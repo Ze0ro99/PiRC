@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-This document defines **PiRC-208**, the official standard for seamless, sovereign, and decentralized integration of Artificial Intelligence (AI) capabilities into the Pi Network ecosystem.  
+This document defines **PiRC-208**, the official standard for seamless, sovereign, and decentralized integration of Artificial Intelligence (AI) capabilities into the Pi Network ecosystem.
 
 PiRC-208 builds directly upon **PiRC-207 Sovereign Sync** and the **Registry Layer + 7-Layer Colored Token System**. It introduces standardized AI oracles, attention verification engines, decentralized inference layers, and AI-governed economic mechanisms while preserving full mathematical parity, reflexive parity, and economic sovereignty.
 
@@ -32,11 +32,12 @@ The standard defines three interoperable layers that sit on top of the PiRC-207 
 
 ### 3.2. Primary State Vector (Ω_AI)
 
-The AI state at any epoch *n* is defined as:
+The AI state at any epoch _n_ is defined as:
 
-$$ \Omega_{AI,n} = \{ A_n, V_n, I_n, \Psi_n \} $$
+$$ \Omega\_{AI,n} = \{ A_n, V_n, I_n, \Psi_n \} $$
 
 Where:
+
 - $A_n$ = Aggregated Attention Vector (from PiRC-207 Registry)
 - $V_n$ = Verified AI Model Hash (stored in Registry Layer)
 - $I_n$ = Inference Output Score (0–1 normalized)
@@ -44,7 +45,7 @@ Where:
 
 ### 3.3. Deterministic Transition Function
 
-$$ \Omega_{AI,n+1} = f(\Omega_{AI,n}, D_n, R_n) $$
+$$ \Omega*{AI,n+1} = f(\Omega*{AI,n}, D_n, R_n) $$
 
 - $D_n$ = User/Device data batch
 - $R_n$ = Registry Layer read (Sovereign Sync)
@@ -72,6 +73,7 @@ All transitions are enforced by an extended **Justice Engine** that applies quad
 **Phase 4 (2027)**: AI-native Pi Apps marketplace.
 
 **Reference Code Locations** (will be added to repo):
+
 - `/contracts/PiRC208AIOracle.sol`
 - `/backend/ai-oracle/`
 - `/simulations/ai-economic-model/`
@@ -84,9 +86,12 @@ PiRC-208 formalizes AI as a sovereign, parity-preserving layer of the Pi Network
 **Proposed By**: Ze0ro99/PiRC Contributors (April 2026)
 
 ---
+
 **Reference Code Locations (PiRC-208):**
+
 - Solidity (EVM): [`contracts/PiRC208MLVerifier.sol`](../contracts/PiRC208MLVerifier.sol)
 - Soroban (Stellar): [`contracts/soroban/src/ai_oracle.rs`](../contracts/soroban/src/ai_oracle.rs)
 
 ---
+
 **License**: PiOS License (same as repository)

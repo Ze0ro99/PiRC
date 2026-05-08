@@ -52,9 +52,9 @@ Each signal is represented as:
 
 Where:
 
-- `signal_type` defines the activity category  
-- `weight` represents relative contribution value  
-- `proof` contains verification metadata  
+- `signal_type` defines the activity category
+- `weight` represents relative contribution value
+- `proof` contains verification metadata
 
 ---
 
@@ -65,15 +65,19 @@ The Engagement Oracle validates signals before they are used by the reward alloc
 Validation steps include:
 
 ### Authenticity Check
+
 Ensures the signal originates from a legitimate ecosystem source.
 
 ### Replay Protection
+
 Prevents reuse of identical engagement events.
 
 ### Temporal Consistency
+
 Ensures signals follow logical chronological ordering.
 
 ### Sybil Filtering
+
 Applies trust graph scoring to detect artificial identity clusters.
 
 ---
@@ -86,9 +90,9 @@ Example structure:
 
 Where:
 
-- `epoch` defines the reward period  
-- `engagement_score` represents aggregated contribution  
-- `verification_hash` ensures deterministic verification  
+- `epoch` defines the reward period
+- `engagement_score` represents aggregated contribution
+- `verification_hash` ensures deterministic verification
 
 ---
 
@@ -174,8 +178,8 @@ Instead, it introduces a **standardized oracle layer** that can optionally feed 
 Example pseudo-logic for oracle aggregation:
 
 for signal in signals:
-    if validateSignal(signal):
-        score += signal.weight
+if validateSignal(signal):
+score += signal.weight
 
 return score
 

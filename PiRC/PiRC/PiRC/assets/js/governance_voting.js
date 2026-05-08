@@ -6,5 +6,5 @@ function castVote(proposalId, vote) {
 
 const proposals = [
   { id: 207, title: "CEX Liquidity Entry Rule", status: "Active" },
-  { id: 208, title: "314 System Stabilization", status: "Active" }
+  { id: 208, title: "314 System Stabilization", status: "Active" },
 ];
