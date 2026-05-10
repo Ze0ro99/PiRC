@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GitBranch, Download, RefreshCw, FileText, Folder, CheckCircle, AlertTriangle, FileCode, FileJson, FileType, Search } from "lucide-react";
+import { GitBranch, Download, RefreshCw, FileText, Folder, CheckCircle, FileCode, FileJson, FileType, Search } from "lucide-react";
 
 interface TreeNode {
   path: string;
