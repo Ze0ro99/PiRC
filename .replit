@@ -1,0 +1,5 @@
+run = "npm run dev"
+hidden = [".git", "node_modules", ".cache"]
+[env]
+NODE_ENV = "production"
+VITE_PORT = "3000"
