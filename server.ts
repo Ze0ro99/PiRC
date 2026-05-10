@@ -107,14 +107,19 @@ async function startServer() {
       const fs = require('fs');
       const p = require('path');
       
-      // Determine local path safely within project directory
-      const localPath = p.join(process.cwd(), 'imported', filePath);
+      // Resolve and constrain destination to the "imported" directory
+      const importRoot = p.resolve(process.cwd(), 'imported');
+      const localPath = p.resolve(importRoot, filePath);
+      const relativePath = p.relative(importRoot, localPath);
+      if (relativePath.startsWith('..') || p.isAbsolute(relativePath)) {
+        return res.status(400).json({ error: "Invalid path" });
+      }
       
       // Ensure directory exists
       fs.mkdirSync(p.dirname(localPath), { recursive: true });
       fs.writeFileSync(localPath, content, 'utf8');
       
-      res.json({ status: "success", message: `File imported to imported/${filePath}` });
+      res.json({ status: "success", message: `File imported to imported/${relativePath}` });
     } catch (error: any) {
       console.error("Import Error:", error.message);
       res.status(500).json({ error: "Failed to import file" });
