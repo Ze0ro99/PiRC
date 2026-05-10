@@ -3,6 +3,7 @@ import { createServer as createViteServer } from "vite";
 import cors from "cors";
 import { Octokit } from "octokit";
 import rateLimit from "express-rate-limit";
+import { randomBytes } from "crypto";
 
 async function startServer() {
   const app = express();
@@ -152,7 +153,7 @@ async function startServer() {
       res.json({ 
         authenticated: true, 
         user: userData,
-        sessionId: Math.random().toString(36).substring(7)
+        sessionId: randomBytes(16).toString("hex")
       });
     } catch (error: any) {
       console.error("Pi Auth Error:", error.message);
