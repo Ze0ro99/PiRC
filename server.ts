@@ -2,6 +2,7 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import cors from "cors";
 import { Octokit } from "octokit";
+import rateLimit from "express-rate-limit";
 
 async function startServer() {
   const app = express();
@@ -9,6 +10,13 @@ async function startServer() {
 
   app.use(cors());
   app.use(express.json());
+
+  const importLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // limit each IP to 10 import requests per window
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
 
   // API Routes
   
@@ -89,7 +97,7 @@ async function startServer() {
     }
   });
 
-  app.post("/api/github/import", async (req, res) => {
+  app.post("/api/github/import", importLimiter, async (req, res) => {
     try {
       const { path: filePath, content } = req.body;
       if (!filePath || !content) {
