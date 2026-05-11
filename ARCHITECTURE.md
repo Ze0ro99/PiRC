@@ -1,12 +1,20 @@
-# Architecture Document
 
-![PiRC Architecture](https://images.unsplash.com/photo-1639762681485-074b7f4aec63?auto=format&fit=crop&w=800&q=80)
+# PiRC Enterprise Architecture
 
-## 1. Smart Contract Layer
-The PiRC Smart Contract architecture leverages Soroban/Stellar with advanced logic gates.
+## Layers
 
-## 2. Telemetry Layer
-Integrated Firebase provides usage telemetry, security notifications, and operational monitoring.
+1. Frontend Layer
+2. API Gateway
+3. AI Agent Layer
+4. Governance Layer
+5. Smart Contract Layer
+6. Distributed Storage Layer
+7. Security & Quantum Layer
 
-## 3. Automation Layer
-GitHub Actions orchestrate security and performance checks.
+## Standards
+
+- Event-driven architecture
+- Immutable audit logs
+- Modular standards
+- Deterministic outputs
+- Reproducible simulations
