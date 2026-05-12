@@ -11,7 +11,7 @@ jobs:
       QUANTUM_DEBUG_MODE: "true"
     steps:
       - name: Checkout Code (Fetch latest delta)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
       - name: Install Tree-sitter Custom Parser
