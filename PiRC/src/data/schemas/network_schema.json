@@ -1,0 +1,31 @@
+{
+  "_meta": {
+    "module": "PiRC Data Entry System",
+    "version": "1.0.1"
+  },
+  "nodes": [
+    {
+      "id": "hub-core",
+      "type": "central",
+      "endpoint": "/api/core",
+      "active": true
+    },
+    {
+      "id": "hub-alpha",
+      "type": "relay",
+      "endpoint": "/alpha",
+      "active": true
+    },
+    {
+      "id": "node-earth",
+      "type": "storage",
+      "endpoint": "/earth",
+      "active": true
+    }
+  ],
+  "pi_network_integration": {
+    "required_payment": 1.0,
+    "currency": "Pi",
+    "testnet_enabled": true
+  }
+}
