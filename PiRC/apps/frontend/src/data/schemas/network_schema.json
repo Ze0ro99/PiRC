@@ -1,8 +1,5 @@
 {
-  "_meta": {
-    "module": "PiRC Data Entry System",
-    "version": "1.0.1"
-  },
+  "_meta": { "module": "PiRC Data Entry System", "version": "1.0.0" },
   "nodes": [
     {
       "id": "hub-core",
@@ -22,10 +19,5 @@
       "endpoint": "/earth",
       "active": true
     }
-  ],
-  "pi_network_integration": {
-    "required_payment": 1.0,
-    "currency": "Pi",
-    "testnet_enabled": true
-  }
+  ]
 }

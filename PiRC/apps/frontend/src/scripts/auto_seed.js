@@ -4,17 +4,12 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-console.log("⚡ Starting Automated ESM Data Seeding...");
 const liveDataPath = path.join(__dirname, "../data/live/state.json");
 
-const initialState = {
+const state = {
   initializedAt: new Date().toISOString(),
   status: "SYSTEM_ONLINE",
-  verifications: 0,
-  active_connections: 3,
-  data_stream: "active",
+  connections: 3,
 };
-
-fs.writeFileSync(liveDataPath, JSON.stringify(initialState, null, 2));
+fs.writeFileSync(liveDataPath, JSON.stringify(state, null, 2));
 console.log("✅ Live State Seeded Successfully.");
