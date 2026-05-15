@@ -1,0 +1,33 @@
+name: PiRC Ecosystem v3 CI/CD
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+
+      - name: Install Workspace Dependencies
+        run: npm install
+
+      - name: Build production PiRC frontend
+        run: npm run build --workspace=apps/frontend
+
+    # Rust & Soroban Build tests can be un-commented when active
+    # - name: Setup Rust Tools
+    #   uses: Swatinem/rust-cache@v2
+    # - name: Verify Soroban Logic
+    #   run: |
+    #     rustup target add wasm32-unknown-unknown
+    #     npm run build:contracts || true
