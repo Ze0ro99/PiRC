@@ -3,8 +3,11 @@
   "version": "3.0.0",
   "private": true,
   "workspaces": [
-    "apps/frontend",
-    "apps/backend",
-    "contracts/*"
-  ]
+    "apps/frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "build:frontend": "npm run build --workspace=apps/frontend",
+    "dev:frontend": "npm run dev --workspace=apps/frontend"
+  }
 }
