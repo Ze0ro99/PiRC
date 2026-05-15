@@ -1,3 +1,9 @@
 {
-  "nodes": [{ "id": "hub-core", "endpoint": "/api/core" }]
+  "_meta": {
+    "module": "PiRC Data Entry System",
+    "version": "1.0.0"
+  },
+  "nodes": [
+    { "id": "hub-core", "type": "central", "endpoint": "/api/core", "active": true }
+  ]
 }
