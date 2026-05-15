@@ -9,9 +9,3 @@ services:
     environment:
       - NODE_ENV=production
     restart: always
-
-  # NOTE: Actix-web / Rust configurations mapped for future Backend expansion
-  # pirc-backend:
-  #   build: ./apps/backend
-  #   ports:
-  #     - "8080:8080"

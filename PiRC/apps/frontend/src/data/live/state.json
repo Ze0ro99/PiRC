@@ -1,7 +1,5 @@
 {
-  "initializedAt": "2026-05-14T10:02:36.897Z",
+  "initializedAt": "2026-05-15T10:56:58.142Z",
   "status": "SYSTEM_ONLINE",
-  "verifications": 0,
-  "active_connections": 3,
-  "data_stream": "active"
+  "connections": 3
 }
