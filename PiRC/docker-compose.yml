@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  pirc-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  # NOTE: Actix-web / Rust configurations mapped for future Backend expansion
+  # pirc-backend:
+  #   build: ./apps/backend
+  #   ports:
+  #     - "8080:8080"
