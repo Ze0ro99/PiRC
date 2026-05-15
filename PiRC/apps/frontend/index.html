@@ -4,7 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PiRC v3 Ecosystem</title>
+    <!-- Official Pi Network SDK CDN -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <script>
+      // Initialize Pi SDK unconditionally to ensure global 'Pi' object exists
+      document.addEventListener("DOMContentLoaded", function() {
+        if (typeof Pi !== 'undefined') {
+          Pi.init({ version: "2.0", sandbox: true });
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
