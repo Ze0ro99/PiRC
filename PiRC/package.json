@@ -12,7 +12,6 @@
     "build:frontend": "npm run build --workspace=apps/frontend",
     "build:contracts": "cargo build --target wasm32-unknown-unknown --release",
     "build:all": "npm run build:frontend && npm run build:contracts",
-    "dev:frontend": "npm run dev --workspace=apps/frontend",
-    "secure": "npm audit fix --force"
+    "dev:frontend": "npm run dev --workspace=apps/frontend"
   }
 }

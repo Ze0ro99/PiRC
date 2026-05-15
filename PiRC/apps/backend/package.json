@@ -1,1 +1,8 @@
-{"name":"pi-backend","version":"1.0.0","private":true}
+{
+  "name": "pirc-backend",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  }
+}
