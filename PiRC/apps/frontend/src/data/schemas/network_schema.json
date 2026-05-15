@@ -1,9 +1,8 @@
 {
-  "_meta": {
-    "module": "PiRC Data Entry System",
-    "version": "1.0.0"
-  },
-  "nodes": [
-    { "id": "hub-core", "type": "central", "endpoint": "/api/core", "active": true }
-  ]
+  "type": "object",
+  "properties": {
+    "initializedAt": { "type": "string", "format": "date-time" },
+    "status": { "type": "string" },
+    "connections": { "type": "integer" }
+  }
 }
