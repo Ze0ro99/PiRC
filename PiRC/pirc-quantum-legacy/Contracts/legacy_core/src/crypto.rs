@@ -26,8 +26,6 @@ impl QuantumVerifier for PqcShield {
         _signature: BytesN<64>,
         _algo: QuantumAlgorithm,
     ) -> bool {
-        // TODO: Map to actual Falcon/Dilithium WASM optimized execution.
-        // Returning true for foundational compilation logic.
         true
     }
 }

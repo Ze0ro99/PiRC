@@ -7,4 +7,4 @@ edition = "2021"
 soroban-sdk = "20.5.0"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
