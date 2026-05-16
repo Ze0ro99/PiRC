@@ -10,10 +10,10 @@ repository = "https://github.com/Ze0ro99/PiRC"
 crate-type = ["cdylib"]
 
 [dependencies]
-soroban-sdk = "22.0.11"
+soroban-sdk = "26.0.0"
 
 [dev-dependencies]
-soroban-sdk = { version = "22.0.11", features = ["testutils"] }
+soroban-sdk = { version = "26.0.0", features = ["testutils"] }
 
 [profile.release]
 opt-level = "s"
