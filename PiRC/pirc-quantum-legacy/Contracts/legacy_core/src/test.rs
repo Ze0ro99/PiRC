@@ -14,8 +14,8 @@ fn test_vault_initialization_and_storage() {
     let heir_2 = Address::generate(&env);
 
     let mut heirs_map = Map::new(&env);
-    heirs_map.set(heir_1.clone(), 5000);
-    heirs_map.set(heir_2.clone(), 5000);
+    heirs_map.set(heir_1.clone(), 5000); 
+    heirs_map.set(heir_2.clone(), 5000); 
 
     env.mock_all_auths();
     client.init_vault(&owner, &1000, &heirs_map);
@@ -29,16 +29,18 @@ fn test_distribution_fails_if_owner_is_still_active() {
     let client = SovereignLegacyContractClient::new(&env, &contract_id);
 
     let owner = Address::generate(&env);
+    let heir = Address::generate(&env);
     let mut heirs_map = Map::new(&env);
-    heirs_map.set(Address::generate(&env), 10000);
+    heirs_map.set(heir.clone(), 10000);
 
     env.mock_all_auths();
     client.init_vault(&owner, &5000, &heirs_map);
 
-    let dummy_bytes32 = BytesN::from_array(&env, &[0u8; 32]);
-    let dummy_bytes64 = BytesN::from_array(&env, &[2u8; 64]);
+    let oracle_pubkey = BytesN::from_array(&env, &[0u8; 32]);
+    let dummy_msg = BytesN::from_array(&env, &[1u8; 32]);
+    let dummy_sig = BytesN::from_array(&env, &[2u8; 64]);
 
-    client.execute_distribution(&owner, &dummy_bytes32, &dummy_bytes32, &dummy_bytes64);
+    client.execute_distribution(&owner, &oracle_pubkey, &dummy_msg, &dummy_sig);
 }
 
 #[test]
@@ -48,8 +50,9 @@ fn test_successful_distribution_after_threshold() {
     let client = SovereignLegacyContractClient::new(&env, &contract_id);
 
     let owner = Address::generate(&env);
+    let heir = Address::generate(&env);
     let mut heirs_map = Map::new(&env);
-    heirs_map.set(Address::generate(&env), 10000);
+    heirs_map.set(heir.clone(), 10000);
 
     env.mock_all_auths();
     client.init_vault(&owner, &10, &heirs_map);
@@ -58,8 +61,9 @@ fn test_successful_distribution_after_threshold() {
         ledger.sequence += 20;
     });
 
-    let dummy_bytes32 = BytesN::from_array(&env, &[0u8; 32]);
-    let dummy_bytes64 = BytesN::from_array(&env, &[2u8; 64]);
+    let oracle_pubkey = BytesN::from_array(&env, &[0u8; 32]);
+    let dummy_msg = BytesN::from_array(&env, &[1u8; 32]);
+    let dummy_sig = BytesN::from_array(&env, &[2u8; 64]);
 
-    client.execute_distribution(&owner, &dummy_bytes32, &dummy_bytes32, &dummy_bytes64);
+    client.execute_distribution(&owner, &oracle_pubkey, &dummy_msg, &dummy_sig);
 }

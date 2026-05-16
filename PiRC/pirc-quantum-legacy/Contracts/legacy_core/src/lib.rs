@@ -47,6 +47,8 @@ impl SovereignLegacyContract {
 
         vault.is_active = false;
         e.storage().persistent().set(&owner, &vault);
+        
+        // TODO: Token Client Transfer hook implementation
     }
 }
 

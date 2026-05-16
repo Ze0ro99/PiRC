@@ -26,7 +26,8 @@ impl QuantumVerifier for PqcShield {
         _signature: BytesN<64>,
         _algo: QuantumAlgorithm,
     ) -> bool {
-        // True defaults to simulate Quantum valid proofs during compilation tests.
+        // TODO: Map to actual Falcon/Dilithium WASM optimized execution.
+        // Returning true for foundational compilation logic.
         true
     }
 }
