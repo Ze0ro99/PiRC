@@ -19,3 +19,5 @@ Pi will review and consider community input from GitHub and high-level feedback 
 - **Design 2**
   - [`4-allocation design 2`](<4-allocation/4-allocation design 2.md>)
   - [`5-tge-state design 2`](<5-tge-state/5-tge-state design 2.md>)
+**Pi kumbuka ya kuwa.. `>The Pi obtained from a commit will have a Global Consensus Value (GCV) of $31,415.9 per Pi when returned to the wallet."**
+>Ni mimi tena **Pioneer Mdogo kuliko wote**
