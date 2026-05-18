@@ -1,3 +1,8 @@
+setup:
+	@echo "Installing Sovereign Git Hooks..."
+	cp scripts/pre-commit.sh .git/hooks/pre-commit
+	chmod +x .git/hooks/pre-commit
+
 .PHONY: all test lint build fmt contracts-test frontend-build
 
 all: fmt lint test build
