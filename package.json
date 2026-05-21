@@ -11,7 +11,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^2.3.0",
+    "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^6.0.2",
     "clsx": "^2.1.1",
@@ -19,7 +19,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "lucide-react": "^1.16.0",
-    "motion": "^12.23.24",
+    "motion": "^12.39.0",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "recharts": "^3.8.1",
@@ -28,10 +28,10 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.8.0",
+    "@types/node": "^25.9.0",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.14",
-    "tsx": "^4.22.0",
+    "tsx": "^4.22.2",
     "typescript": "~6.0.3",
     "vite": "^8.0.13"
   }
