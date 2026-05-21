@@ -1,0 +1,11 @@
+[package]
+name = "pirc-micar-compliance-vault"
+version = "1.0.0"
+edition = "2021"
+description = "PiRC EU MiCAR Redress and KYC-Allowed Hybrid Vault"
+
+[dependencies]
+soroban-sdk = "20.0.0"
+
+[dev-dependencies]
+soroban-sdk = { version = "20.0.0", features = ["testutils"] }
