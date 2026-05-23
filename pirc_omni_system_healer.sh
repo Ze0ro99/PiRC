@@ -77,8 +77,8 @@ if [ -d ".git" ]; then
         log_warn "Anomalies detected and repaired. Committing hotfixes..."
         git commit -m "fix(system): auto-healing corrupted files and ensuring v23/v26 topographical integrity"
         
-        # We try to push but don't fail the whole script if it errors out here because
-        # we want continuous operation even if github is unreachable for a moment
+        # Pull latest changes from origin to avoid rejected fetch conflicts over SSH
+        git pull --rebase origin $(git branch --show-current) 2>/dev/null || true
         git push origin $(git branch --show-current) || log_err "Could not sync repairs to origin! Retrying in background..."
     else
         log_succ "No anomalies detected. System integrity at 100%."
