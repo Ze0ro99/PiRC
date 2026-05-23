@@ -144,7 +144,7 @@ async function startServer() {
       }
 
       // Validate access token against Pi Network API
-      const piResponse = await fetch("https://api.minepi.com/v2/me", {
+      const piResponse = await fetch("https://rpc.testnet.minepi.com/v2/me", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

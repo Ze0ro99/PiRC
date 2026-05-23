@@ -6,3 +6,5 @@ coverage/
 *.log
 .env*
 !.env.example
+PiRC_Omni_Audit/
+PiRC_Omni_Workspace/
