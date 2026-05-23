@@ -469,8 +469,8 @@ This report aggregates compliance metrics, standards, and smart contract paramet
 
 ### Branch: `gh-pages`
 - **Total Files SCanned:** 4171
-- **MiCAR Compliance Flags Found:** 143
-- **Clarity/Regulatory Flags Found:** 193
+- **MiCAR Compliance Flags Found:** 146
+- **Clarity/Regulatory Flags Found:** 196
 
 ### Branch: `integration/pos-workflow`
 - **Total Files SCanned:** 11
@@ -484,8 +484,8 @@ This report aggregates compliance metrics, standards, and smart contract paramet
 
 ### Branch: `main`
 - **Total Files SCanned:** 4433
-- **MiCAR Compliance Flags Found:** 143
-- **Clarity/Regulatory Flags Found:** 193
+- **MiCAR Compliance Flags Found:** 146
+- **Clarity/Regulatory Flags Found:** 196
 
 ### Branch: `meta/final-root`
 - **Total Files SCanned:** 24
@@ -594,5 +594,5 @@ This report aggregates compliance metrics, standards, and smart contract paramet
 
 ## 3. Global Technical Metrics
 - **Aggregate Files Audited:** 149338
-- **Global MiCAR Integrations:** 315
-- **Global Regulatory Clarity Declarations:** 2865
+- **Global MiCAR Integrations:** 321
+- **Global Regulatory Clarity Declarations:** 2871
