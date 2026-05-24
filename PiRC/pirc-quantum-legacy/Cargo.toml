@@ -1,5 +1,0 @@
-[workspace]
-members = [
-    "Contracts/legacy_core",
-]
-resolver = "2"
