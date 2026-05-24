@@ -5,6 +5,12 @@ on:
     - cron: '0 0 * * *' # Runs midnight daily for endless evolution
   workflow_dispatch: # Allows manual trigger
 
+ refactor/clean-structure-20260524_233302
+
+permissions:
+  contents: read
+
+ main
 jobs:
   evolution_cycle:
     runs-on: ubuntu-latest
