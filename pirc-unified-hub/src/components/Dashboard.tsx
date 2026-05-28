@@ -25,7 +25,7 @@ const mockLayerData = [
 
 export function Dashboard() {
   const { user } = useAuth();
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     tvl: "15,245,000",
     activeNodes: "4,240",
     contracts: "156",
