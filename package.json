@@ -11,14 +11,14 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^2.6.0",
+    "@google/genai": "^2.7.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^6.0.2",
     "clsx": "^2.1.1",
     "decimal.js": "^10.6.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.17.0",
     "motion": "^12.40.0",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
