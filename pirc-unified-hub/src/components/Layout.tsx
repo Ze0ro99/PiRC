@@ -10,8 +10,6 @@ import {
   Layers,
   Building2,
   CreditCard,
-  LogOut,
-  Pi,
   GitMerge
 } from "lucide-react";
 import { cn } from "@/src/lib/utils";
