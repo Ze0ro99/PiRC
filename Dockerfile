@@ -1,4 +1,4 @@
-FROM rust:1.95-slim
+FROM rust:1.96-slim
 RUN apt-get update && apt-get install -y python3 python3-pip bash
 WORKDIR /app
 COPY . .
