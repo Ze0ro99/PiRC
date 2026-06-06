@@ -65,6 +65,10 @@ fi
 git remote set-url origin git@github.com:Ze0ro99/PiRC.git || true
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o BatchMode=yes"
 
+# Config Git Identity Setup
+git config --global user.name "Ze0ro99"
+git config --global user.email "Kamelkadah910@gmail.com"
+
 # Setup Directories
 REPORT_DIR="docs/evolution_reports"
 IDEAS_DIR="docs/ideation_matrix"
