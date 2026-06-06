@@ -1374,7 +1374,7 @@ dependencies = [
 
 [[package]]
 name = "stellar-xdr"
-version = "22.1.0"
+version = "25.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2ce69db907e64d1e70a3dce8d4824655d154749426a6132b25395c49136013e4"
 dependencies = [
