@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@stellar/stellar-sdk": "^14.6.1",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "follow-redirects": "^1.16.0",
+    "minimatch": "^10.2.5",
+    "path-to-regexp": "^8.4.2",
+    "tar": "^7.5.13",
+    "undici": "^8.2.0"
+  },
+  "type": "module"
+}
