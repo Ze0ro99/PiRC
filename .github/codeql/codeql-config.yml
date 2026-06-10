@@ -1,0 +1,24 @@
+name: "PiRC Unified Security Profile"
+
+# Global configurations for advanced threat analysis tracking
+disable-default-queries: false
+
+# Instruct CodeQL to ignore deep environmental data folders to eliminate scan noise
+paths-ignore:
+  - 'public/data/full-repo/**'
+  - 'public/data/isolated-envs/**'
+  - '**/node_modules/**'
+  - '**/bignumber.js/doc/**'
+
+# Define standard configurations for ingestion engines
+queries:
+  - name: Harden Cryptographic and Stream Log Standards
+    uses: security-and-quality
+    id: pirc-core-security-matrix
+
+query-filters:
+  - exclude:
+      id: js/missing-rate-limiting
+  - include:
+      id: js/log-injection
+      description: "Verifies standard regex sanitization parameters across telemetry modules."
