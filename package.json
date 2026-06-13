@@ -18,7 +18,7 @@
     "decimal.js": "^10.6.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "lucide-react": "^1.17.0",
+    "lucide-react": "^1.18.0",
     "motion": "^12.40.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.9.2",
+    "@types/node": "^25.9.3",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.22.4",
