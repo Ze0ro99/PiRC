@@ -1,0 +1,19 @@
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[[ports]]
+localPort = 8081
+externalPort = 8081
+
+[[ports]]
+localPort = 8090
+externalPort = 3001
+
+[[ports]]
+localPort = 18361
+externalPort = 3000
+
+[[ports]]
+localPort = 24717
+externalPort = 80
