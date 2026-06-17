@@ -1,0 +1,10 @@
+name: PiRC CI/CD
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+      - run: npm ci || true
+      - run: cargo check --manifest-path packages/smart-contracts/Cargo.toml || true

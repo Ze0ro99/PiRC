@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  pi-node:
+    image: pinetwork/pi-node-docker:latest
+    command: --testnet --enable-auto-migrations
+    volumes:
+      - ./data/pi-node:/opt/stellar
+    ports:
+      - "31401:8000"
+    restart: unless-stopped
