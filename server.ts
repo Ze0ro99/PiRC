@@ -5,6 +5,11 @@ import { Octokit } from "octokit";
 import rateLimit from "express-rate-limit";
 import { randomBytes, createHmac, timingSafeEqual } from "crypto";
 
+function sanitizeForLog(value: unknown, fallback = "n/a"): string {
+  if (value === null || value === undefined) return fallback;
+  return String(value).replace(/[\r\n]/g, "");
+}
+
 async function startServer() {
   const app = express();
 
@@ -207,8 +212,9 @@ async function startServer() {
     }
 
     const payload = JSON.parse(req.body.toString());
-    const eventType = req.headers["x-github-event"];
-    console.log(`[Webhook] event=${eventType} ref=${payload.ref || "n/a"}`);
+    const eventType = sanitizeForLog(req.headers["x-github-event"]);
+    const ref = sanitizeForLog(payload?.ref);
+    console.log(`[Webhook] event=${eventType} ref=${ref}`);
 
     // Acknowledge immediately; heavy processing would be queued here
     res.status(200).json({ status: "received", event: eventType });
