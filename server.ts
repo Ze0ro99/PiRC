@@ -262,6 +262,9 @@ async function startServer() {
     try {
       const { paymentId } = req.body;
       if (!paymentId) return res.status(400).json({ error: "paymentId is required" });
+      if (typeof paymentId !== "string" || !/^[A-Za-z0-9_-]+$/.test(paymentId)) {
+        return res.status(400).json({ error: "Invalid paymentId format" });
+      }
 
       const apiKey = process.env.PI_NETWORK_API_KEY;
       if (!apiKey) {
@@ -269,7 +272,8 @@ async function startServer() {
       }
 
       const piApiBase = process.env.PI_NETWORK_API_URL || "https://api.minepi.com";
-      const response = await fetch(`${piApiBase}/v2/payments/${paymentId}/approve`, {
+      const safePaymentId = encodeURIComponent(paymentId);
+      const response = await fetch(`${piApiBase}/v2/payments/${safePaymentId}/approve`, {
         method: "POST",
         headers: {
           Authorization: `Key ${apiKey}`,
@@ -297,6 +301,9 @@ async function startServer() {
       if (!paymentId || !txid) {
         return res.status(400).json({ error: "paymentId and txid are required" });
       }
+      if (typeof paymentId !== "string" || !/^[A-Za-z0-9_-]+$/.test(paymentId)) {
+        return res.status(400).json({ error: "Invalid paymentId format" });
+      }
 
       const apiKey = process.env.PI_NETWORK_API_KEY;
       if (!apiKey) {
@@ -304,7 +311,8 @@ async function startServer() {
       }
 
       const piApiBase = process.env.PI_NETWORK_API_URL || "https://api.minepi.com";
-      const response = await fetch(`${piApiBase}/v2/payments/${paymentId}/complete`, {
+      const safePaymentId = encodeURIComponent(paymentId);
+      const response = await fetch(`${piApiBase}/v2/payments/${safePaymentId}/complete`, {
         method: "POST",
         headers: {
           Authorization: `Key ${apiKey}`,
