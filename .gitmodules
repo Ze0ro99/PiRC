@@ -1,6 +1,7 @@
 [submodule "infrastructure/pi-node"]
-	path = infrastructure/pi-node
-	url = https://github.com/PiCoreTeam/pi-node-docker.git
+path = infrastructure/pi-node
+url = https://github.com/PiCoreTeam/pi-node-docker.git
+
 [submodule "packages/smart-contracts/soroban-sdk"]
-	path = packages/smart-contracts/soroban-sdk
-	url = https://github.com/stellar/rs-soroban-sdk.git
+path = packages/smart-contracts/soroban-sdk
+url = https://github.com/stellar/rs-soroban-sdk.git
