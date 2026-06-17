@@ -340,8 +340,9 @@ async function startServer() {
       const { paymentId } = req.body;
       if (!paymentId) return res.status(400).json({ error: "paymentId is required" });
 
+      const safePaymentIdForLog = String(paymentId).replace(/\r|\n/g, "");
       // Log and acknowledge — actual cancellation logic depends on Pi SDK state
-      console.warn(`[Payments] Incomplete payment found: ${paymentId}`);
+      console.warn(`[Payments] Incomplete payment found: ${safePaymentIdForLog}`);
       res.json({ status: "acknowledged", paymentId });
     } catch (error: any) {
       console.error("Payment Incomplete Error:", error.message);
