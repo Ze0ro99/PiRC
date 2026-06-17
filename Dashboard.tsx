@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Pickaxe, Droplet, Rocket, Crown, Activity, Globe, Calculator, Layers } from 'lucide-react';
-import { Asset, generateMockAssets, formatHugeNumber } from '../models/wealth';
+import { Asset, generateMockAssets, formatHugeNumber } from './models/wealth';
 import Decimal from 'decimal.js';
 
 export default function Dashboard() {

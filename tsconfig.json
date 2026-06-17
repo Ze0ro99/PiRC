@@ -22,5 +22,27 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "include": [
+    "*.tsx",
+    "*.ts",
+    "*.d.ts",
+    "models/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "server.ts",
+    "api/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "pirc-unified-hub",
+    "PiRC_Isolated_Workspace",
+    "PiRC_Master_Workspace",
+    "public",
+    "imported",
+    "src/app/api",
+    "src/components/pi-rc",
+    "**/*.js"
+  ]
 }
