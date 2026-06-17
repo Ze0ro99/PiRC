@@ -7,4 +7,3 @@ services:
       - ./data/pi-node:/opt/stellar
     ports:
       - "31401:8000"
-    restart: unless-stopped

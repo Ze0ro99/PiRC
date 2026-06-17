@@ -1,0 +1,26 @@
+# Build outputs
+target/
+build/
+dist/
+*.wasm
+
+# Dependencies
+node_modules/
+Cargo.lock
+
+# Environment & secrets
+.env
+.env.local
+*.pem
+*.key
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+*.tmp
+.cache/
