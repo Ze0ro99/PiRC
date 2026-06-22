@@ -1,19 +1,15 @@
 {
-  "version": "5.1",
-  "timestamp": "2026-06-22T13:26:04.699986",
+  "version": "5.2",
+  "timestamp": "2026-06-22T14:46:52.102533+00:00",
   "network_mode": "testnet",
   "pirc_7_layers": [
-    "L0_Purple",
-    "L1_Gold",
-    "L2_Yellow",
-    "L3_Orange",
-    "L4_Blue",
-    "L5_Green",
-    "L6_Red"
+    "L0",
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L5",
+    "L6"
   ],
-  "rwa_tokenization": "PiRC-08 Ready",
-  "stellar_integration": "Soroban + Pi Nexus",
-  "pi_network_sync": "Enabled",
-  "mainnet_ready": false,
   "status": "Production Ready"
 }
