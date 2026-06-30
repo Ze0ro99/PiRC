@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-06-22T12:45:54.246515",
+  "total_estimated_wealth_usd": 1247000000000000,
+  "resources": {
+    "minerals": {
+      "value": 450000000000000
+    },
+    "energy": {
+      "value": 380000000000000
+    },
+    "water_land_biodiversity": {
+      "value": 417000000000000
+    }
+  },
+  "pi_network_rwa_status": "Ready for tokenization (PiRC-08)",
+  "version": "2.2"
+}

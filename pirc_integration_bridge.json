@@ -1,0 +1,15 @@
+{
+  "version": "5.2",
+  "timestamp": "2026-06-22T14:46:52.102533+00:00",
+  "network_mode": "testnet",
+  "pirc_7_layers": [
+    "L0",
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L5",
+    "L6"
+  ],
+  "status": "Production Ready"
+}

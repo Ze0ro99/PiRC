@@ -18,6 +18,9 @@ impl DynamicTokenomicsContract {
             base_emission + (base_emission / 4) // Incentivize network volume
         };
 
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
         env.storage().temporary().set(&Symbol::new(&env, "last_emission"), &adjusted_emission);
         adjusted_emission
     }

@@ -1,10 +1,26 @@
-node_modules/
+# Build outputs
+target/
 build/
 dist/
-coverage/
+*.wasm
+
+# Dependencies
+node_modules/
+Cargo.lock
+
+# Environment & secrets
+.env
+.env.local
+*.pem
+*.key
+
+# IDE & OS
+.idea/
+.vscode/
 .DS_Store
+Thumbs.db
+
+# Logs & temp
 *.log
-.env*
-!.env.example
-PiRC_Omni_Audit/
-PiRC_Omni_Workspace/
+*.tmp
+.cache/

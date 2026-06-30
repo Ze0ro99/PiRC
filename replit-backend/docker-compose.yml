@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  pirc-backend:
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PROTOCOL_SYNC_URL=https://api.mainnet.minepi.com
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+  pirc-redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: always

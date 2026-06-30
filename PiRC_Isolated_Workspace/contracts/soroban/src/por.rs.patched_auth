@@ -1,0 +1,21 @@
+mod pirc_config;
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+#![forbid(unsafe_code)]
+use soroban_sdk::{contract, contractimpl, Env, String, U128};
+
+#[contract]
+pub struct PiRC225PoR;
+
+#[contractimpl]
+impl PiRC225PoR {
+    pub fn attest_reserve(env: Env, asset: String, amount: U128) {
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+    // TODO: user.require_auth();
+    compile_error!("CRITICAL: Cryptographic authorization layer missing on state mutability scope.");
+        env.storage().instance().set(&asset, &amount);
+    }
+}
+
