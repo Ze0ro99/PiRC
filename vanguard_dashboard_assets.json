@@ -1,0 +1,40 @@
+{
+    "sync_time": 1781705823,
+    "data": {
+        "PI": {
+            "symbol": "PI",
+            "price": 1.0,
+            "status": "FALLBACK"
+        },
+        "REF": {
+            "symbol": "REF",
+            "price": 1.0,
+            "status": "FALLBACK"
+        },
+        "RWA": {
+            "symbol": "RWA",
+            "price": 1.0,
+            "status": "FALLBACK"
+        },
+        "GOV": {
+            "symbol": "GOV",
+            "price": 1.0,
+            "status": "FALLBACK"
+        },
+        "LIQ": {
+            "symbol": "LIQ",
+            "price": 1.0,
+            "status": "FALLBACK"
+        },
+        "STK": {
+            "symbol": "STK",
+            "price": 1.0,
+            "status": "FALLBACK"
+        },
+        "VNG": {
+            "symbol": "VNG",
+            "price": 1.0,
+            "status": "FALLBACK"
+        }
+    }
+}

@@ -71,10 +71,10 @@ impl PiRCAirdropVault {
     pub fn pause(env: Env, admin: Address) {
         admin.require_auth();
 
-        let stored: Address = env.storage().instance().get(&DataKey::Admin).unwrap();
+        let stored: Address = env.storage().instance().get(&DataKey::Admin).ok_or(ContractError::AdminNotInitialized)?;
 
         if admin != stored {
-            panic!("not admin");
+            return Err(ContractError::Unauthorized);
         }
 
         env.storage().instance().set(&DataKey::Paused, &true);
@@ -83,10 +83,10 @@ impl PiRCAirdropVault {
     pub fn unpause(env: Env, admin: Address) {
         admin.require_auth();
 
-        let stored: Address = env.storage().instance().get(&DataKey::Admin).unwrap();
+        let stored: Address = env.storage().instance().get(&DataKey::Admin).ok_or(ContractError::AdminNotInitialized)?;
 
         if admin != stored {
-            panic!("not admin");
+            return Err(ContractError::Unauthorized);
         }
 
         env.storage().instance().set(&DataKey::Paused, &false);
@@ -94,7 +94,7 @@ impl PiRCAirdropVault {
 
     pub fn current_wave(env: Env) -> i32 {
 
-        let cfg: Config = env.storage().instance().get(&DataKey::Config).unwrap();
+        let cfg: Config = env.storage().instance().get(&DataKey::Config).ok_or(ContractError::ConfigMissing)?;
 
         let t = env.ledger().timestamp();
 
@@ -114,7 +114,7 @@ impl PiRCAirdropVault {
 
     pub fn unlocked_total(env: Env) -> i128 {
 
-        let cfg: Config = env.storage().instance().get(&DataKey::Config).unwrap();
+        let cfg: Config = env.storage().instance().get(&DataKey::Config).ok_or(ContractError::ConfigMissing)?;
 
         let wave = Self::current_wave(env.clone());
 
@@ -136,10 +136,10 @@ impl PiRCAirdropVault {
 
         user.require_auth();
 
-        let paused: bool = env.storage().instance().get(&DataKey::Paused).unwrap();
+        let paused: bool = env.storage().instance().get(&DataKey::Paused).ok_or(ContractError::AdminNotInitialized)?;
 
         if paused {
-            panic!("paused");
+            return Err(ContractError::ContractPaused);
         }
 
         let mut claimed: Map<Address,bool> =
@@ -147,7 +147,7 @@ impl PiRCAirdropVault {
             .unwrap_or(Map::new(&env));
 
         if claimed.get(user.clone()).unwrap_or(false) {
-            panic!("already claimed");
+            return Err(ContractError::AlreadyClaimed);
         }
 
         let unlocked = Self::unlocked_total(env.clone());

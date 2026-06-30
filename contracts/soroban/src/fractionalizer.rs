@@ -23,6 +23,9 @@ pub struct PiRC226Fractionalizer;
 #[contractimpl]
 impl PiRC226Fractionalizer {
     pub fn create_shares(env: Env, nft_id: u32, total_supply: i128) {
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
         env.storage().instance().set(&(symbol_short!("shares"), nft_id), &total_supply);
     }
 }

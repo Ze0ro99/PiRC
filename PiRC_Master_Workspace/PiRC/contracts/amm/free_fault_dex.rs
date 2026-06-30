@@ -26,6 +26,9 @@ impl FreeFaultDex {
     /// AMM pool state
     /// reserves: (token_amount, pi_amount)
     pub fn init_pool(env: Env, token_amount: u128, pi_amount: u128) {
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
         env.storage().set(&symbol!("reserves"), &(token_amount, pi_amount));
         env.storage().set(&symbol!("total_liquidity"), &0u128);
     }

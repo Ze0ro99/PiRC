@@ -1,38 +1,17 @@
 #![no_std]
-
-
-
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-#![forbid(unsafe_code)]
-// // mod pirc_config;
-
-use soroban_sdk::{contract, contractimpl, Env, Address, Vec};
+use soroban_sdk::{contract, contractimpl, Env};
 
 #[contract]
-pub struct PiRCMacroEngine;
+pub struct RwaVerify;
 
 #[contractimpl]
-impl PiRCMacroEngine {
-    pub fn calculate_wcf(env: Env, balance: i128, lock_time: u64) -> i128 {
-        let years = (lock_time / 31536000) + 1;
-        balance * (years as i128)
+impl RwaVerify {
+    pub fn calculate_wcf(_env: Env, balance: i128, lock_time: u64) -> i128 {
+        if lock_time == 0 { return balance; }
+        balance + (balance * (lock_time as i128) / 100)
     }
 
-    pub fn apply_qwf(env: Env, amount: i128) -> i128 {
-        if amount > 1000000 { (amount * 110) / 100 } else { amount }
+    pub fn apply_qwf(_env: Env, amount: i128) -> i128 {
+        (amount * 2248) / 10000
     }
 }

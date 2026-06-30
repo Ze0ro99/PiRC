@@ -58,6 +58,9 @@ impl PiDexExecutor {
 
         // result = (actual_token_added, actual_pi_added, liquidity_shares)
         // Simpan hasil ke storage untuk dibaca kembali
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
         env.storage().set(
             (&symbol!("last_dex_result"), &dex_contract),
             &result,

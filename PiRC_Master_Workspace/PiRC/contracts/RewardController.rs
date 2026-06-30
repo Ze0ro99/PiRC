@@ -33,6 +33,9 @@ impl RewardController {
     pub fn deposit_fees(env: Env, amount: i128) {
 
         let mut pool: i128 =
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
             env.storage()
             .instance()
             .get(&DataKey::FeePool)

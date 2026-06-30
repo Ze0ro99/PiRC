@@ -1,0 +1,8 @@
+/data/data/com.termux/files/home/PiRC/target/debug/deps/serde_with_macros-505640b9b904903b.d: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/apply.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/lazy_bool.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/utils.rs
+
+/data/data/com.termux/files/home/PiRC/target/debug/deps/libserde_with_macros-505640b9b904903b.so: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/apply.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/lazy_bool.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/utils.rs
+
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/lib.rs:
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/apply.rs:
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/lazy_bool.rs:
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.19.0/src/utils.rs:

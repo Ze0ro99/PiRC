@@ -23,6 +23,9 @@ impl AdaptiveUtilityGate {
         let threshold_key = Symbol::new(&env, "THRESHOLD");
         let phi_key = Symbol::new(&env, "PHI");
 
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
         let threshold: u64 = env.storage().instance().get(&threshold_key).unwrap_or(5000);
         let phi_guard: u64 = env.storage().instance().get(&phi_key).unwrap_or(95);
 

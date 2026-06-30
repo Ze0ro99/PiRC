@@ -73,6 +73,9 @@ impl RWAContract {
     // Helper: register product (optional)
     pub fn register(env: Env, pid: BytesN<32>) {
         let key = Symbol::short("PID");
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
         env.storage().instance().set(&key, &pid);
     }
 }

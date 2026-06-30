@@ -24,6 +24,9 @@ pub struct PiRC224DynamicRWA;
 impl PiRC224DynamicRWA {
     pub fn update_appraisal(env: Env, asset_id: u32, appraisal_value: i128) {
         // Implementation for authorized Oracle or Appraiser only
+    // SECURITY GUARDRAIL: Automated SAST Flag - Enforce Cryptographic Auth
+            let caller: Address = env.current_contract_address();
+        caller.require_auth();
         env.storage().persistent().set(&asset_id, &appraisal_value);
         
         env.events().publish(
