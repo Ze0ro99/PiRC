@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unity Sphere - Secured Telemetry Matrix</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-[#050b14] text-gray-200 p-6 font-mono">
+    <h1 class="text-xl font-bold text-cyan-400">PROJECT UNITY SPHERE VANGUARD</h1>
+    <div id="status" class="text-emerald-400 text-xs my-4">PIPELINE SECURE • LOGGED INTO LEDGER</div>
+    <div class="border border-cyan-900 p-4 bg-slate-900/40">
+        <p class="text-xs text-gray-400">INTEGRITY PROOF (SHA-256):</p>
+        <p id="sig" class="text-amber-400 font-bold">Awaiting Stream Sync...</p>
+    </div>
+    <script>
+        async function sync() {
+            try {
+                let res = await fetch('http://127.0.0.1:5000/api/v1/telemetry/live');
+                let d = await res.json();
+                if(d.status === "SUCCESS") {
+                    document.getElementById('sig').innerText = d.integrity_proof;
+                }
+            } catch(e) { document.getElementById('sig').innerText = "OFFLINE"; }
+        }
+        setInterval(sync, 3000);
+    </script>
+</body>
+</html>
