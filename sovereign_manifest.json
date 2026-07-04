@@ -1,18 +1,10 @@
 {
-    "telemetry_engine": {
-        "last_updated": "2026-07-01 10:29:13",
-        "metrics": {
-            "market_velocity": 3.7779116168593267,
-            "buy_pressure": 0.759969431792999,
-            "sell_pressure": 0.24003056820700097,
-            "liquidity_depth_usd": 9970061.527283974,
-            "timestamp": 1782890953
-        },
-        "algorithmic_wcf": {
-            "wcf_factor": 0.2939608377698751,
-            "parity_tracking_price": 3.2338477971854065,
-            "risk_assessment_index": 0.1426354907556655
-        }
-    }
-}
+  "project": "PiRC Sovereign Sync",
+  "version": "1.0.0",
+  "core_contract": "GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6",
+  "layers": {
+    "yellow": "CANL...SDFF"
+  },
+  "network": "TESTNET",
+  "last_updated": "2026-07-04T02:49:50Z"
 }
