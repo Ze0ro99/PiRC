@@ -11,7 +11,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^2.10.0",
+    "@google/genai": "^2.11.0",
     "@tailwindcss/vite": "^4.3.2",
     "@vitejs/plugin-react": "^6.0.3",
     "clsx": "^2.1.1",
