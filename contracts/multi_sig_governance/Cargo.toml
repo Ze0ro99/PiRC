@@ -1,0 +1,16 @@
+[package]
+name = "pirc_multi_sig_governance"
+version = "207.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = "27.0.0"
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+strip = true
+lto = true
