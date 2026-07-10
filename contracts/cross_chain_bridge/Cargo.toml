@@ -1,0 +1,16 @@
+[package]
+name = "pirc_cross_chain_bridge"
+version = "210.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = "27.0.0"
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+strip = true
+lto = true
