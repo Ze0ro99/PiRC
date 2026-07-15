@@ -205,6 +205,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bs58"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf88ba1141d185c399bee5288d850d63b8369520c1eafc32a0430b5b6c287bf4"
+dependencies = [
+ "tinyvec",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1207,11 +1216,12 @@ dependencies = [
 
 [[package]]
 name = "serde_with"
-version = "3.19.0"
+version = "3.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f05839ce67618e14a09b286535c0d9c94e85ef25469b0e13cb4f844e5593eb19"
+checksum = "76a5c54c7310e7b8b9577c286d7e399ddd876c3e12b3ed917a8aabc4b96e9e8c"
 dependencies = [
  "base64",
+ "bs58",
  "chrono",
  "hex",
  "indexmap 1.9.3",
@@ -1227,9 +1237,9 @@ dependencies = [
 
 [[package]]
 name = "serde_with_macros"
-version = "3.19.0"
+version = "3.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf2ebbe86054f9b45bc3881e865683ccfaccce97b9b4cb53f3039d67f355a334"
+checksum = "84d57bc0c8b9a17920c178daa6bb924850d54a9c97ab45194bb8c17ad66bb660"
 dependencies = [
  "darling 0.23.0",
  "proc-macro2",
@@ -1598,6 +1608,21 @@ dependencies = [
  "num-conv",
  "time-core",
 ]
+
+[[package]]
+name = "tinyvec"
+version = "1.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb4ebadaa0af04fab11ae01eb5f9fdb5f9c5b875506e210e71c07873528baa7f"
+dependencies = [
+ "tinyvec_macros",
+]
+
+[[package]]
+name = "tinyvec_macros"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "typenum"
