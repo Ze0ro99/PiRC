@@ -1,0 +1,158 @@
+# PiRC Comprehensive Test & Deployment Report
+
+**Generated:** 2026-07-18T13:35:08.149147+00:00  
+**Commit:** `b758fd62` | **Branch:** `main`  
+**Repo:** [https://github.com/Ze0ro99/PiRC](https://github.com/Ze0ro99/PiRC)
+
+---
+
+## Networks
+
+| Network | RPC URL |
+|---------|---------|
+| Pi Testnet 1 | `https://rpc.testnet.minepi.com` |
+| Pi Testnet 2 | `https://rpc2.testnet.minepi.com` |
+| Stellar Horizon | `https://horizon-testnet.stellar.org` |
+
+---
+
+## ZK / BN254 Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| Curve | **BN254 (alt_bn128)** |
+| Proof System | **Groth16** |
+| Proof Commitment Size | 32 bytes |
+| Public Inputs Hash | 32 bytes |
+| VK Hash | 32 bytes |
+
+BN254 is the elliptic curve used by Groth16. On Soroban we store a 32-byte Poseidon/Keccak commitment of the full proof (pi_A || pi_B || pi_C hashed) to minimise on-chain storage while allowing off-chain verifiers to attest validity.
+
+---
+
+## Pi Coin Distinction (PiRC-207)
+
+### Mined Pi (Walled Garden)
+- QWF Multiplier: **10,000,000**
+- At \$0.2248 market price: **1 Mined Pi = 2,248,000 internal units**
+- Mined Pi exists inside Pi Network's walled garden. It is NOT the same as Pi listed on exchanges. Its internal value is computed as market_price * QWF_MULTIPLIER.
+
+### Exchange Pi
+- QWF Multiplier: **1** (no multiplier)
+- Exchange-listed Pi represents a separate liquidity pool. Do NOT apply the 10M:1 multiplier to exchange Pi.
+
+---
+
+## Gold Layer Registry
+
+| Layer | Contract / Account ID |
+|-------|-----------------------|
+| LAYER_GOLD | `CD3UAUN4FU3VHPMLOZWFQWJ2UBUUBBD37SZ7WBEGJQACJ7YF6QVE2SYG` |
+| LAYER_BLUE | `CAMSQZTSCTF3MG4UEIAWKRZNSX7LLKGKXMVBEQO2ETVPGS3CINM7JBQD` |
+| LAYER_GREEN | `CBPG33E7RUX6MGU65IMM4HXCAGLA4OZRBOUWKQSBTIZWE2RD52VGWDT4` |
+| LAYER_ORANGE | `CB7T6TDSZ5B2MQI7NI4EG6ZASYPRMJ3XVUWS6BON4Z64OBMUJ4ZD6GKF` |
+| LAYER_PURPLE | `CCGEMIEAZFJSBTRL5VGJJAUGPJI3B7UQ3BTAB2OQGW73JMWLS57YVVA4` |
+| LAYER_RED | `CC6WMAHKOPWY6HW46VNKTAV4DZZLRTTNMYLDEKCAICQGMCWV5PZYNTBO` |
+| LAYER_YELLOW | `CANLSQUPUZYKE3S2HAIGXAHMOQWE4FVX5DS7GTL42BVKSNHLFVMQSDFF` |
+| REGISTRY | `CAEUNHEUXACISTVHICFNISFRTRVSK5IALA3H5MUT7P4JKU5L3IPSKG4B` |
+| ISSUER | `GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6` |
+
+---
+
+## Warehouse Settlement
+
+**Withdrawal request submitted in the warehouse. Immediate settlement on Testnet 1 & 2.**
+
+Contract: `pirc_warehouse_payment.rs` | Standard: PiRC-220 / PiRC-252
+
+Settlement flow:
+1. submit_withdrawal() — requester submits amount + BN254 ZK proof + network_id  
+2. settle() — settler authority (multi-sig) immediately processes payment  
+3. Event emitted: (WHPAY, SETTLED, request_id, recipient, amount, network_id)  
+4. Team verifies settlement on testnet explorer  
+
+---
+
+## New Contracts
+
+### `PiRCZkBN254` (PiRC-225 / PiRC-226)
+BN254 Groth16 ZK proof commitment, attestation and query for reserve & identity proofs
+
+Tests:
+- `test_submit_and_attest_reserve_proof`
+- `test_identity_proof`
+- `test_cross_chain_portability_proof`
+
+### `PiRCWarehousePayment` (PiRC-220 / PiRC-252 / PiRC-228)
+Warehouse withdrawal request and immediate settlement on Pi Testnet 1 & 2
+
+Tests:
+- `test_submit_and_settle_testnet1`
+- `test_submit_and_settle_testnet2`
+- `test_reject_withdrawal`
+- `test_cannot_settle_twice`
+
+---
+
+## Fixed Contracts
+
+### `TreasuryVault`
+**File:** `contracts/soroban/treasury_vault.rs`
+
+- Replaced deprecated storage().get/set with persistent().get/set
+- Changed u64 amounts to i128 (Soroban standard)
+- Added #[contract] macro
+- Added #[contracttype] VaultKey enum
+- Added auth checks and events
+- Removed duplicate #![forbid(unsafe_code)] lines
+- Added admin_drain function for PiRC-228 justice
+- Added unit tests
+
+### `PiToken`
+**File:** `contracts/soroban/pi_token.rs`
+
+- Replaced deprecated storage API
+- Added PiSource enum (Mined vs Exchange Pi distinction per PiRC-207)
+- Changed u64 to i128
+- Added QWF multiplier calculation (10,000,000:1)
+- Added #[contract] and #[contracttype] macros
+- Added total supply tracking for mined and exchange Pi separately
+- Removed duplicate #![forbid(unsafe_code)] lines
+- Added unit tests covering mined/exchange separation
+
+### `PiRC241ZKCorporateID`
+**File:** `contracts/soroban/src/zk_corporate_id.rs`
+
+- Added ZKProofRecord struct with full BN254 proof storage
+- Added public_input parameter for BN254 field element
+- Added persistent proof record storage
+- Added verified_count tracking
+- Added get_proof query function
+- Removed duplicate #![forbid(unsafe_code)] lines
+- Added unit tests
+
+---
+
+## Repository Stats
+
+- Total branches: **145**
+- Total Rust files: **1505**
+- Contracts with `#[contract]` macro: **1177**
+
+---
+
+## CI/CD Pipeline
+
+Workflow: `.github/workflows/pirc-master-testnet-pipeline.yml`
+
+Jobs:
+- `build-contracts`
+- `test-contracts`
+- `test-simulations`
+- `deploy-testnet1`
+- `deploy-testnet2`
+- `generate-report`
+
+---
+
+*Report generated by PiRC automated pipeline*
