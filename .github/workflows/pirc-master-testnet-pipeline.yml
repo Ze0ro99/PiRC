@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -98,7 +98,7 @@ jobs:
     timeout-minutes: 20
     needs: build-contracts
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Install Rust"
         uses: dtolnay/rust-toolchain@stable
@@ -165,7 +165,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Setup Python 3.11"
         uses: actions/setup-python@v5
@@ -209,7 +209,7 @@ jobs:
       (github.event.inputs.network == 'testnet1' || github.event.inputs.network == 'both')
     environment: testnet1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Download WASM artefacts"
         uses: actions/download-artifact@v4
@@ -300,7 +300,7 @@ jobs:
       (github.event.inputs.network == 'testnet2' || github.event.inputs.network == 'both')
     environment: testnet2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Download WASM artefacts"
         uses: actions/download-artifact@v4
@@ -367,7 +367,7 @@ jobs:
     needs: [test-contracts, test-simulations]
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Download all test logs"
         uses: actions/download-artifact@v4
