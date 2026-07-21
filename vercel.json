@@ -1,1 +1,14 @@
-{"version":2,"builds":[{"src":"apps/frontend/package.json","use":"@vercel/static-build"}],"routes":[{"src":"/(.*)","dest":"/apps/frontend/$1"}]}
+{
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/static-build" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/" }
+  ],
+  "features": {
+    "functions": {
+      "experimentalQuantumHooks": true
+    }
+  }
+}

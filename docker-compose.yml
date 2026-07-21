@@ -1,9 +1,11 @@
-version: '3.8'
+
+version: '3'
+
 services:
-  pi-node:
-    image: pinetwork/pi-node-docker:latest
-    command: --testnet --enable-auto-migrations
+  pirc-node:
+    image: python:3.11
+    container_name: pirc-node
+    working_dir: /workspace
     volumes:
-      - ./data/pi-node:/opt/stellar
-    ports:
-      - "31401:8000"
+      - ./:/workspace
+    command: tail -f /dev/null

@@ -20,7 +20,7 @@ pytest==9.0.3
 pytest-cov==4.1.0
 
 # Git utilities
-gitpython==3.1.50
+gitpython==3.1.40
 
 # Utilities
 requests==2.33.0

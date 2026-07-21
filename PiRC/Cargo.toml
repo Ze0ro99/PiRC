@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = [
+    "contracts/*",
+]
+
+[workspace.package]
+version = "3.0.0"
+edition = "2021"
+authors = ["Ze0ro99"]
+license = "MIT"
+
+[workspace.dependencies]
+soroban-sdk = { version = "26.0.1", features = ["testutils"] }
+soroban-sdk-macros = "26.0.1"

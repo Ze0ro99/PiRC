@@ -1,15 +1,10 @@
 [package]
-name = "pirc_anchor"
+name = "rwa_verify"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-soroban-sdk = "27.0.0"
-
-[profile.release]
-opt-level = "z"
-overflow-checks = true
-strip = true
+soroban-sdk = "26.0.0"
