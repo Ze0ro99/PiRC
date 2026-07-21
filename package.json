@@ -32,8 +32,13 @@
     "@types/node": "^26.1.1",
     "autoprefixer": "^10.5.4",
     "tailwindcss": "^4.1.14",
+ dependabot/npm_and_yarn/web-dependencies-37c1073a43
     "tsx": "^4.23.1",
     "typescript": "~7.0.2",
+
+    "tsx": "^4.22.0",
+    "typescript": "~6.0.3",
+ main
     "vite": "^8.1.5"
   }
 }

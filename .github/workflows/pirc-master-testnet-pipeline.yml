@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -64,7 +64,7 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: "Cache Cargo"
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -85,7 +85,7 @@ jobs:
           find target/wasm32-unknown-unknown/release -name "*.wasm" | sort
 
       - name: "Upload WASM artefacts"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wasm-contracts
           path: target/wasm32-unknown-unknown/release/*.wasm
@@ -98,7 +98,7 @@ jobs:
     timeout-minutes: 20
     needs: build-contracts
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Install Rust"
         uses: dtolnay/rust-toolchain@stable
@@ -106,7 +106,7 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: "Cache Cargo"
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -146,7 +146,7 @@ jobs:
           cargo test test_admin_drain -- --nocapture 2>&1 >> /tmp/vault-test.log
 
       - name: "Upload test logs"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-logs
@@ -165,7 +165,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Setup Python 3.11"
         uses: actions/setup-python@v5
@@ -192,7 +192,7 @@ jobs:
           done
 
       - name: "Upload simulation results"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: simulation-results
@@ -209,10 +209,10 @@ jobs:
       (github.event.inputs.network == 'testnet1' || github.event.inputs.network == 'both')
     environment: testnet1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Download WASM artefacts"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: wasm-contracts
           path: ./wasm
@@ -282,7 +282,7 @@ jobs:
           fi
 
       - name: "Upload Testnet 1 deploy logs"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: deploy-testnet1-logs
@@ -300,10 +300,10 @@ jobs:
       (github.event.inputs.network == 'testnet2' || github.event.inputs.network == 'both')
     environment: testnet2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Download WASM artefacts"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: wasm-contracts
           path: ./wasm
@@ -353,7 +353,7 @@ jobs:
           fi
 
       - name: "Upload Testnet 2 deploy logs"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: deploy-testnet2-logs
@@ -367,10 +367,10 @@ jobs:
     needs: [test-contracts, test-simulations]
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: "Download all test logs"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: ./artifacts
 
@@ -484,7 +484,7 @@ jobs:
           EOF
 
       - name: "Upload consolidated report"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pirc-master-test-report
           path: reports/
