@@ -85,7 +85,7 @@ jobs:
           find target/wasm32-unknown-unknown/release -name "*.wasm" | sort
 
       - name: "Upload WASM artefacts"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wasm-contracts
           path: target/wasm32-unknown-unknown/release/*.wasm
@@ -146,7 +146,7 @@ jobs:
           cargo test test_admin_drain -- --nocapture 2>&1 >> /tmp/vault-test.log
 
       - name: "Upload test logs"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-logs
@@ -192,7 +192,7 @@ jobs:
           done
 
       - name: "Upload simulation results"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: simulation-results
@@ -282,7 +282,7 @@ jobs:
           fi
 
       - name: "Upload Testnet 1 deploy logs"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: deploy-testnet1-logs
@@ -353,7 +353,7 @@ jobs:
           fi
 
       - name: "Upload Testnet 2 deploy logs"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: deploy-testnet2-logs
@@ -484,7 +484,7 @@ jobs:
           EOF
 
       - name: "Upload consolidated report"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pirc-master-test-report
           path: reports/
