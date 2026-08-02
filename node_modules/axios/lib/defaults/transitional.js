@@ -5,6 +5,4 @@ export default {
   forcedJSONParsing: true,
   clarifyTimeoutError: false,
   legacyInterceptorReqResOrdering: true,
-  advertiseZstdAcceptEncoding: false,
-  validateStatusUndefinedResolves: true,
 };
