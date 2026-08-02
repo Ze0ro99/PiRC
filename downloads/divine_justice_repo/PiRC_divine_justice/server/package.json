@@ -2,7 +2,7 @@
   "name": "pirc-server",
   "type": "module",
   "dependencies": {
-    "express": "^4.21.2",
+    "express": "^4.22.2",
     "follow-redirects": "^1.16.0",
     "minimatch": "^10.2.5",
     "path-to-regexp": "^8.4.2",
