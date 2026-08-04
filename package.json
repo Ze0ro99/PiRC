@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@google/genai": "^2.3.0",
-    "@stellar/stellar-sdk": "^16.2.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^6.0.2",
     "clsx": "^2.1.1",
