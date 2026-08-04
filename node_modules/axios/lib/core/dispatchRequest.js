@@ -49,15 +49,8 @@ export default function dispatchRequest(config) {
     function onAdapterResolution(response) {
       throwIfCancellationRequested(config);
 
-      // Expose the current response on config so that transformResponse can
-      // attach it to any AxiosError it throws (e.g. on JSON parse failure).
-      // We clean it up afterwards to avoid polluting the config object.
-      config.response = response;
-      try {
-        response.data = transformData.call(config, config.transformResponse, response);
-      } finally {
-        delete config.response;
-      }
+      // Transform response data
+      response.data = transformData.call(config, config.transformResponse, response);
 
       response.headers = AxiosHeaders.from(response.headers);
 
@@ -69,16 +62,11 @@ export default function dispatchRequest(config) {
 
         // Transform response data
         if (reason && reason.response) {
-          config.response = reason.response;
-          try {
-            reason.response.data = transformData.call(
-              config,
-              config.transformResponse,
-              reason.response
-            );
-          } finally {
-            delete config.response;
-          }
+          reason.response.data = transformData.call(
+            config,
+            config.transformResponse,
+            reason.response
+          );
           reason.response.headers = AxiosHeaders.from(reason.response.headers);
         }
       }
