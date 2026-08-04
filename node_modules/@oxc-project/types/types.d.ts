@@ -1610,7 +1610,7 @@ export interface TSImportEqualsDeclaration extends Span {
   parent?: Node;
 }
 
-export type TSModuleReference = TSExternalModuleReference | TSTypeName;
+export type TSModuleReference = TSExternalModuleReference | IdentifierReference | TSQualifiedName;
 
 export interface TSExternalModuleReference extends Span {
   type: "TSExternalModuleReference";
@@ -1670,6 +1670,14 @@ export interface JSDocUnknownType extends Span {
   parent?: Node;
 }
 
+export type ModuleKind = "script" | "module" | "commonjs";
+
+export interface Span {
+  start: number;
+  end: number;
+  range?: [number, number];
+}
+
 export type AssignmentOperator =
   | "="
   | "+="
@@ -1717,14 +1725,6 @@ export type LogicalOperator = "||" | "&&" | "??";
 export type UnaryOperator = "+" | "-" | "!" | "~" | "typeof" | "void" | "delete";
 
 export type UpdateOperator = "++" | "--";
-
-export interface Span {
-  start: number;
-  end: number;
-  range?: [number, number];
-}
-
-export type ModuleKind = "script" | "module" | "commonjs";
 
 export type Node =
   | Program

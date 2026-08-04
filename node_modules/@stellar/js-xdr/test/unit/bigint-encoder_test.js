@@ -250,6 +250,84 @@ describe('encodeBigIntWithPrecision', function () {
       }
     }
   });
+
+  it(`throws on slice overflow and underflow`, () => {
+    const invalidCases = [
+      {
+        parts: [0n, 0x100000000n],
+        bits: 64,
+        unsigned: true,
+        reason: 'u32 slice overflow (+2^32)'
+      },
+      {
+        parts: [0n, -0x80000001n],
+        bits: 64,
+        unsigned: false,
+        reason: 'i32 slice underflow (< -2^31)'
+      },
+      {
+        parts: [0n, 0n, 0n, 0x10000000000000000n],
+        bits: 256,
+        unsigned: true,
+        reason: 'u64 slice overflow (+2^64)'
+      },
+      {
+        parts: [0n, 0n, 0n, -0x8000000000000001n],
+        bits: 256,
+        unsigned: false,
+        reason: 'i64 slice underflow (< -2^63)'
+      }
+    ];
+
+    for (const { parts, bits, unsigned, reason } of invalidCases) {
+      expect(
+        () => encodeBigIntFromBits(parts, bits, unsigned),
+        `${formatIntName(bits, unsigned)} should throw for ${reason}`
+      ).to.throw(RangeError, /does not fit/i);
+    }
+  });
+
+  it(`accepts exact slice boundary values`, () => {
+    const validCases = [
+      {
+        parts: [0n, 0xffffffffn],
+        bits: 64,
+        unsigned: true,
+        expected: 0xffffffff00000000n,
+        reason: 'u32 upper boundary (2^32 - 1)'
+      },
+      {
+        parts: [0n, -0x80000000n],
+        bits: 64,
+        unsigned: false,
+        expected: -0x8000000000000000n,
+        reason: 'i32 lower boundary (-2^31)'
+      },
+      {
+        parts: [0n, 0n, 0n, 0xffffffffffffffffn],
+        bits: 256,
+        unsigned: true,
+        expected:
+          0xffffffffffffffff000000000000000000000000000000000000000000000000n,
+        reason: 'u64 upper boundary (2^64 - 1)'
+      },
+      {
+        parts: [0n, 0n, 0n, -0x8000000000000000n],
+        bits: 256,
+        unsigned: false,
+        expected:
+          -0x8000000000000000000000000000000000000000000000000000000000000000n,
+        reason: 'i64 lower boundary (-2^63)'
+      }
+    ];
+
+    for (const { parts, bits, unsigned, expected, reason } of validCases) {
+      expect(
+        encodeBigIntFromBits(parts, bits, unsigned),
+        `${formatIntName(bits, unsigned)} should accept ${reason}`
+      ).to.eq(expected);
+    }
+  });
 });
 
 describe('sliceBigInt', function () {
