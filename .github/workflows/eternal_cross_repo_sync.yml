@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout PiRC
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: PiRC
 
       - name: 📥 Checkout SmartContracts
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Ze0ro99/SmartContracts
           path: SmartContracts
