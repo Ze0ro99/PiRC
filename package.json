@@ -32,7 +32,7 @@
     "@types/node": "^26.4.0",
     "autoprefixer": "^10.5.4",
     "tailwindcss": "^4.1.14",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.13",
     "typescript": "~7.0.2",
     "vite": "^8.2.2"
   }
