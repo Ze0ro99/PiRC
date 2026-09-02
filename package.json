@@ -19,7 +19,7 @@
     "decimal.js": "^10.6.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "lucide-react": "^1.35.0",
+    "lucide-react": "^1.37.0",
     "motion": "^13.1.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
