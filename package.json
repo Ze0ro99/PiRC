@@ -11,7 +11,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^2.19.0",
+    "@google/genai": "^2.21.0",
     "@stellar/stellar-sdk": "^17.0.1",
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.1",
@@ -19,8 +19,8 @@
     "decimal.js": "^10.6.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "lucide-react": "^1.37.0",
-    "motion": "^13.1.1",
+    "lucide-react": "^1.43.0",
+    "motion": "^13.2.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "recharts": "^3.10.1",
@@ -29,10 +29,10 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^26.4.0",
-    "autoprefixer": "^10.5.4",
+    "@types/node": "^26.5.0",
+    "autoprefixer": "^10.5.5",
     "tailwindcss": "^4.1.14",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.13",
     "typescript": "~7.0.2",
     "vite": "^8.2.2"
   }
