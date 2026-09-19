@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.src.json",
-  "include": ["./core/**/*.ts"],
-  "files": [],
-  "compilerOptions": {
-    "composite": true
-  }
-}

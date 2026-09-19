@@ -1,39 +1,19 @@
 {
-  "name": "react-example",
-  "private": true,
+  "name": "workspace",
   "version": "0.0.0",
-  "type": "module",
+  "license": "MIT",
   "scripts": {
-    "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview",
-    "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
+    "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },
+  "private": true,
   "dependencies": {
-    "@google/genai": "^2.21.0",
-    "@stellar/stellar-sdk": "^17.0.1",
-    "@tailwindcss/vite": "^4.3.3",
-    "@vitejs/plugin-react": "^6.1.1",
-    "clsx": "^2.1.1",
-    "decimal.js": "^10.6.0",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "lucide-react": "^1.43.0",
-    "motion": "^13.2.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "recharts": "^3.10.1",
-    "tailwind-merge": "^3.6.0",
-    "vite": "^8.2.2"
+    "@replit/connectors-sdk": "^0.4.3"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.5.0",
-    "autoprefixer": "^10.5.5",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.23.13",
-    "typescript": "~7.0.2",
-    "vite": "^8.2.2"
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3"
   }
 }

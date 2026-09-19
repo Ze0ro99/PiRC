@@ -1,7 +1,0 @@
-{
-  "pi_testnet_rpc": "https://rpc.testnet.minepi.com",
-  "pi_mainnet_rpc": "https://rpc.mainnet.minepi.com",
-  "stellar_soroban_testnet": "https://soroban-rpc.testnet.stellar.org",
-  "pidex_testnet": "https://pidex.testnet.minepi.com",
-  "note": "Updated for PiDEX (ecosystem tokens) - high quality direct connections"
-}

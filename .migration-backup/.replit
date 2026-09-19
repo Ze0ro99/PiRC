@@ -1,0 +1,9 @@
+run = "npm run dev"
+hidden = [".git", "node_modules", ".cache"]
+modules = ["bash", "rust-stable", "python-3.12", "web"]
+[env]
+NODE_ENV = "production"
+VITE_PORT = "3000"
+
+[nix]
+channel = "stable-25_05"

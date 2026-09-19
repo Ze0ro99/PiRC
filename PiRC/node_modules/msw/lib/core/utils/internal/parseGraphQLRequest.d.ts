@@ -1,6 +1,0 @@
-import 'graphql';
-export { x as GraphQLMultipartRequestBody, w as GraphQLParsedOperationsMap, u as ParsedGraphQLQuery, P as ParsedGraphQLRequest, v as parseDocumentNode, y as parseGraphQLRequest } from '../../HttpResponse-BFS34nkx.js';
-import '@mswjs/interceptors';
-import './isIterable.js';
-import '../../typeUtils.js';
-import '../matching/matchRequestUrl.js';
