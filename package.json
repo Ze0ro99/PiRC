@@ -2,18 +2,38 @@
   "name": "workspace",
   "version": "0.0.0",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },
-  "private": true,
   "dependencies": {
-    "@replit/connectors-sdk": "^0.4.3"
+    "@google/genai": "^2.22.0",
+    "@replit/connectors-sdk": "^0.4.3",
+    "@stellar/stellar-sdk": "^17.1.0",
+    "clsx": "^2.1.1",
+    "decimal.js": "^10.6.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "lucide-react": "^1.46.0",
+    "motion": "^13.3.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "recharts": "^3.10.1",
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.5.1",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.6.1",
     "prettier": "^3.9.6",
-    "typescript": "~5.9.3"
+    "tailwindcss": "^4.1.14",
+    "tsx": "^4.23.13",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.0"
   }
 }
