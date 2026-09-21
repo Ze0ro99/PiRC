@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "initializedAt": { "type": "string", "format": "date-time" },
+    "status": { "type": "string" },
+    "connections": { "type": "integer" }
+  }
+}

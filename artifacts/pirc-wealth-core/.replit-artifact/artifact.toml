@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "PiRC Wealth Core"
+description = "A real-time PiRC asset valuation dashboard with high-precision wealth metrics, network growth monitoring, asset classifications, and repository synchronization tools."
+version = "1.0.0"
+id = "artifacts/pirc-wealth-core"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22181
+
+[services.development]
+run = "pnpm --filter @workspace/pirc-wealth-core run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pirc-wealth-core", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/pirc-wealth-core/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22181"
+BASE_PATH = "/"

@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: PiRC-1000 Standard API Gateway
+  description: Official REST implementation standard for interacting with PiRC network primitives, Oracles, and DID relays.
+  version: 1.0.0
+servers:
+  - url: 'https://api.pirc.network/v1'
+    description: Production Gateway
+paths:
+  /did/{address}/reputation:
+    get:
+      summary: Retrieve ZK Reputation Status
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proof_valid:
+                    type: boolean
+                  reputation_tier:
+                    type: string
+  /governance/proposals/{id}/metrics:
+    get:
+      summary: Get Conviction Voting metrics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Quadratic metrics data

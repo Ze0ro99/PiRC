@@ -1,0 +1,8 @@
+{
+  "name": "pirc-backend",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  }
+}
