@@ -33,6 +33,32 @@ export function Matrix() {
     item.id.toLowerCase().includes(search.toLowerCase())
   );
 
+  const exportCsv = () => {
+    const rows = [
+      ["Layer ID", "Layer Name", "Node Count", "Health Status", "Volume", "Timestamp"],
+      ...filteredData.map((row) => [
+        row.id,
+        row.layer,
+        String(row.nodeCount),
+        row.health,
+        row.volume,
+        new Date(row.timestamp).toISOString(),
+      ]),
+    ];
+    const csv = rows
+      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+      .join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `pirc-matrix-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between mb-8">
@@ -41,7 +67,7 @@ export function Matrix() {
           <p className="text-slate-400 mt-1">Sample visualization of the 7-Layer Architecture; live node telemetry is not connected.</p>
         </div>
         <div className="flex gap-2">
-          <button className="bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+          <button onClick={exportCsv} disabled={filteredData.length === 0} className="bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
             <Download className="h-4 w-4" />
             Export CSV
           </button>
