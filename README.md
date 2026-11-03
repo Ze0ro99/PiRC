@@ -70,6 +70,7 @@ The application must never bypass contract authorization. External agents may pr
 - [Executable Economic Engine Specification](docs/economics/ECONOMIC_ENGINE_EXECUTION_SPEC.md)
 - [Oracle Engine Execution Specification](docs/standards/ORACLE_ENGINE_EXECUTION_SPEC.md)
 - [Unified Contract/API Interface Specification](docs/integration/UNIFIED_CONTRACT_API_INTERFACE_SPEC.md)
+- [SoloHost Package Validation Specification](docs/architecture/SOLOHOST_PACKAGE_VALIDATION_SPEC.md)
 - [Monetary Model, Inflation, and Equations](docs/economics/MONETARY_MODEL_AND_INFLATION_EQUATIONS.md)
 - [Economic System Integration Blueprint](docs/economics/ECONOMIC_SYSTEM_INTEGRATION_BLUEPRINT.md)
 - [End-to-End Economic Lifecycle](docs/economics/END_TO_END_ECONOMIC_LIFECYCLE.md)
