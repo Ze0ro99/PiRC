@@ -9,18 +9,23 @@ Status: normative design proposal for engineering review. This document does not
 4. No GCV constant, multiplier, oracle observation, dashboard value, or proposal creates a claim on bank reserves or a right to redeem.
 5. Every financial feature must be disabled by default until contracts, legal review, security review, operational controls, and independent verification pass.
 
-## 2. Seven-layer mapping (preserve source mapping)
-| Layer | Source identity | Functional role |
-|---|---|---|
-| L0 | PURPLE — Pay Upfront | Prepayment and prepaid utility settlement workflows |
-| L1 | GOLD — Status | Membership/status and entitlement representation |
-| L2 | YELLOW — Subscribe | Recurring subscription and service access |
-| L3 | ORANGE — Register | Registration, onboarding, and identity-linked enrollment |
-| L4 | BLUE — Extend | Institutional, banking, and extension interfaces |
-| L5 | GREEN — Pi Cash | Pi-denominated cash-like utility/payment application layer |
-| L6 | RED — Governance | Governance, policy, proposal, and controlled execution |
+## 2. Seven colored proposal layers (authoritative source mapping)
 
-Gold is not an alias for Indigo. If other registries contain Gold or Indigo outside this mapping, preserve those records independently and resolve them through a documented standards decision; do not silently merge them.
+The seven colored proposal layers are distinct from the seven technical architecture layers in the Master Architecture. Preserve the PiRC-207 source mapping below exactly; these are proposal labels, not official Pi Network token classes or guaranteed exchange values.
+
+| Order | Color | Chakra | Proposal label / role | Source constant |
+|---:|---|---|---|---:|
+| 1 | Red | Root | Governance | GOV |
+| 2 | Orange | Sacral | Mid-tier utility | 3141 |
+| 3 | Yellow | Solar Plexus | High-tier utility | 31140 |
+| 4 | Green | Heart | PiCash / daily utility | 3.14 |
+| 5 | Blue | Throat | Banking / institutional layer | 314 |
+| 6 | Indigo | Third Eye | Premium reserve | 314159 |
+| 7 | Purple | Crown | Mined Pi and fractions | 1 |
+
+Do not rename, recolor, reorder, merge, or invent conversion rules for these layers. The registry mismatch is unresolved: the CSV contains Gold where the proposal has Indigo, while Gold has no matching chakra-layer definition. Keep Gold and Indigo as distinct records until a versioned standards decision resolves the mismatch. Do not silently reassign a contract address.
+
+Conversion constants stated in the source proposal: Heart and Throat: 10,000 units = 1 Pi; 1,000 units = 1 PiGCV; 1 unit = 1,000 micro. Crown: 10,000,000 micro = 1 Pi. Red, Orange, Yellow and Indigo have no complete conversion rule specified in the cited proposal.
 
 ## 3. Value taxonomy
 - Internal reference value: a policy or accounting coordinate used by an explicitly named application or program. It is not automatically a market quote, legal tender value, collateral value, or redemption promise.
