@@ -13,7 +13,6 @@ on:
       - "tsconfig*.json"
       - "vite.config.*"
       - ".npmrc"
-      - ".github/workflows/pirc-workspace-build.yml"
   push:
     branches: [main, integration/sovereign-hybrid-ecosystem]
     paths:
