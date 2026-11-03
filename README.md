@@ -56,6 +56,7 @@ The application must never bypass contract authorization. External agents may pr
 - [Seven Colored Layers Source Mapping](docs/architecture/SEVEN_COLORED_LAYERS_SOURCE_MAPPING.md)
 - [Economic Component Integration Map](docs/architecture/ECONOMIC_COMPONENT_INTEGRATION_MAP.md)
 - [Cross-Repository Implementation Traceability Matrix](docs/integration/IMPLEMENTATION_TRACEABILITY_MATRIX.md)
+- [Contract and API Traceability Matrix](docs/integration/CONTRACT_API_TRACEABILITY_MATRIX.md)
 - [Cross-Repository Review and Acceptance Matrix](docs/integration/CROSS_REPO_REVIEW_MATRIX.md)
 - [External Component Compatibility Matrix](docs/integration/EXTERNAL_COMPONENT_COMPATIBILITY_MATRIX.md)
 - [Branch Intake Inventory](docs/integration/BRANCH_INTAKE_INVENTORY.md)
