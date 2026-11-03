@@ -6,6 +6,11 @@ on:
     paths:
       - "scripts/audit_branch_inventory.py"
       - ".github/workflows/branch-audit.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit_branch_inventory.py"
+      - ".github/workflows/branch-audit.yml"
   workflow_dispatch:
   schedule:
     - cron: "0 4 * * 1"
