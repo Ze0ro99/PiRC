@@ -233,5 +233,7 @@ Preserve source branches. Prefer focused PRs over broad merges. Do not commit se
 - [Observability and Incident Runbook](docs/operations/OBSERVABILITY_AND_INCIDENT_RUNBOOK.md)
 - [Netlify Deployment Boundary](docs/deployment/NETLIFY_DEPLOYMENT_BOUNDARY.md)
 - Netlify build configuration: `netlify.toml`
+- Lightweight docs/config validator: `scripts/validate_docs_and_deploy_config.py`
+- CI workflow: `.github/workflows/integrated-validation.yml` (schema/config validation plus the same static frontend build used by Netlify; publishes a short-lived build artifact)
 
 The Netlify configuration targets the static Vite frontend only. The existing Vercel catch-all API entry is not a Netlify Function; `/api/*` deliberately returns 404 until a separately hosted API or tested Netlify Functions adapter is configured.
