@@ -219,3 +219,19 @@ Preserve source branches. Prefer focused PRs over broad merges. Do not commit se
 ## Economic settlement handoff
 
 - [Cross-repository economic settlement contract handoff](docs/integration/ECONOMIC_SETTLEMENT_CONTRACT_HANDOFF_2026-11-03.md)
+
+## Integrated architecture and engineering package — 2026-11-03
+
+## Integrated architecture and engineering package — 2026-11-03
+
+- [Integrated System Blueprint](docs/architecture/INTEGRATED_SYSTEM_BLUEPRINT_2026-11-03.md)
+- [Cross-Repository Sequence and Data Flows](docs/architecture/CROSS_REPOSITORY_SEQUENCE_AND_DATA_FLOWS.md)
+- [Integration Decision Records](docs/architecture/INTEGRATION_DECISION_RECORDS_2026-11-03.md)
+- [Cross-Repository Interface Contract](docs/integration/CROSS_REPOSITORY_INTERFACE_CONTRACT.md)
+- [Integrated Threat Model](docs/security/INTEGRATED_THREAT_MODEL.md)
+- [Cross-Repository Test Strategy](docs/testing/CROSS_REPOSITORY_TEST_STRATEGY.md)
+- [Observability and Incident Runbook](docs/operations/OBSERVABILITY_AND_INCIDENT_RUNBOOK.md)
+- [Netlify Deployment Boundary](docs/deployment/NETLIFY_DEPLOYMENT_BOUNDARY.md)
+- Netlify build configuration: `netlify.toml`
+
+The Netlify configuration targets the static Vite frontend only. The existing Vercel catch-all API entry is not a Netlify Function; `/api/*` deliberately returns 404 until a separately hosted API or tested Netlify Functions adapter is configured.
