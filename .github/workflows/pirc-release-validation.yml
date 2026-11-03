@@ -45,3 +45,5 @@ jobs:
         run: python scripts/validate_release.py
       - name: Run deterministic economic-engine tests
         run: python -m unittest discover -s tests -p 'test_economic_engine.py' -v
+      - name: Validate SoloHost compatibility evidence profile
+        run: python scripts/validate_solohost_profile.py
