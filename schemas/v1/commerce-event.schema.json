@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pirc.example/schemas/v1/commerce-event.schema.json",
+  "title": "PiRC Commerce Lifecycle Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_type", "schema_version", "occurred_at", "network_id", "correlation_id", "idempotency_key", "producer", "subject_id", "payload_hash", "privacy_class"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "event_type": {"enum": ["order.created", "order.quoted", "order.reserved", "payment.intent_created", "payment.approved", "payment.submitted", "payment.confirmed", "order.fulfilled", "order.disputed", "payment.refunded", "order.cancelled", "token.proposed", "token.approved_testnet", "token.deployed_testnet", "token.suspended", "token.retired"]},
+    "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "network_id": {"type": "string", "minLength": 1},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "idempotency_key": {"type": "string", "minLength": 16},
+    "producer": {"type": "string", "minLength": 1},
+    "subject_id": {"type": "string", "minLength": 1},
+    "asset_id": {"type": "string"},
+    "payload_hash": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "privacy_class": {"enum": ["public", "internal", "confidential", "restricted"]}
+  }
+}
