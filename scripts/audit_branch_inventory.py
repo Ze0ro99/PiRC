@@ -78,9 +78,10 @@ def list_branches(repo: str, token: str | None) -> list[dict]:
 def classify(branch: dict, ahead: int, behind: int, paths: list[str], compare_error: str | None = None) -> list[str]:
     flags: list[str] = []
     lower_paths = [p.lower() for p in paths]
+    normalized_paths = ["/" + p.strip("/") + "/" for p in lower_paths]
     if any(any(marker in p for marker in SECRET_MARKERS) for p in lower_paths):
         flags.append("SECRET_OR_ENV_REVIEW")
-    if any(any(marker in p for marker in SNAPSHOT_MARKERS) for p in lower_paths):
+    if any(any(marker in p for marker in SNAPSHOT_MARKERS) for p in normalized_paths):
         flags.append("NESTED_SNAPSHOT_OR_VENDOR_REVIEW")
     if any(
         p.startswith(".github/workflows/") and any(marker in p for marker in AUTOMATION_MARKERS)
