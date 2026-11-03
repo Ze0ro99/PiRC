@@ -35,8 +35,20 @@ def main() -> int:
     assert redirects[-1].get("from") == "/*"
     assert redirects[-1].get("status") == 200
 
+    headers_path = ROOT / "artifacts/pirc-wealth-core/public/_headers"
+    headers = headers_path.read_text(encoding="utf-8")
+    for required in (
+        "X-Content-Type-Options: nosniff",
+        "Referrer-Policy: strict-origin-when-cross-origin",
+        "X-Frame-Options: DENY",
+        "Strict-Transport-Security:",
+        "Cache-Control: no-cache, no-store, must-revalidate",
+        "Cache-Control: public, max-age=31536000, immutable",
+    ):
+        assert required in headers, f"Missing Netlify header: {required}"
+
     print(f"Validated {len(files)} JSON schema/registry/fixture documents.")
-    print("Validated Netlify build command, publish path, API fail-closed rule and SPA fallback.")
+    print("Validated Netlify build command, publish path, API fail-closed rule, SPA fallback and static security/cache headers.")
     print("Scope: repository metadata/configuration only; no hosted deployment is implied.")
     return 0
 

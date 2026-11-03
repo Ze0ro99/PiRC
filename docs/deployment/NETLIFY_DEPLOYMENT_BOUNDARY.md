@@ -32,3 +32,13 @@ Never place PI_API_KEY in VITE_* variables. Payment credentials stay server-side
 Netlify deploys are immutable; roll back to the last known-good frontend deploy if smoke tests fail. A frontend rollback does not roll back backend, contract or chain state.
 
 Record site name, deploy URL/ID, source SHA, build log, asset list, smoke-test result and rollback reference. A configuration PR is not proof of a live deploy.
+
+## Static hosting hardening
+
+The Vite public directory contains `_headers`, which Netlify copies to the publish root. It sets:
+- MIME sniffing protection, clickjacking protection, a strict referrer policy and HSTS.
+- A restrictive Permissions-Policy for camera, microphone and geolocation; review this if a future feature explicitly needs browser permissions.
+- No-store/no-cache for the HTML entry point.
+- One-year immutable caching for Vite's fingerprinted `/assets/*` output.
+
+No Content-Security-Policy is imposed yet because the application loads the Pi SDK and other runtime dependencies; establish an explicit source inventory and test the Pi Browser flow before enforcing CSP. HSTS assumes the custom domain and all subdomains are HTTPS-only before production enablement.
