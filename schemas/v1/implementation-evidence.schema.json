@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pirc:schema:v1:implementation-evidence",
+  "title": "PiRC Implementation Evidence Record",
+  "description": "Machine-readable evidence record for a versioned feature implementation. Presence of this record does not itself certify the claims it contains.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "feature_id",
+    "specification",
+    "implementation",
+    "verification",
+    "status",
+    "updated_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "pirc.implementation-evidence"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "feature_id": {
+      "type": "string",
+      "pattern": "^PiRC-[0-9]{3,4}$"
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "path",
+        "revision"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "implementation": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repository",
+          "ref",
+          "commit",
+          "path",
+          "role"
+        ],
+        "properties": {
+          "repository": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "contract",
+              "api",
+              "schema",
+              "ui",
+              "adapter",
+              "workflow",
+              "test"
+            ]
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "version",
+          "identifier"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "json-schema",
+              "soroban-spec",
+              "http-api",
+              "event",
+              "network-profile"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identifier": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tests",
+        "security_review"
+      ],
+      "properties": {
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "result"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "result": {
+                "enum": [
+                  "passed",
+                  "failed",
+                  "pending",
+                  "not-run"
+                ]
+              },
+              "run_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "artifact_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "security_review": {
+          "enum": [
+            "not-started",
+            "in-progress",
+            "findings-open",
+            "approved",
+            "not-applicable"
+          ]
+        },
+        "network_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "network_id",
+            "transaction_ref",
+            "contract_id",
+            "wasm_sha256"
+          ],
+          "properties": {
+            "network_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "transaction_ref": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "contract_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "wasm_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^([a-f0-9]{64})?$"
+            }
+          }
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "PROPOSED",
+        "SPECIFIED",
+        "IMPLEMENTED",
+        "TESTED",
+        "TESTNET_VERIFIED",
+        "SECURITY_REVIEWED",
+        "MAINNET_VERIFIED",
+        "BLOCKED"
+      ]
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owner": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
