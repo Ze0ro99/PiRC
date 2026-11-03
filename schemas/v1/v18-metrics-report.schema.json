@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pirc.example/schemas/v1/v18-metrics-report.schema.json",
+  "title": "PiRC V18 Commerce Metrics Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "window_start", "window_end", "timezone", "network_id", "environment", "generated_at", "source_watermark", "event_count", "excluded_event_count", "data_quality_status", "metrics"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "window_start": {"type": "string", "format": "date-time"},
+    "window_end": {"type": "string", "format": "date-time"},
+    "timezone": {"type": "string"},
+    "network_id": {"type": "string"},
+    "environment": {"enum": ["testnet", "mainnet", "simulation"]},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "source_watermark": {"type": "string"},
+    "event_count": {"type": "integer", "minimum": 0},
+    "excluded_event_count": {"type": "integer", "minimum": 0},
+    "data_quality_status": {"enum": ["VERIFIED", "PARTIAL", "STALE", "RECONCILIATION_PENDING", "INVALID", "TEST_FIXTURE"]},
+    "metrics": {
+      "type": "object",
+      "required": ["completed_orders", "unique_buyers", "unique_sellers", "active_apps", "payment_success_rate", "refund_rate", "dispute_rate"],
+      "properties": {
+        "completed_orders": {"type": "integer", "minimum": 0},
+        "unique_buyers": {"type": "integer", "minimum": 0},
+        "unique_sellers": {"type": "integer", "minimum": 0},
+        "active_apps": {"type": "integer", "minimum": 0},
+        "gross_merchandise_value_by_asset": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^(0|[1-9][0-9]*)$"}},
+        "payment_success_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "refund_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "dispute_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "checkout_latency_p50_ms": {"type": "number", "minimum": 0},
+        "checkout_latency_p95_ms": {"type": "number", "minimum": 0},
+        "repeat_purchase_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "velocity_per_buyer": {"type": "number", "minimum": 0},
+        "velocity_per_app": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  }
+}
