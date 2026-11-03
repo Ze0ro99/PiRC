@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
-import { mockupPreviewPlugin } from "./mockupPreviewPlugin";
+import { mockupPreviewPlugin } from "./mockupPreviewPlugin.ts";
 
 // Build environments do not always provide runtime PORT/BASE_PATH values.
 // Keep both configurable while supplying safe defaults for CI and Vercel builds.
