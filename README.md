@@ -214,3 +214,8 @@ Preserve source branches. Prefer focused PRs over broad merges. Do not commit se
 
 ## Upstream PiRC review and mathematical gap analysis
 - [Upstream PiRC feedback, economic model, and integration gap analysis](docs/integration/UPSTREAM_PIRC_FEEDBACK_AND_ECONOMIC_GAP_ANALYSIS_2026-11-03.md)
+
+
+## Economic settlement handoff
+
+- [Cross-repository economic settlement contract handoff](docs/integration/ECONOMIC_SETTLEMENT_CONTRACT_HANDOFF_2026-11-03.md)
