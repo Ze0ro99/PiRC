@@ -46,7 +46,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // 1. Initialize Pi SDK as a Promise and fully await it before calling authenticate
       if (!isInitialized.current) {
         try {
-          await window.Pi.init({ version: "2.0", sandbox: true });
+          let sandbox = true;
+          try {
+            const configResponse = await fetch(`${API_BASE}/api/payments/config`);
+            if (configResponse.ok) {
+              const config = await configResponse.json();
+              sandbox = config.mode !== "production";
+            }
+          } catch {
+            // Fail closed to Sandbox if the backend mode cannot be confirmed.
+            sandbox = true;
+          }
+          await window.Pi.init({ version: "2.0", sandbox });
           isInitialized.current = true;
           setIsPiReady(true);
         } catch (e: any) {

@@ -1,0 +1,89 @@
+name: PiRC API Safety Smoke Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "artifacts/api-server/**"
+      - "artifacts/pirc-wealth-core/src/components/**"
+      - "artifacts/pirc-wealth-core/index.html"
+      - ".github/workflows/pi-platform-api-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pirc-api-smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-safety-smoke:
+    name: API health, demo labels and payment fail-closed checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Activate pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.28.0 --activate
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Start API server in safe test mode
+        env:
+          PORT: "3000"
+          VERCEL: "1"
+          PI_PAYMENT_MODE: "sandbox"
+        run: |
+          pnpm --filter ./artifacts/api-server exec tsx src/index.ts > /tmp/pirc-api.log 2>&1 &
+          echo $! > /tmp/pirc-api.pid
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:3000/api/healthz > /tmp/pirc-health.json; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/pirc-api.log
+          exit 1
+
+      - name: Verify health endpoint
+        run: |
+          node -e 'const x=require("/tmp/pirc-health.json"); if(x.status!=="ok") process.exit(1)'
+
+      - name: Verify demo data is explicitly labeled
+        run: |
+          curl --fail --silent http://127.0.0.1:3000/api/pirc_matrix > /tmp/pirc-matrix.json
+          curl --fail --silent http://127.0.0.1:3000/api/contracts > /tmp/pirc-contracts.json
+          node -e 'const x=require("/tmp/pirc-matrix.json"); if(x.mode!=="demo"||x.data.length!==7) process.exit(1)'
+          node -e 'const x=require("/tmp/pirc-contracts.json"); if(x.mode!=="demo"||x.data.some(c=>c.audits!=="Not verified"||c.tvl!==0)) process.exit(1)'
+
+      - name: Verify missing Pi API key fails closed
+        run: |
+          curl --fail --silent http://127.0.0.1:3000/api/payments/config > /tmp/pirc-payment-config.json
+          node -e 'const x=require("/tmp/pirc-payment-config.json"); if(x.configured!==false||x.paymentsEnabled!==false||x.mode!=="sandbox") process.exit(1)'
+          STATUS=$(curl --silent --output /tmp/pirc-approve.json --write-out "%{http_code}" --request POST http://127.0.0.1:3000/api/payments/approve --header "Content-Type: application/json" --data '{"paymentId":"test-payment"}')
+          test "$STATUS" = "503"
+          node -e 'const x=require("/tmp/pirc-approve.json"); if(!x.error||!x.error.includes("PI_API_KEY")) process.exit(1)'
+
+      - name: Verify imports are not falsely persisted on Vercel
+        run: |
+          STATUS=$(curl --silent --output /tmp/pirc-import.json --write-out "%{http_code}" --request POST http://127.0.0.1:3000/api/github/import --header "Content-Type: application/json" --data '{"path":"test.txt","content":"test"}')
+          test "$STATUS" = "501"
+          node -e 'const x=require("/tmp/pirc-import.json"); if(!x.error||!x.error.includes("persistent GitHub write integration")) process.exit(1)'
+
+      - name: Stop API server
+        if: always()
+        run: |
+          if [ -f /tmp/pirc-api.pid ]; then kill "$(cat /tmp/pirc-api.pid)" 2>/dev/null || true; fi
