@@ -94,3 +94,9 @@ Timeout or missing read-back maps to `unknown`, not `failed` or `settled`. Recon
 ## Non-claims
 
 This work does not establish GCV as an official Pi Network price, a Pi/USD peg, redemption rights, reserve backing, custody, liquidity, solvency, Pi Core Team endorsement or Mainnet readiness.
+
+## Implementation alignment note (2026-11-03)
+
+The current SmartContracts PR identifies `contracts/pirc_economic_settlement` as the canonical crate for this handoff. The workspace also currently discovers a second overlapping crate at `contracts/economic_settlement` with a different public ABI and state representation. This duplication is an explicit pre-release blocker: the SmartContracts maintainers must consolidate the implementations or document a deliberate compatibility boundary before Unity Sphere freezes its adapter against either ABI. Until then, the API mapping is provisional and must not be treated as a stable contract interface.
+
+The focused canonical crate test module has now been wired into the Rust module tree, and duplicate-allocation / over-budget regression cases were added. These are authored tests only; the latest observed hosted validation runs remain queued/pending, so no passing result is asserted.
