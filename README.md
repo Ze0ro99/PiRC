@@ -29,6 +29,13 @@ All material in this branch is subject to technical review. A proposal or refere
 ## Commerce, Testnet and application-token standards
 
 - [V18 commerce velocity and Testnet1 integration](docs/standards/V18_COMMERCE_VELOCITY_TESTNET1_SPEC.md)
+- [V18 metrics dictionary](docs/standards/V18_METRICS_DICTIONARY.md)
+- [Application asset/token lifecycle](docs/standards/ASSET_TOKEN_LIFECYCLE_AND_LAUNCHPAD.md)
+- [Oracle data quality and governance](docs/standards/ORACLE_DATA_QUALITY_AND_GOVERNANCE.md)
+- [Versioned schema registry](docs/standards/SCHEMA_REGISTRY.md)
+- [End-to-end economic lifecycle](docs/economics/END_TO_END_ECONOMIC_LIFECYCLE.md)
+- [Treasury, revenue and distribution model](docs/economics/TREASURY_REVENUE_AND_DISTRIBUTION_MODEL.md)
+- [Economic component integration map](docs/architecture/ECONOMIC_COMPONENT_INTEGRATION_MAP.md)
 - [Pi Testnet1 network profile](docs/standards/PI_TESTNET1_NETWORK_PROFILE.md)
 - [PiRC1 / PiRC2 implementation crosswalk](docs/standards/PIRC1_PIRC2_IMPLEMENTATION_CROSSWALK.md)
 - [Commerce valuation and provenance standard](docs/standards/COMMERCE_VALUATION_AND_PROVENANCE_STANDARD.md)
@@ -38,7 +45,7 @@ All material in this branch is subject to technical review. A proposal or refere
 
 ## Release candidate
 
-- [PiRC v3.2.0-rc.1 release notes](docs/release/RELEASE_CANDIDATE_3.2.0-rc.1.md)
+- [PiRC v3.2.0-rc.2 release notes](docs/release/RELEASE_CANDIDATE_3.2.0-rc.2.md)
 - [Changelog](CHANGELOG.md)
 
 ## Contribution and validation
