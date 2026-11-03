@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"urn:pirc:schema:v1:asset-provenance",
+  "title":"PiRC Asset Provenance Record",
+  "description":"Traceability metadata for an asset or balance claim; not itself proof of ownership or authenticity.",
+  "type":"object","additionalProperties":false,
+  "required":["schema","version","asset_id","asset_class","network_id","issuer","origin","ownership","verification","updated_at"],
+  "properties":{
+    "schema":{"const":"pirc.asset-provenance"},"version":{"const":"1.0.0"},
+    "asset_id":{"type":"string","minLength":1},
+    "asset_class":{"enum":["native","issued","application","test_only","unknown"]},
+    "network_id":{"type":"string","minLength":1},
+    "issuer":{"type":"object","additionalProperties":false,"required":["issuer_id","issuer_type","evidence_ref"],"properties":{"issuer_id":{"type":"string","minLength":1},"issuer_type":{"enum":["protocol","account","organization","application","unknown"]},"evidence_ref":{"type":["string","null"]}}},
+    "origin":{"type":"object","additionalProperties":false,"required":["origin_type","transaction_ref","ledger_or_block","source_account","evidence_ref"],"properties":{"origin_type":{"enum":["mined_or_protocol_issued","account_transfer","issuer_mint","bridge_or_wrapped","application_mint","unknown"]},"transaction_ref":{"type":["string","null"]},"ledger_or_block":{"type":["string","null"]},"source_account":{"type":["string","null"]},"evidence_ref":{"type":["string","null"]}}},
+    "ownership":{"type":"object","additionalProperties":false,"required":["current_controller_ref","ownership_event_ref","as_of","status"],"properties":{"current_controller_ref":{"type":["string","null"]},"ownership_event_ref":{"type":["string","null"]},"as_of":{"type":"string","format":"date-time"},"status":{"enum":["unverified","observed","verified","disputed","frozen","reversed"]}}},
+    "verification":{"type":"object","additionalProperties":false,"required":["state","method","reviewed_at"],"properties":{"state":{"enum":["unverified","pending","verified","rejected","stale"]},"method":{"enum":["ledger_readback","issuer_attestation","signed_document","manual_review","none"]},"reviewed_at":{"type":["string","null"],"format":"date-time"},"reviewer_ref":{"type":["string","null"]}}},
+    "updated_at":{"type":"string","format":"date-time"}
+  }
+}

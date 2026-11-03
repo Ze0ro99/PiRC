@@ -1,0 +1,27 @@
+{
+  "profile_id": "pirc.solohost.pi-desktop-compatibility",
+  "profile_version": "1.0.0",
+  "status": "PREPARATION",
+  "target": {
+    "product": "Pi Desktop",
+    "version": "0.6.4",
+    "platform": null,
+    "build_id": null
+  },
+  "components": [
+    {"name":"SoloHost","role":"external-runtime-host","version":null,"source_ref":null,"sha256":null,"vendored":false},
+    {"name":"Hermes","role":"external-reference-package","version":null,"source_ref":null,"sha256":null,"vendored":false}
+  ],
+  "capabilities": {
+    "allow": ["read-profile","health-check","version-negotiation","read-only-diagnostics"],
+    "deny": ["private-key-access","seed-phrase-access","unrestricted-wallet-access","treasury-execution","issuer-mint","contract-upgrade","arbitrary-filesystem-write","repository-write","deployment"]
+  },
+  "evidence": {
+    "runtime_test_report": null,
+    "desktop_build_checksum": null,
+    "component_checksums_verified": false,
+    "reviewer": null,
+    "reviewed_at": null
+  },
+  "notice": "Preparation manifest only. It is not proof that SoloHost or Hermes is installed, compatible, verified, or deployed."
+}

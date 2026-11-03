@@ -1,0 +1,39 @@
+{
+  "fixture_version": "1.0.0",
+  "amount_unit": "integer_atomic_units",
+  "cases": [
+    {
+      "case_id": "NET_REVENUE_001",
+      "kind": "period_ledger",
+      "input": {"period_id":"2026-10","asset_id":"PI-ATOMIC","collected_revenue":1000,"operating_costs":100,"taxes_and_statutory_obligations":50,"due_liabilities_and_refunds":75,"reserve_replenishment":125,"committed_distributions_and_capex":150},
+      "expected_distributable": 500
+    },
+    {
+      "case_id": "LARGEST_REMAINDER_001",
+      "kind": "allocation",
+      "total": 10,
+      "weights": {"bob":1,"alice":1,"carol":1},
+      "expected_allocations": {"alice":4,"bob":3,"carol":3}
+    },
+    {
+      "case_id": "RESERVE_COVERAGE_001",
+      "kind": "reserve_coverage_bps",
+      "eligible_reserves": 125,
+      "redeemable_liabilities": 100,
+      "expected": 12500
+    },
+    {
+      "case_id": "SUPPLY_GROWTH_001",
+      "kind": "supply_growth_bps",
+      "previous_supply": 1000,
+      "current_supply": 1050,
+      "expected": 500
+    },
+    {
+      "case_id": "UNDERFUNDED_PERIOD_001",
+      "kind": "period_ledger",
+      "input": {"period_id":"underfunded","asset_id":"PI-ATOMIC","collected_revenue":100,"operating_costs":50,"taxes_and_statutory_obligations":20,"due_liabilities_and_refunds":20,"reserve_replenishment":10,"committed_distributions_and_capex":10},
+      "expected_error": "period is underfunded: distributable resources are negative"
+    }
+  ]
+}

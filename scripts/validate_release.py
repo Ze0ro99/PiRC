@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas" / "v1"
+LAYER_REGISTRY = ROOT / "registries" / "seven-layer-registry.v1.json"
 DOC_ROOTS = [ROOT / "README.md", ROOT / "CHANGELOG.md", ROOT / "docs"]
 
 def fail(message: str) -> None:
@@ -67,10 +68,40 @@ def validate_markdown_links() -> bool:
     print(f"Markdown links: {'OK' if ok else 'FAILED'}")
     return ok
 
+def validate_layer_registry() -> bool:
+    try:
+        registry = json.loads(LAYER_REGISTRY.read_text(encoding="utf-8"))
+        layers = registry["layers"]
+        ids = {layer["layer_id"] for layer in layers}
+        ordinals = sorted(layer["ordinal"] for layer in layers)
+        if registry.get("registry_id") != "pirc.seven-layer-registry":
+            raise ValueError("unexpected registry_id")
+        if len(layers) != 7 or ids != {f"L{i}" for i in range(1, 8)}:
+            raise ValueError("exactly L1..L7 must be present")
+        if ordinals != list(range(1, 8)):
+            raise ValueError("layer ordinals must be unique and ordered 1..7")
+        if len({layer["color"] for layer in layers}) != 7:
+            raise ValueError("each layer must have a unique color")
+        for layer in layers:
+            if any(dep not in ids or dep == layer["layer_id"] for dep in layer["depends_on"]):
+                raise ValueError(f"invalid dependency in {layer['layer_id']}")
+        conflicts = registry["taxonomy_conflicts"]
+        gold = [item for item in conflicts if item.get("conflict_id") == "GOLD-INDIGO-001"]
+        if len(gold) != 1 or gold[0].get("term") != "Gold" or gold[0].get("resolution") != "unresolved":
+            raise ValueError("Gold/Indigo conflict must remain explicit and unresolved")
+        if registry["compatibility_policy"].get("color_is_not_authorization") is not True:
+            raise ValueError("color must not confer authorization")
+    except Exception as exc:
+        fail(f"{LAYER_REGISTRY.relative_to(ROOT)}: invalid registry: {exc}")
+        return False
+    print("Seven-layer registry: OK (Gold/Indigo conflict preserved)")
+    return True
+
 def main() -> int:
     schema_ok = validate_schemas()
     links_ok = validate_markdown_links()
-    if schema_ok and links_ok:
+    registry_ok = validate_layer_registry()
+    if schema_ok and links_ok and registry_ok:
         print("PiRC release documentation validation passed.")
         return 0
     return 1

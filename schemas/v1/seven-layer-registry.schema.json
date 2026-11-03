@@ -1,0 +1,16 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"urn:pirc:schema:v1:seven-layer-registry",
+  "title":"PiRC Seven-Layer Registry",
+  "type":"object","additionalProperties":false,
+  "required":["registry_id","version","status","layers","taxonomy_conflicts","compatibility_policy"],
+  "properties":{
+    "registry_id":{"const":"pirc.seven-layer-registry"},
+    "version":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status":{"enum":["proposed","specified","implemented","tested","testnet_verified","security_reviewed","mainnet_verified","deprecated"]},
+    "normative_notice":{"type":"string"},
+    "layers":{"type":"array","minItems":7,"maxItems":7,"items":{"type":"object","additionalProperties":false,"required":["layer_id","ordinal","color","name","version","depends_on","status"],"properties":{"layer_id":{"type":"string","pattern":"^L[1-7]$"},"ordinal":{"type":"integer","minimum":1,"maximum":7},"color":{"enum":["Red","Orange","Yellow","Green","Blue","Indigo","Purple"]},"name":{"type":"string","minLength":1},"version":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},"depends_on":{"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^L[1-7]$"}},"status":{"enum":["proposed","specified","implemented","tested","testnet_verified","security_reviewed","mainnet_verified","deprecated"]}}}},
+    "taxonomy_conflicts":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["conflict_id","term","competing_interpretation","related_layer_id","resolution","required_migration"],"properties":{"conflict_id":{"type":"string","minLength":1},"term":{"type":"string","minLength":1},"competing_interpretation":{"type":"string","minLength":1},"related_layer_id":{"type":"string","pattern":"^L[1-7]$"},"resolution":{"enum":["unresolved","accepted","rejected","deprecated"]},"required_migration":{"type":"string","minLength":1}}}},
+    "compatibility_policy":{"type":"object","additionalProperties":false,"required":["breaking_changes_require_major_version","preserve_historical_ids","color_is_not_authorization","registry_statuses"],"properties":{"breaking_changes_require_major_version":{"type":"boolean"},"preserve_historical_ids":{"type":"boolean"},"color_is_not_authorization":{"type":"boolean"},"registry_statuses":{"type":"array","uniqueItems":true,"items":{"type":"string"}}}}
+  }
+}
