@@ -12,6 +12,7 @@ This integration branch contains the proposed cross-repository architecture base
 - [Branch Intake Inventory](docs/integration/BRANCH_INTAKE_INVENTORY.md)
 - [Complete branch-head audit with commit SHAs](docs/integration/BRANCH_HEAD_AUDIT_2026-11-03.md)
 - [Source implementation audit](docs/integration/SOURCE_IMPLEMENTATION_AUDIT_2026-11-03.md)
+- [Cross-repository review and acceptance matrix](docs/integration/CROSS_REPO_REVIEW_MATRIX.md)
 
 ## Status and claims
 
