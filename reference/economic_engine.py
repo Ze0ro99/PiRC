@@ -126,6 +126,5 @@ def supply_growth_bps(previous_supply: int, current_supply: int) -> int | None:
 def settle_period(ledger: PeriodLedger, eligible_weights: Mapping[str, int]) -> Allocation:
     """Return a deterministic distribution that cannot exceed net collected resources."""
     distributable = ledger.distributable
-    if distributable == 0:
-        return Allocation({key: 0 for key in sorted(eligible_weights)}, 0)
+    # Validate participant IDs and weights even when the payable total is zero.
     return allocate_largest_remainder(distributable, eligible_weights)
