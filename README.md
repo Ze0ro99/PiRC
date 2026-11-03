@@ -79,6 +79,7 @@ The application must never bypass contract authorization. External agents may pr
 
 ### Standards and evidence
 - [Versioned Schema Registry](docs/standards/SCHEMA_REGISTRY.md)
+- [Payment Event Schema](schemas/v1/payment-event.schema.json)
 - [Economic Settlement Schema](schemas/v1/economic-settlement.schema.json)
 - [Oracle Observation Schema](schemas/v1/oracle-observation.schema.json)
 - [Asset Provenance Schema](schemas/v1/asset-provenance.schema.json)
