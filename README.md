@@ -243,3 +243,9 @@ The Netlify configuration targets the static Vite frontend only. The existing Ve
 - [Integrated Economic Flow Maps](docs/architecture/INTEGRATED_ECONOMIC_FLOW_MAPS.md)
 
 These documents define the dual-value boundary, revenue-funded utility, mint/burn semantics, fairness allocation, sovereign-index limitations, cross-repository ownership and release lifecycle. They are community reference specifications, not official Pi Network policy or evidence of a live peg, reserve, bank, exchange or redemption facility.
+
+## Omni Factory and Dual-Economy Architecture
+- [Omni Factory and Dual-Economy Reference Architecture](docs/architecture/OMNI_FACTORY_AND_DUAL_ECONOMY_REFERENCE.md)
+- [Branch Feature Intake and Evidence Register](docs/integration/BRANCH_FEATURE_INTAKE_AND_EVIDENCE_REGISTER.md)
+
+This reference defines RAW evidence, governed contract generation, internal utility valuation, CEX/DEX price observations, oracle boundaries, OUSD stability options, seven-layer taxonomy, AI-assisted feature governance, differential-geometry risk modelling and post-quantum crypto agility. It distinguishes documented/scaffolded/simulated/tested/deployed capabilities and does not assert Pi Core Team endorsement or native Pi protocol changes.
