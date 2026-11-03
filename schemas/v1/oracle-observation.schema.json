@@ -1,0 +1,21 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"urn:pirc:schema:v1:oracle-observation",
+  "title":"PiRC Oracle Observation",
+  "description":"Signed source observation envelope. Schema validation alone does not verify signatures or establish price truth.",
+  "type":"object","additionalProperties":false,
+  "required":["schema","version","observation_id","feed_id","asset_id","quote_asset_id","value","scale","source_id","source_sequence","observed_at","expires_at","signature","signing_key_id"],
+  "properties":{
+    "schema":{"const":"pirc.oracle-observation"},"version":{"const":"1.0.0"},
+    "observation_id":{"type":"string","minLength":1},"feed_id":{"type":"string","minLength":1},
+    "asset_id":{"type":"string","minLength":1},"quote_asset_id":{"type":"string","minLength":1},
+    "value":{"type":"string","pattern":"^[1-9][0-9]*$"},"scale":{"type":"integer","minimum":0,"maximum":18},
+    "source_id":{"type":"string","minLength":1},"source_sequence":{"type":"integer","minimum":0},
+    "observed_at":{"type":"string","format":"date-time"},"expires_at":{"type":"string","format":"date-time"},
+    "signature":{"type":"string","minLength":1},"signing_key_id":{"type":"string","minLength":1},
+    "venue":{"type":["string","null"]},
+    "bid":{"type":["string","null"],"pattern":"^(0|[1-9][0-9]*)(\\.[0-9]+)?$"},
+    "ask":{"type":["string","null"],"pattern":"^(0|[1-9][0-9]*)(\\.[0-9]+)?$"},
+    "depth_quote_atomic":{"type":["string","null"],"pattern":"^(0|[1-9][0-9]*)$"}
+  }
+}
