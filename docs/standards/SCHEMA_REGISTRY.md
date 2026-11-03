@@ -16,7 +16,8 @@
 | Economic settlement | Atomic-unit accounting result and deterministic allocation record | [economic-settlement.schema.json](../../schemas/v1/economic-settlement.schema.json) |
 | Oracle observation | Signed source observation envelope with sequence and freshness fields | [oracle-observation.schema.json](../../schemas/v1/oracle-observation.schema.json) |
 | Asset provenance | Issuer, origin, ownership-event, and verification-state record | [asset-provenance.schema.json](../../schemas/v1/asset-provenance.schema.json) |
-| Seven-layer registry | Versioned layer identifiers, dependencies, status, and unresolved taxonomy conflicts | [seven-layer-registry.json](../../schemas/v1/seven-layer-registry.json) |
+| Seven-layer registry schema | Validates layer IDs, dependencies, versions, statuses, and taxonomy conflicts | [seven-layer-registry.schema.json](../../schemas/v1/seven-layer-registry.schema.json) |
+| Seven-layer registry data | Canonical v1 layer records and unresolved Gold/Indigo conflict | [seven-layer-registry.v1.json](../../registries/seven-layer-registry.v1.json) |
 
 ## Validation and implementation requirements
 
