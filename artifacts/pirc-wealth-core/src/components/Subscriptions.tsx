@@ -67,6 +67,7 @@ const PREDEFINED_PRODUCTS: Product[] = [
 export function Subscriptions() {
   const { user, isPiReady } = useAuth();
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
+  const [paymentMode, setPaymentMode] = useState<"sandbox" | "production">("sandbox");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(PREDEFINED_PRODUCTS[0]);
   const [isCustomProduct, setIsCustomProduct] = useState(false);
   
@@ -93,6 +94,7 @@ export function Subscriptions() {
       .then((res) => res.json())
       .then((data) => {
         setIsConfigured(data.configured);
+        setPaymentMode(data.mode === "production" ? "production" : "sandbox");
       })
       .catch((err) => {
         console.error("Failed to fetch payments configuration status:", err);
@@ -105,6 +107,22 @@ export function Subscriptions() {
     setPaymentStatus("initializing");
     setLogs([]);
     addLog("Initiating Pi payment request...");
+
+    if (isConfigured !== true) {
+      const msg = "Pi payments are disabled because PI_API_KEY is not configured on the server.";
+      setErrorMessage(msg);
+      setPaymentStatus("error");
+      addLog(`ERROR: ${msg}`);
+      return;
+    }
+
+    if (isCustomProduct) {
+      const msg = "Custom payment amounts are disabled until a trusted server-side order flow is implemented.";
+      setErrorMessage(msg);
+      setPaymentStatus("error");
+      addLog(`ERROR: ${msg}`);
+      return;
+    }
 
     if (!isPiReady || typeof window.Pi === "undefined") {
       const msg = "Pi SDK is not fully initialized. Ensure you are running inside the Pi Browser.";
@@ -254,7 +272,7 @@ export function Subscriptions() {
             <CreditCard className="text-violet-500 h-8 w-8" /> Pi RC Payments Studio
           </h2>
           <p className="text-slate-400 mt-1">
-            Configure, validate, and test server-to-server Pi Network payments in real-time.
+            Test the Pi Platform payment flow with server-side approval and completion.
           </p>
         </div>
         
@@ -263,13 +281,13 @@ export function Subscriptions() {
           {isConfigured === false && (
             <div className="flex items-center gap-2 px-4 py-2 bg-amber-950/40 border border-amber-900/50 rounded-xl text-xs text-amber-400 font-mono shadow-inner">
               <AlertTriangle className="h-4 w-4 animate-pulse flex-shrink-0" />
-              <span>Warning: PI_NETWORK_API_KEY environment variable is not configured. Payments will fall back to simulated developer sandbox responses. Please configure PI_NETWORK_API_KEY for mainnet/testnet server validation.</span>
+              <span>PI_API_KEY is not configured. Payment approval and completion are disabled; no payment will be marked complete by this app.</span>
             </div>
           )}
           {isConfigured === true && (
             <div className="flex items-center gap-2 px-4 py-2 bg-emerald-950/40 border border-emerald-900/50 rounded-xl text-xs text-emerald-400 font-mono shadow-inner">
               <ShieldCheck className="h-4 w-4 flex-shrink-0" />
-              <span>Sovereign Server Key Loaded</span>
+              <span>Pi Platform API Key Configured · {paymentMode === "production" ? "Production" : "Sandbox"}</span>
             </div>
           )}
           {isPiReady ? (
@@ -413,11 +431,14 @@ export function Subscriptions() {
                 </div>
               </div>
 
+              {isCustomProduct && (
+                <p className="text-xs text-amber-400">Custom amounts are unavailable until server-side order validation is implemented.</p>
+              )}
               <button
                 onClick={handleCreatePayment}
-                disabled={paymentStatus === "initializing" || paymentStatus === "approved"}
+                disabled={isConfigured !== true || isCustomProduct || paymentStatus === "initializing" || paymentStatus === "approved"}
                 className={`w-full py-4 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-3 shadow-lg active:scale-[0.98] ${
-                  paymentStatus === "initializing" || paymentStatus === "approved"
+                  isConfigured !== true || isCustomProduct || paymentStatus === "initializing" || paymentStatus === "approved"
                     ? "bg-violet-600/50 text-white/50 cursor-not-allowed"
                     : "bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-violet-950/20"
                 }`}
