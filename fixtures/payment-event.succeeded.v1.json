@@ -1,0 +1,17 @@
+{
+  "schema": "pirc.payment-event",
+  "version": "1.0.0",
+  "event_id": "evt-test-000001",
+  "event_type": "payment.succeeded",
+  "occurred_at": "2026-11-03T12:00:00Z",
+  "network": "pi-testnet",
+  "contract_id": "CEXAMPLECONTRACTID",
+  "transaction_hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "ledger_sequence": 29452110,
+  "subscription_id": "sub-example-001",
+  "idempotency_key": "merchant-order-example-001",
+  "status": "SUCCEEDED",
+  "amount_atomic": "50000000",
+  "asset_id": "native-pi",
+  "reason_code": null
+}
