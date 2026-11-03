@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response as ExpressResponse } from "express";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -268,8 +268,8 @@ async function getValidatedPayment(paymentId: string): Promise<PiPaymentDto> {
 }
 
 function sendPaymentError(
-  req: Parameters<typeof router.post>[2] extends never ? never : any,
-  res: any,
+  req: Request,
+  res: ExpressResponse,
   error: unknown,
   context: string,
 ): void {
