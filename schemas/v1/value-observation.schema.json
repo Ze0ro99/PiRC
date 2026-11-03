@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pirc:value-observation:v1",
+  "title": "PiRC Typed Value Observation",
+  "description": "A typed internal reference, external market quote, merchant utility quote, accounting value or collateral mark. It does not itself create redemption rights.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "observation_id",
+    "schema_version",
+    "value_type",
+    "amount",
+    "unit",
+    "asset_id",
+    "network_id",
+    "observed_at",
+    "source",
+    "verification_status"
+  ],
+  "properties": {
+    "observation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "value_type": {
+      "enum": [
+        "INTERNAL_REFERENCE",
+        "EXTERNAL_MARKET_QUOTE",
+        "MERCHANT_UTILITY_QUOTE",
+        "ACCOUNTING_VALUE",
+        "COLLATERAL_MARK"
+      ]
+    },
+    "amount": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(\\\\.[0-9]+)?$"
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "network_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "source_type"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_type": {
+          "enum": [
+            "POLICY",
+            "MERCHANT",
+            "EXCHANGE",
+            "ORACLE",
+            "ACCOUNTING_SYSTEM",
+            "RISK_ENGINE"
+          ]
+        },
+        "pair": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "policy_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verification_status": {
+      "enum": [
+        "VERIFIED",
+        "UNVERIFIED",
+        "STALE",
+        "REJECTED"
+      ]
+    },
+    "redemption_claim": {
+      "const": false
+    }
+  }
+}
