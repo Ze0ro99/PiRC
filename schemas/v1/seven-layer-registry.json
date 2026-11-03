@@ -1,17 +1,16 @@
 {
   "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"urn:pirc:registry:seven-layer:v1",
-  "registry_id":"pirc.seven-layer-registry","version":"1.0.0","status":"proposed",
-  "normative_notice":"Layer colors and names are project taxonomy, not official Pi Network classifications or asset guarantees.",
-  "layers":[
-    {"layer_id":"L1","ordinal":1,"color":"Red","name":"Root Governance","version":"1.0.0","depends_on":[],"status":"proposed"},
-    {"layer_id":"L2","ordinal":2,"color":"Orange","name":"Basic Utility","version":"1.0.0","depends_on":["L1"],"status":"proposed"},
-    {"layer_id":"L3","ordinal":3,"color":"Yellow","name":"Extended Utility","version":"1.0.0","depends_on":["L1","L2"],"status":"proposed"},
-    {"layer_id":"L4","ordinal":4,"color":"Green","name":"Payment and Commerce","version":"1.0.0","depends_on":["L1","L2","L3"],"status":"proposed"},
-    {"layer_id":"L5","ordinal":5,"color":"Blue","name":"Institutional Interfaces","version":"1.0.0","depends_on":["L1","L4"],"status":"proposed"},
-    {"layer_id":"L6","ordinal":6,"color":"Indigo","name":"Premium Reserve Proposal","version":"1.0.0","depends_on":["L1","L5"],"status":"proposed"},
-    {"layer_id":"L7","ordinal":7,"color":"Purple","name":"Mined Pi and Fractional Accounting Representations","version":"1.0.0","depends_on":["L1","L2","L3","L4"],"status":"proposed"}
-  ],
-  "taxonomy_conflicts":[{"conflict_id":"GOLD-INDIGO-001","term":"Gold","competing_interpretation":"A separate registry entry exists in source material but its ordinal, authority, and semantic equivalence are not established.","related_layer_id":"L6","resolution":"unresolved","required_migration":"Do not alias Gold to Indigo until a source-backed decision is versioned, reviewed, and covered by compatibility tests."}],
-  "compatibility_policy":{"breaking_changes_require_major_version":true,"preserve_historical_ids":true,"color_is_not_authorization":true,"registry_statuses":["proposed","specified","implemented","tested","testnet_verified","security_reviewed","mainnet_verified","deprecated"]}
+  "$id":"urn:pirc:schema:v1:seven-layer-registry",
+  "title":"PiRC Seven-Layer Registry",
+  "type":"object","additionalProperties":false,
+  "required":["registry_id","version","status","layers","taxonomy_conflicts","compatibility_policy"],
+  "properties":{
+    "registry_id":{"const":"pirc.seven-layer-registry"},
+    "version":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status":{"enum":["proposed","specified","implemented","tested","testnet_verified","security_reviewed","mainnet_verified","deprecated"]},
+    "normative_notice":{"type":"string"},
+    "layers":{"type":"array","minItems":7,"maxItems":7,"items":{"type":"object","additionalProperties":false,"required":["layer_id","ordinal","color","name","version","depends_on","status"],"properties":{"layer_id":{"type":"string","pattern":"^L[1-7]$"},"ordinal":{"type":"integer","minimum":1,"maximum":7},"color":{"enum":["Red","Orange","Yellow","Green","Blue","Indigo","Purple"]},"name":{"type":"string","minLength":1},"version":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},"depends_on":{"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^L[1-7]$"}},"status":{"enum":["proposed","specified","implemented","tested","testnet_verified","security_reviewed","mainnet_verified","deprecated"]}}}},
+    "taxonomy_conflicts":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["conflict_id","term","competing_interpretation","related_layer_id","resolution","required_migration"],"properties":{"conflict_id":{"type":"string","minLength":1},"term":{"type":"string","minLength":1},"competing_interpretation":{"type":"string","minLength":1},"related_layer_id":{"type":"string","pattern":"^L[1-7]$"},"resolution":{"enum":["unresolved","accepted","rejected","deprecated"]},"required_migration":{"type":"string","minLength":1}}}},
+    "compatibility_policy":{"type":"object","additionalProperties":false,"required":["breaking_changes_require_major_version","preserve_historical_ids","color_is_not_authorization","registry_statuses"],"properties":{"breaking_changes_require_major_version":{"type":"boolean"},"preserve_historical_ids":{"type":"boolean"},"color_is_not_authorization":{"type":"boolean"},"registry_statuses":{"type":"array","uniqueItems":true,"items":{"type":"string"}}}}
+  }
 }
