@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://pirc.example/schemas/v1/product-valuation.schema.json",
+  "$id": "urn:pirc:schema:v1:product-valuation",
   "title": "PiRC Product Valuation",
   "type": "object",
   "additionalProperties": false,
