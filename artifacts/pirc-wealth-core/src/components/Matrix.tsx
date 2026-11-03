@@ -38,7 +38,7 @@ export function Matrix() {
       <div className="flex items-end justify-between mb-8">
         <div>
           <h2 className="text-3xl font-bold text-white">Live Matrix Registry</h2>
-          <p className="text-slate-400 mt-1">Real-time status of the 7-Layer Architecture and nodes.</p>
+          <p className="text-slate-400 mt-1">Sample visualization of the 7-Layer Architecture; live node telemetry is not connected.</p>
         </div>
         <div className="flex gap-2">
           <button className="bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
@@ -62,7 +62,7 @@ export function Matrix() {
           </div>
           <div className="flex items-center gap-2 text-sm text-slate-400">
             <Activity className="h-4 w-4 text-emerald-500" />
-            Live Updates Active
+            Demo data — not live telemetry
           </div>
         </div>
 
@@ -100,7 +100,8 @@ export function Matrix() {
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                         row.health === 'Optimal' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
-                        row.health === 'Warning' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 
+                        row.health === 'Warning' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                  row.health === 'Sample' ? 'bg-slate-500/10 text-slate-300 border border-slate-500/20' : 
                         'bg-red-500/10 text-red-400 border border-red-500/20'
                       }`}>
                         {row.health}
