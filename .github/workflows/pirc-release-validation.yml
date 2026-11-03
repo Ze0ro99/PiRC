@@ -13,6 +13,7 @@ on:
       - "registries/**"
       - "tests/**"
       - "scripts/validate_release.py"
+      - "scripts/audit_branch_inventory.py"
       - "scripts/validate_payment_event.py"
       - ".github/workflows/pirc-release-validation.yml"
   push:
@@ -49,6 +50,10 @@ jobs:
           python-version: "3.12"
       - name: Validate JSON schemas and local Markdown links
         run: python scripts/validate_release.py
+      - name: Validate read-only branch audit tool
+        run: |
+          python -m py_compile scripts/audit_branch_inventory.py
+          python scripts/audit_branch_inventory.py --self-test
       - name: Validate payment event fixture invariants
         run: python scripts/validate_payment_event.py
       - name: Run deterministic economic-engine tests
