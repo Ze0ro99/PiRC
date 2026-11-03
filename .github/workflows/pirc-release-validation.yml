@@ -9,6 +9,7 @@ on:
       - "docs/**"
       - "schemas/**"
       - "reference/**"
+      - "registries/**"
       - "tests/**"
       - "scripts/validate_release.py"
       - ".github/workflows/pirc-release-validation.yml"
