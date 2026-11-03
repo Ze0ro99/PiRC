@@ -107,3 +107,22 @@ Do not run full deployment, pull large model images, or submit Testnet/Mainnet t
 - SmartContracts standards coverage inventory: https://github.com/Ze0ro99/SmartContracts/blob/main/docs/PIRC_STANDARDS_COVERAGE_MATRIX.md
 - Unity Sphere default branch: https://github.com/Ze0ro99/project-unity-sphere-0e2c810d/tree/main
 - PiRC cross-repository implementation traceability: ../integration/IMPLEMENTATION_TRACEABILITY_MATRIX.md
+
+## 6. Added reference-engine and schema gates (PR #347 continuation)
+
+These records are authoritative for the PiRC proposal layer only. They do not upgrade any SmartContracts or Unity Sphere implementation status by implication.
+
+| Capability | PiRC reference artifact | Required downstream evidence | Current state |
+|---|---|---|---|
+| Revenue-funded economic calculation | `reference/economic_engine.py`, `tests/test_economic_engine.py`, `fixtures/economic-engine-vectors.json` | Soroban implementation with checked arithmetic; identical golden-vector results; authorization tests; conservation and underfunding tests | **REFERENCE IMPLEMENTED / DOWNSTREAM UNVERIFIED** |
+| Economic settlement envelope | `schemas/v1/economic-settlement.schema.json` | API validates schema and recomputes trusted ledger values; contract rejects caller-supplied authoritative distributable totals | **SCHEMA PRESENT / RUNTIME UNVERIFIED** |
+| Oracle observation envelope | `schemas/v1/oracle-observation.schema.json`, `docs/standards/ORACLE_ENGINE_EXECUTION_SPEC.md` | Signature verification, key rotation/revocation, monotonic source sequence, freshness, independent quorum, replay and deviation tests | **SPECIFIED / CRYPTOGRAPHIC RUNTIME UNVERIFIED** |
+| Asset provenance | `schemas/v1/asset-provenance.schema.json` | Ledger readback or issuer evidence; immutable ownership-event references; dispute/freeze/reversal handling | **SCHEMA PRESENT / OWNERSHIP EVIDENCE UNVERIFIED** |
+| Seven-layer taxonomy | `registries/seven-layer-registry.v1.json`, `schemas/v1/seven-layer-registry.schema.json` | Registry validator; migration decision for Gold/Indigo; downstream IDs mapped without color-based authorization | **REGISTRY PRESENT / GOLD-INDIGO UNRESOLVED** |
+| SoloHost / Pi Desktop 0.6.4 | `packaging/solohost/compatibility-profile.json`, `scripts/validate_solohost_profile.py` | Exact desktop build checksum, component checksums, runtime test report, and reviewer sign-off | **PREPARATION / RUNTIME UNVERIFIED** |
+
+### Economic engine integration gate
+
+The reference engine uses integer atomic amounts and deterministic largest-remainder allocation. A SmartContracts port must match the golden vectors exactly and independently test integer overflow, storage authorization, replay/idempotency, and state-transition rollback. A Unity Sphere adapter must not trust a client-supplied `distributable` amount; it must derive it from reconciled server-side records and preserve the explicit asset ID and accounting unit.
+
+Until these downstream checks are linked to immutable commits and passing test runs, the cross-repository status remains unverified.
