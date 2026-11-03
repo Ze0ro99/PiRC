@@ -86,3 +86,14 @@ Queued is not passing. Pending is not passing. A missing run is not evidence of 
 ## 7. Release disposition
 
 The ecosystem remains at an integration-documentation and reference-engineering stage. No production settlement, price peg, USD redemption, reserve backing, Mainnet deployment, or Pi Desktop runtime compatibility is certified by this report.
+
+
+## 8. Follow-up addendum — upstream review and payment-event work
+
+This addendum supersedes the PiRC head reference above for the current follow-up branch. At the time of this addendum, PiRC #349 head was `0a57f22608c8bf0bad2f3dfdb62f8836eae2e6b4` (17 commits ahead of `main`, 0 behind). The new upstream review analysis, payment-event v1 schema, canonical fixture, fixture validator, schema registry entry, and workflow invocation are included in that branch.
+
+Latest observed companion PR heads remain SmartContracts #1092 at `743649952f54b25b1dd012bff460c2a057efddda` (7 ahead, 0 behind) and Unity Sphere #33 at `2cfb5486a38c788e6d29cffa1284563df541b457` (6 ahead, 0 behind). Their PR-triggered workflows were queued at the time of re-check; queued is not passing.
+
+For PiRC #349, the combined commit status still reports Vercel deployment quota failures, Snyk pending, and Netlify preview pending. No PR-triggered workflow run was returned for the latest PiRC head at re-check time. The new payment-event validator is wired into the documentation workflow, but its hosted execution has not yet been observed. Do not infer success from the presence of the workflow file or fixture.
+
+The upstream discussion review also identified unresolved requirements for account-level provenance reconciliation, genesis snapshot governance, storage/rent scalability, stake-versus-commitment consideration, and event idempotency/finality. These are recorded in the upstream gap-analysis document and remain open design gates.
