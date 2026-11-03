@@ -57,6 +57,7 @@ The application must never bypass contract authorization. External agents may pr
 - [Economic Component Integration Map](docs/architecture/ECONOMIC_COMPONENT_INTEGRATION_MAP.md)
 - [Cross-Repository Implementation Traceability Matrix](docs/integration/IMPLEMENTATION_TRACEABILITY_MATRIX.md)
 - [Cross-Repository Review and Acceptance Matrix](docs/integration/CROSS_REPO_REVIEW_MATRIX.md)
+- [External Component Compatibility Matrix](docs/integration/EXTERNAL_COMPONENT_COMPATIBILITY_MATRIX.md)
 - [Branch Intake Inventory](docs/integration/BRANCH_INTAKE_INVENTORY.md)
 - [Complete Branch Census](docs/integration/BRANCH_CENSUS.md)
 - [Branch Head Audit](docs/integration/BRANCH_HEAD_AUDIT_2026-11-03.md)
@@ -64,6 +65,7 @@ The application must never bypass contract authorization. External agents may pr
 
 ### Economic model and mathematics
 - [Economic Mathematics](docs/economics/ECONOMIC_MATHEMATICS.md)
+- [Monetary Model and Inflation Equations](docs/economics/MONETARY_MODEL_AND_INFLATION_EQUATIONS.md)
 - [Monetary Model, Inflation, and Equations](docs/economics/MONETARY_MODEL_AND_INFLATION_EQUATIONS.md)
 - [Economic System Integration Blueprint](docs/economics/ECONOMIC_SYSTEM_INTEGRATION_BLUEPRINT.md)
 - [End-to-End Economic Lifecycle](docs/economics/END_TO_END_ECONOMIC_LIFECYCLE.md)
@@ -79,6 +81,13 @@ The application must never bypass contract authorization. External agents may pr
 - [Pi Testnet1 Network Profile](docs/standards/PI_TESTNET1_NETWORK_PROFILE.md)
 - [Testnet1 Release Gates and Mainnet Readiness](docs/standards/TESTNET1_RELEASE_GATES.md)
 - [OUSD Test-Only Asset Profile](docs/standards/PiRC-OUSD-TEST.md)
+
+### External desktop and distribution references
+- [SoloHost package contract](https://github.com/pi-node/solohost/blob/main/skills/solohost-package/references/contract.md)
+- [SoloHost package skill](https://github.com/pi-node/solohost/blob/main/skills/solohost-package/SKILL.md)
+- [Hermes SoloHost reference package](https://github.com/pi-node/solohost/tree/main/skills/solohost-package/examples/hermes)
+- [pi-node repository](https://github.com/pi-node/pi-node) — current public README reports 0.5.4; team-provided Desktop target 0.6.4 remains to be verified on-device.
+- [External Component Compatibility Matrix](docs/integration/EXTERNAL_COMPONENT_COMPATIBILITY_MATRIX.md)
 
 ### Application and developer integration
 - [PiRC API server](artifacts/api-server)
