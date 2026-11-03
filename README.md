@@ -207,3 +207,6 @@ Preserve source branches. Prefer focused PRs over broad merges. Do not commit se
 - [Cross-repository integration delivery dossier](docs/integration/INTEGRATION_DELIVERY_DOSSIER_2026-11-03.md)
 - [Architecture decision records](docs/architecture/INTEGRATION_DECISION_RECORDS.md)
 - [Integrated release acceptance checklist](docs/release/INTEGRATED_RELEASE_ACCEPTANCE_CHECKLIST.md)
+
+## Integration status report
+- [Cross-repository integration status report](docs/release/INTEGRATION_STATUS_REPORT_2026-11-03.md)
