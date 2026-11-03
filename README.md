@@ -22,6 +22,7 @@ All material in this branch is subject to technical review. A proposal or refere
 - [Complete branch census (577 refs)](docs/integration/BRANCH_CENSUS.md)
 - [Source-grounded integration audit](docs/audit/SOURCE_GROUNDED_INTEGRATION_AUDIT.md)
 - [Seven colored layer mapping](docs/architecture/SEVEN_COLORED_LAYERS_SOURCE_MAPPING.md)
+- [OUSD test-only asset profile](docs/standards/PiRC-OUSD-TEST.md)
 
 ## Contribution and validation
 
