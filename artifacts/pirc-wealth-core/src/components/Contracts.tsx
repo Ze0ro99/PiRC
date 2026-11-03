@@ -27,13 +27,14 @@ export function Contracts() {
 
   return (
     <div className="space-y-6">
+      <div role="status" className="rounded-xl border border-amber-500/30 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">REFERENCE DATA — entries below are not evidence of deployed contracts, audited code, or verified TVL.</div>
       <div className="flex items-end justify-between mb-8">
         <div>
           <h2 className="text-3xl font-bold text-white">Smart Contract Studio</h2>
-          <p className="text-slate-400 mt-1">Deploy, monitor, and query PiRC Soroban contracts.</p>
+          <p className="text-slate-400 mt-1">Browse contract references. Deployment, TVL and audit status are not verified by this dashboard.</p>
         </div>
-        <button className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-          Deploy New Contract
+        <button disabled title="Contract deployment is unavailable until a verified network, signer and deployment workflow are configured." className="bg-slate-700 text-slate-400 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed">
+          Deployment Unavailable
         </button>
       </div>
 
