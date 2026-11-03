@@ -1,17 +1,17 @@
 # Branch Feature Intake and Evidence Register
 
 **Scope:** Git branches and repository artefacts in the PiRC ecosystem.  
-**Review basis:** GitHub branch refs and recursive trees inspected on 2026-11-03. This is a discovery register, not proof that every branch commit or every file has been semantically reviewed.
+**Review basis:** GitHub branch refs inspected on 2026-11-04; recursive-tree and code review remain limited to the explicitly listed artefacts. This is a discovery register, not proof that every branch commit or every file has been semantically reviewed.
 
 ## 1. Repository inventory
 
 | Repository | Branch refs discovered | Main-tree files/paths observed | Notes |
 |---|---:|---:|---|
-| Ze0ro99/PiRC | 164 | 9,100 paths | Large nested full-repository snapshots and isolated workspaces exist; exclude vendored caches and nested copies from source-of-truth selection. |
-| Ze0ro99/SmartContracts | 281 | 660 paths | Main README reports 106 Rust source files but only four distinct Rust contents by Git blob SHA; many numbered crates are templates/scaffolds. |
-| Ze0ro99/project-unity-sphere-0e2c810d | 149 | 19,771 paths | Contains application code, contract adapters, copied repository trees, legacy code and generated/static assets. |
+| Ze0ro99/PiRC | 165 | 9,100 paths | Large nested full-repository snapshots and isolated workspaces exist; exclude vendored caches and nested copies from source-of-truth selection. |
+| Ze0ro99/SmartContracts | 283 | 660 paths | Main README reports 106 Rust source files but only four distinct Rust contents by Git blob SHA; many numbered crates are templates/scaffolds. |
+| Ze0ro99/project-unity-sphere-0e2c810d | 150 | 19,771 paths | Contains application code, contract adapters, copied repository trees, legacy code and generated/static assets. |
 
-Branch counts are point-in-time discovery counts. Branches are not automatically merge candidates. The same branch name across repositories does not imply identical content or synchronized commits.
+Branch counts are point-in-time discovery counts from paginated GitHub branch enumeration completed on 2026-11-04. The earlier 2026-11-03 tree/feature observations remain scoped to the files explicitly inspected; enumeration is not a semantic review of every branch. Branches are not automatically merge candidates. The same branch name across repositories does not imply identical content or synchronized commits.
 
 ## 2. High-value isolated work areas found
 
