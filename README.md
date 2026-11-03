@@ -36,6 +36,11 @@ All material in this branch is subject to technical review. A proposal or refere
 - [AI agent capability and safety standard](docs/standards/AI_AGENT_CAPABILITY_AND_SAFETY_STANDARD.md)
 - [Testnet1 release gates and Mainnet readiness](docs/standards/TESTNET1_RELEASE_GATES.md)
 
+## Release candidate
+
+- [PiRC v3.2.0-rc.1 release notes](docs/release/RELEASE_CANDIDATE_3.2.0-rc.1.md)
+- [Changelog](CHANGELOG.md)
+
 ## Contribution and validation
 
 Contributions should include a specification reference, implementation scope, tests, threat model, dependency impact and reproducible evidence. Preserve source branches; do not merge unreviewed changes or commit secrets.
