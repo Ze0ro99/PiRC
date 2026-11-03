@@ -1,0 +1,24 @@
+name: PiRC Release Validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [integration/sovereign-hybrid-ecosystem]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-release-docs:
+    name: Validate schemas and documentation links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate JSON schemas and local Markdown links
+        run: python scripts/validate_release.py
