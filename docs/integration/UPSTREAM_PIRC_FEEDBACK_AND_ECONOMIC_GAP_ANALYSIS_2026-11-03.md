@@ -98,6 +98,19 @@ A constant such as 10^7 does not prove that externally purchased balances have n
 
 A fungible token balance cannot be reliably separated into mined and purchased units merely by adding an application-level label. If the base ledger does not expose enforceable unit-level provenance, use a clearly defined account/claim/attestation model and disclose its limitations. Do not claim every Pi unit carries an origin flag unless the protocol actually supports that property.
 
+
+### 4.1.1 Provenance consistency and snapshot governance
+
+If account-level provenance buckets are used, define a conservation rule over each account's classified balance and a reconciliation rule against the authoritative ledger. Direct transfers, path payments, exchanges, account merges/recovery, and transfers through non-integrated wallets must be included. An indexer can report observed changes but cannot make an unverified classification authoritative. Define:
+
+    classified_balance_i(t) = mined_eligible_i(t) + external_or_unclassified_i(t)
+
+    reconciliation_delta_i(t) = ledger_balance_i(t) - classified_balance_i(t)
+
+A non-zero delta MUST quarantine reward calculations for that account until a documented reconciliation/correction process resolves it. Do not silently infer that incoming funds are mined or that outgoing funds consume a particular provenance bucket unless that ordering rule is explicit, enforceable, and consistently replayable.
+
+A genesis snapshot must publish the exact ledger sequence, canonical account-state extraction method, dataset hash/Merkle root, inclusion/exclusion rules, verifier tooling, signer/governance authority, challenge window, and correction procedure. A Merkle proof only proves membership in the committed dataset; it does not prove the source ledger, extraction logic, or governance authorization was correct. Persistent-storage footprint, TTL/rent cost, and lazy-initialization abuse must be measured before any ecosystem-scale claim.
+
 ### 4.2 Bounded, concave participant weight
 
 Candidate research function:
@@ -301,6 +314,11 @@ For capped allocation pool A and accepted demand weights d_i, a simple pro-rata 
     a_i = A * d_i / sum(d_j)
 
 Apply per-account caps, eligibility, minimum allocation, deterministic rounding, and refunds of unfilled funds. If demand exceeds capacity, publish the rule before the sale and do not rely on privileged off-chain discretion.
+
+
+### 10.1.1 Stake versus commitment must have explicit consideration
+
+Treat stake and commitment as different positions with different rights. For every staking path, publish the locked asset, lock term, withdrawal/early-exit conditions, slashing or loss conditions, and exact consideration paid to the participant. If the benefit is allocation priority or a discount, quantify it as such; if it is a reward, identify the pre-funded revenue/budget source and show that the reward is not an unfunded yield promise. Publish the opportunity-cost comparison and test oversubscription, pro-rata allocation, refunds, and concentration. Do not imply a staking yield where none is specified.
 
 A non-linear power model to evaluate is:
 
