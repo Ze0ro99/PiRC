@@ -9,6 +9,7 @@ This integration branch contains the proposed cross-repository architecture base
 - [Master Architecture](docs/architecture/MASTER_ARCHITECTURE.md)
 - [Seven-Layer Hybrid Stack](docs/architecture/SEVEN_LAYER_HYBRID_STACK.md)
 - [Economic Mathematics](docs/economics/ECONOMIC_MATHEMATICS.md)
+- [Economic System Integration Blueprint](docs/economics/ECONOMIC_SYSTEM_INTEGRATION_BLUEPRINT.md)
 - [Branch Intake Inventory](docs/integration/BRANCH_INTAKE_INVENTORY.md)
 - [Complete branch-head audit with commit SHAs](docs/integration/BRANCH_HEAD_AUDIT_2026-11-03.md)
 - [Source implementation audit](docs/integration/SOURCE_IMPLEMENTATION_AUDIT_2026-11-03.md)
