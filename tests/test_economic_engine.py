@@ -34,6 +34,11 @@ class EconomicEngineTests(unittest.TestCase):
     def test_zero_distribution_does_not_require_positive_weights(self):
         self.assertEqual(allocate_largest_remainder(0, {"alice": 0}).amounts, {"alice": 0})
 
+    def test_zero_distribution_still_validates_participant_inputs(self):
+        ledger = PeriodLedger("p0", "ASSET-A", 0, 0, 0, 0, 0, 0)
+        with self.assertRaises(EconomicInvariantError):
+            settle_period(ledger, {"alice": -1})
+
     def test_empty_population_only_accepts_zero(self):
         self.assertEqual(allocate_largest_remainder(0, {}).total, 0)
         with self.assertRaises(EconomicInvariantError):
