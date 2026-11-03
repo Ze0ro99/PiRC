@@ -1,0 +1,20 @@
+# PiRC — Pi Requests for Comment
+
+PiRC is a research and proposal repository for specifications, economic models, governance concepts, and reference implementations related to the Pi ecosystem.
+
+## Sovereign Hybrid Ecosystem Architecture
+
+This integration branch contains the proposed cross-repository architecture baseline:
+
+- [Master Architecture](docs/architecture/MASTER_ARCHITECTURE.md)
+- [Seven-Layer Hybrid Stack](docs/architecture/SEVEN_LAYER_HYBRID_STACK.md)
+- [Economic Mathematics](docs/economics/ECONOMIC_MATHEMATICS.md)
+- [Branch Intake Inventory](docs/integration/BRANCH_INTAKE_INVENTORY.md)
+
+## Status and claims
+
+All material in this branch is subject to technical review. A proposal or reference implementation is not an official Pi Network specification, endorsement, production deployment, price guarantee, or financial product. Pi Cash and Pi Bank are proposed software modules. OUSD must not be represented as USD-backed or redeemable until issuer, reserve, custody, legal and redemption evidence exists.
+
+## Contribution and validation
+
+Contributions should include a specification reference, implementation scope, tests, threat model, dependency impact and reproducible evidence. Preserve source branches; do not merge unreviewed changes or commit secrets.
