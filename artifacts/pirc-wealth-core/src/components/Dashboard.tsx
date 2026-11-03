@@ -34,6 +34,7 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <div role="status" className="rounded-xl border border-amber-500/30 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">DEMO DATA — dashboard metrics and charts are illustrative placeholders, not live Pi Network telemetry, verified TVL, audited yield, or production health checks.</div>
       <div className="flex items-end justify-between mb-8">
         <div>
           <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
@@ -47,8 +48,8 @@ export function Dashboard() {
             <option>dev</option>
             <option>staging</option>
           </select>
-          <button className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            Sync Repository
+          <button onClick={() => window.location.assign("/sync")} className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            Open Repository Sync
           </button>
         </div>
       </div>
@@ -62,12 +63,12 @@ export function Dashboard() {
           </div>
           <div className="text-[10px] uppercase tracking-wider text-violet-300 font-bold mb-3 flex items-center gap-2">
             <Activity className="h-4 w-4" />
-            Total Value Locked
+            Sample TVL (demo)
           </div>
           <div className="text-4xl font-light tracking-tight text-white mb-2">{stats.tvl} <span className="text-base text-violet-400/60 font-mono">π</span></div>
           <div className="text-xs text-violet-400/70 flex items-center">
             <ArrowUpRight className="h-4 w-4 mr-1" />
-            +12.5% this week
+            Illustrative sample only
           </div>
         </div>
 
@@ -77,12 +78,12 @@ export function Dashboard() {
           </div>
           <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-3 flex items-center gap-2">
             <Network className="h-4 w-4" />
-            Active Nodes
+            Sample Node Count
           </div>
           <div className="text-4xl font-light tracking-tight text-white mb-2">{stats.activeNodes}</div>
           <div className="text-xs flex items-center text-slate-500">
             <ArrowUpRight className="h-4 w-4 mr-1 text-emerald-400" />
-            <span className="text-emerald-500/70">+4.2% this week</span>
+            <span className="text-emerald-500/70">Illustrative sample only</span>
           </div>
         </div>
 
@@ -92,7 +93,7 @@ export function Dashboard() {
           </div>
           <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-3 flex items-center gap-2">
             <Box className="h-4 w-4" />
-            Active Contracts
+            Reference Contract Count
           </div>
           <div className="text-4xl font-light tracking-tight text-white mb-2">{stats.contracts}</div>
           <div className="text-xs text-slate-500 mt-1">
@@ -106,11 +107,11 @@ export function Dashboard() {
           </div>
           <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-3 flex items-center gap-2">
             <ShieldCheck className="h-4 w-4" />
-            Network Health
+            Demo Health Indicator
           </div>
           <div className="text-4xl font-light tracking-tight text-white mb-2">{stats.health}</div>
           <div className="text-xs text-emerald-500/70 mt-1">
-             Optimum Stability
+             Not a live health check
           </div>
         </div>
 
@@ -118,7 +119,7 @@ export function Dashboard() {
         <div className="col-span-1 md:col-span-8 bg-[#111111] border border-white/5 rounded-2xl p-6 h-[400px]">
           <div className="mb-4">
             <h3 className="font-semibold text-lg">Ecosystem Yield & Economic Simulation</h3>
-            <p className="text-slate-400 text-sm">Historical aggregate yield across all PiRC vaults.</p>
+            <p className="text-slate-400 text-sm">Illustrative sample values only; no realized yield or live vault data is connected.</p>
           </div>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -145,7 +146,7 @@ export function Dashboard() {
         <div className="col-span-1 md:col-span-4 bg-[#111111] border border-white/5 rounded-2xl p-6 h-[400px]">
           <div className="mb-4">
             <h3 className="font-semibold text-lg">7-Layer Volume</h3>
-            <p className="text-slate-400 text-sm">Traffic per architecture layer</p>
+            <p className="text-slate-400 text-sm">Illustrative sample values only; not live network traffic.</p>
           </div>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
