@@ -13,6 +13,7 @@ on:
       - "registries/**"
       - "tests/**"
       - "scripts/validate_release.py"
+      - "scripts/validate_payment_event.py"
       - ".github/workflows/pirc-release-validation.yml"
   push:
     branches: [main, integration/sovereign-hybrid-ecosystem]
@@ -48,6 +49,8 @@ jobs:
           python-version: "3.12"
       - name: Validate JSON schemas and local Markdown links
         run: python scripts/validate_release.py
+      - name: Validate payment event fixture invariants
+        run: python scripts/validate_payment_event.py
       - name: Run deterministic economic-engine tests
         run: python -m unittest discover -s tests -p 'test_economic_engine.py' -v
       - name: Validate SoloHost compatibility evidence profile
