@@ -63,7 +63,7 @@ The inspected Unity Sphere `MASTER_MANIFEST.md` contains a verification assertio
 
 ## 5. Required interface contract
 
-Every cross-repository feature must publish and pin:
+Every cross-repository feature must publish and pin. Use the machine-readable [implementation evidence schema](../../schemas/v1/implementation-evidence.schema.json) to store the record; its presence does not independently prove the recorded claims:
 
 1. Stable feature ID and PiRC specification revision.
 2. JSON schema identifier/version and compatibility policy.
