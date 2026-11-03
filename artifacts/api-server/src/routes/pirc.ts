@@ -152,20 +152,235 @@ router.get("/contracts", (_req, res) => {
   });
 });
 
+type PaymentMode = "sandbox" | "production";
+
+interface PiPaymentDto {
+  identifier?: string;
+  amount?: number;
+  memo?: string;
+  metadata?: Record<string, unknown>;
+  transaction?: { txid?: string | null } | null;
+  status?: {
+    developer_approved?: boolean;
+    developer_completed?: boolean;
+    cancelled?: boolean;
+  };
+}
+
+class PiPlatformError extends Error {
+  constructor(
+    readonly statusCode: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "PiPlatformError";
+  }
+}
+
+// This allowlist is server-owned. Client-supplied names, amounts and metadata
+// are never sufficient to approve an arbitrary payment.
+const APPROVED_PRODUCTS: Record<string, { amount: number }> = {
+  pirc_premium: { amount: 1.0 },
+  compiler_boost: { amount: 0.5 },
+  node_boost: { amount: 0.2 },
+  dev_tip: { amount: 0.1 },
+};
+
+function getPaymentMode(): PaymentMode {
+  return process.env.PI_PAYMENT_MODE === "production" && Boolean(process.env.PI_API_KEY)
+    ? "production"
+    : "sandbox";
+}
+
+async function piPlatformRequest<T>(
+  pathname: string,
+  options: { method?: "GET" | "POST"; body?: Record<string, unknown> } = {},
+): Promise<T> {
+  const apiKey = process.env.PI_API_KEY;
+  if (!apiKey) {
+    throw new PiPlatformError(
+      503,
+      "Pi payments are disabled: PI_API_KEY is not configured on the server.",
+    );
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`https://api.minepi.com/v2${pathname}`, {
+      method: options.method ?? "GET",
+      headers: {
+        Authorization: `Key ${apiKey}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      ...(options.body ? { body: JSON.stringify(options.body) } : {}),
+    });
+  } catch {
+    throw new PiPlatformError(502, "Unable to reach the Pi Platform API.");
+  }
+
+  let payload: unknown = null;
+  try {
+    payload = await response.json();
+  } catch {
+    // Do not expose raw upstream bodies or credentials in API responses.
+  }
+
+  if (!response.ok) {
+    const statusCode = response.status === 404 ? 404 : 502;
+    throw new PiPlatformError(
+      statusCode,
+      `Pi Platform API rejected the request (HTTP ${response.status}).`,
+    );
+  }
+
+  return payload as T;
+}
+
+function validateTrustedProduct(payment: PiPaymentDto): void {
+  const productId = payment.metadata?.productId;
+  if (typeof productId !== "string" || !APPROVED_PRODUCTS[productId]) {
+    throw new PiPlatformError(
+      400,
+      "Payment metadata does not identify an approved server-side product.",
+    );
+  }
+
+  const expectedAmount = APPROVED_PRODUCTS[productId].amount;
+  if (typeof payment.amount !== "number" || Math.abs(payment.amount - expectedAmount) > 1e-8) {
+    throw new PiPlatformError(
+      400,
+      "Payment amount does not match the approved server-side product price.",
+    );
+  }
+}
+
+async function getValidatedPayment(paymentId: string): Promise<PiPaymentDto> {
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(paymentId)) {
+    throw new PiPlatformError(400, "Invalid payment identifier.");
+  }
+
+  const payment = await piPlatformRequest<PiPaymentDto>(
+    `/payments/${encodeURIComponent(paymentId)}`,
+  );
+  validateTrustedProduct(payment);
+  return payment;
+}
+
+function sendPaymentError(
+  req: Parameters<typeof router.post>[2] extends never ? never : any,
+  res: any,
+  error: unknown,
+  context: string,
+): void {
+  if (error instanceof PiPlatformError) {
+    res.status(error.statusCode).json({ error: error.message, mode: getPaymentMode() });
+    return;
+  }
+
+  req.log.warn({ err: error }, context);
+  res.status(502).json({ error: "Pi payment processing failed.", mode: getPaymentMode() });
+}
+
 router.get("/payments/config", (_req, res) => {
-  res.json({ configured: Boolean(process.env.PI_NETWORK_API_KEY) });
+  const configured = Boolean(process.env.PI_API_KEY);
+  res.json({
+    configured,
+    mode: getPaymentMode(),
+    paymentsEnabled: configured,
+    note: configured
+      ? "Server-side payment approval and completion use the Pi Platform API."
+      : "Payment operations are disabled until PI_API_KEY is configured server-side.",
+  });
 });
 
-router.post("/payments/incomplete", (_req, res) => {
-  res.json({ status: "success", data: { resolved: false, mode: "sandbox" } });
+router.post("/payments/approve", async (req, res) => {
+  const paymentId = typeof req.body?.paymentId === "string" ? req.body.paymentId : "";
+  if (!paymentId) {
+    res.status(400).json({ error: "Payment identifier is required." });
+    return;
+  }
+
+  try {
+    const payment = await getValidatedPayment(paymentId);
+    if (payment.status?.developer_approved) {
+      res.json({ status: "success", data: payment, alreadyApproved: true, mode: getPaymentMode() });
+      return;
+    }
+
+    const approval = await piPlatformRequest<PiPaymentDto>(
+      `/payments/${encodeURIComponent(paymentId)}/approve`,
+      { method: "POST" },
+    );
+    res.json({ status: "success", data: approval, mode: getPaymentMode() });
+  } catch (error) {
+    sendPaymentError(req, res, error, "Pi payment approval failed");
+  }
 });
 
-router.post("/payments/approve", (_req, res) => {
-  res.json({ status: "success", data: { approved: true, mode: "sandbox" } });
+router.post("/payments/complete", async (req, res) => {
+  const paymentId = typeof req.body?.paymentId === "string" ? req.body.paymentId : "";
+  const txid = typeof req.body?.txid === "string" ? req.body.txid.trim() : "";
+  if (!paymentId || !txid || txid.length > 256) {
+    res.status(400).json({ error: "Payment identifier and transaction ID are required." });
+    return;
+  }
+
+  try {
+    const payment = await getValidatedPayment(paymentId);
+    const existingTxid = payment.transaction?.txid;
+    if (payment.status?.developer_completed) {
+      if (existingTxid && existingTxid !== txid) {
+        res.status(409).json({ error: "Payment is already completed with a different transaction ID." });
+        return;
+      }
+      res.json({ status: "success", data: payment, alreadyCompleted: true, mode: getPaymentMode() });
+      return;
+    }
+
+    const completion = await piPlatformRequest<PiPaymentDto>(
+      `/payments/${encodeURIComponent(paymentId)}/complete`,
+      { method: "POST", body: { txid } },
+    );
+    res.json({ status: "success", data: completion, completed: true, mode: getPaymentMode() });
+  } catch (error) {
+    sendPaymentError(req, res, error, "Pi payment completion failed");
+  }
 });
 
-router.post("/payments/complete", (_req, res) => {
-  res.json({ status: "success", data: { completed: true, mode: "sandbox" } });
+router.post("/payments/incomplete", async (req, res) => {
+  const paymentId = typeof req.body?.paymentId === "string" ? req.body.paymentId : "";
+  const suppliedTxid = typeof req.body?.txid === "string" ? req.body.txid.trim() : "";
+  if (!paymentId) {
+    res.status(400).json({ error: "Payment identifier is required." });
+    return;
+  }
+
+  try {
+    const payment = await getValidatedPayment(paymentId);
+    if (payment.status?.developer_completed) {
+      res.json({ status: "success", data: { resolved: true, payment }, mode: getPaymentMode() });
+      return;
+    }
+
+    const txid = suppliedTxid || payment.transaction?.txid || "";
+    if (!txid) {
+      res.status(202).json({
+        status: "pending",
+        data: { resolved: false, reason: "No transaction ID is available yet." },
+        mode: getPaymentMode(),
+      });
+      return;
+    }
+
+    const completion = await piPlatformRequest<PiPaymentDto>(
+      `/payments/${encodeURIComponent(paymentId)}/complete`,
+      { method: "POST", body: { txid } },
+    );
+    res.json({ status: "success", data: { resolved: true, payment: completion }, mode: getPaymentMode() });
+  } catch (error) {
+    sendPaymentError(req, res, error, "Pi incomplete payment recovery failed");
+  }
 });
 
 export default router;
