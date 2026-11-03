@@ -8,6 +8,8 @@ on:
       - "CHANGELOG.md"
       - "docs/**"
       - "schemas/**"
+      - "reference/**"
+      - "tests/**"
       - "scripts/validate_release.py"
       - ".github/workflows/pirc-release-validation.yml"
   push:
@@ -41,3 +43,5 @@ jobs:
           python-version: "3.12"
       - name: Validate JSON schemas and local Markdown links
         run: python scripts/validate_release.py
+      - name: Run deterministic economic-engine tests
+        run: python -m unittest discover -s tests -p 'test_economic_engine.py' -v
