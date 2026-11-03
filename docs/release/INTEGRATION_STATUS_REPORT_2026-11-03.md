@@ -97,3 +97,41 @@ Latest observed companion PR heads remain SmartContracts #1092 at `743649952f54b
 For PiRC #349, the combined commit status still reports Vercel deployment quota failures, Snyk pending, and Netlify preview pending. No PR-triggered workflow run was returned for the latest PiRC head at re-check time. The new payment-event validator is wired into the documentation workflow, but its hosted execution has not yet been observed. Do not infer success from the presence of the workflow file or fixture.
 
 The upstream discussion review also identified unresolved requirements for account-level provenance reconciliation, genesis snapshot governance, storage/rent scalability, stake-versus-commitment consideration, and event idempotency/finality. These are recorded in the upstream gap-analysis document and remain open design gates.
+
+
+## 9. Post-merge implementation update — 2026-11-03
+
+This section supersedes earlier open/Draft status statements for the following PRs. It records GitHub merge metadata observed after the earlier report; it does not retroactively certify CI, deployment, or runtime behavior.
+
+### 9.1 Merged follow-up changes
+
+| Repository | PR | Merge commit | Result |
+|---|---:|---|---|
+| PiRC | #349 | `09b7988d362ae00d2ec16ab052840fd23adaf71f` | Integration dossier, architecture decisions, release gates, upstream gap analysis, settlement handoff, and payment-event schema/fixture/validator merged |
+| SmartContracts | #1092 | `21c8b4bfee87477f17498b4746223bae4cc83de6` | Economic settlement reference implementation, golden vectors, security matrix, and validation workflow merged |
+| SmartContracts | #1093 | `0a4799026f02f1e9137f37b02c198504e1cd2547` | Canonical settlement hardening merged: strictly positive allocations, nonzero policy version, corrected test module layout, regression tests, and legacy crate excluded from workspace membership |
+| Unity Sphere | #33 | `7d5e578b952b5eca39bcd2a0f4ff6b3e6fed16b5` | API contract, traceability, Testnet runbook, evidence template, and Soroban adapter mapping merged |
+| Unity Sphere | #34 | `6409c93626ee18231c6bcad97e309fecef9f5dc7` | Unsafe developer-profile Soroban CLI invocation removed; `POST /verify` now fails closed with HTTP 503 / `UNSUPPORTED_CAPABILITY` until supported RPC and secure signer/relayer are provisioned |
+
+### 9.2 Current implementation boundaries
+
+- The canonical Soroban settlement contract is a reference implementation. Its merged source and regression tests have not been established as compiled or passing by this report.
+- The overlapping legacy `contracts/economic_settlement` source remains in the repository but is excluded from the Cargo workspace; this is not deletion, independent validation, or a security review of that legacy code.
+- Unity Sphere live RWA verification is intentionally disabled until a network-pinned RPC client and secure signer/relayer are configured. The 503 response is the expected safe behavior in the current unsupported environment.
+- The economic API and Soroban mapping remain interface/adapter specifications; no end-to-end settlement transaction or Testnet readback is evidenced here.
+- Simulated exchange/candle behavior must not be represented as live trading or an executable market.
+
+### 9.3 CI evidence boundary
+
+At the latest check for SmartContracts merge commit `0a4799026f02f1e9137f37b02c198504e1cd2547` and Unity Sphere merge commit `6409c93626ee18231c6bcad97e309fecef9f5dc7`, the GitHub connector returned no PR-triggered workflow runs and no combined status records. This means CI evidence is unavailable through that check; it does not mean CI passed, failed, or was never run.
+
+### 9.4 Remaining release gates
+
+1. Obtain an actual successful Rust workspace build and contract test run for the merged canonical crate.
+2. Verify the shared economic golden vectors against contract arithmetic, including rounding, integer atomic units, conservation, and overflow behavior.
+3. Run Unity Sphere Python/API tests and a frontend build against the merged commit.
+4. Specify and review a production-grade network-pinned RPC adapter and signer/relayer boundary before re-enabling verification.
+5. Execute Testnet1 deployment and transaction/readback verification with immutable evidence: network, contract ID, code hash, transaction hash, ledger/sequence, and observed state.
+6. Complete independent security review, operational monitoring, and release sign-off.
+
+**Release disposition:** integration documentation and reference implementation have advanced and the listed follow-up PRs are merged. Production readiness, successful CI, Testnet execution, Mainnet deployment, Pi Core Team endorsement, GCV price guarantee, USD redemption, or reserve backing are not established.
