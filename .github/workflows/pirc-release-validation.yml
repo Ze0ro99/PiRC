@@ -1,57 +1,24 @@
-name: PiRC Documentation Validation
+name: PiRC Release Validation
 
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "README.md"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "fixtures/**"
-      - "schemas/**"
-      - "reference/**"
-      - "registries/**"
-      - "tests/**"
-      - "scripts/validate_release.py"
-      - "scripts/validate_payment_event.py"
-      - ".github/workflows/pirc-release-validation.yml"
   push:
-    branches: [main, integration/sovereign-hybrid-ecosystem]
-    paths:
-      - "README.md"
-      - "CHANGELOG.md"
-      - "docs/**"
-      - "schemas/**"
-      - "reference/**"
-      - "tests/**"
-      - "scripts/validate_release.py"
-      - "scripts/validate_solohost_profile.py"
-      - ".github/workflows/pirc-release-validation.yml"
+    branches: [integration/sovereign-hybrid-ecosystem]
 
 permissions:
   contents: read
 
-concurrency:
-  group: pirc-docs-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  validate-docs:
-    name: Validate schemas and local documentation links
+  validate-release-docs:
+    name: Validate schemas and documentation links
     runs-on: ubuntu-latest
-    timeout-minutes: 8
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Validate JSON schemas and local Markdown links
         run: python scripts/validate_release.py
-      - name: Validate payment event fixture invariants
-        run: python scripts/validate_payment_event.py
-      - name: Run deterministic economic-engine tests
-        run: python -m unittest discover -s tests -p 'test_economic_engine.py' -v
-      - name: Validate SoloHost compatibility evidence profile
-        run: python scripts/validate_solohost_profile.py

@@ -9,7 +9,7 @@ This report supplements the complete branch inventory and the initial architectu
 - SmartContracts default tree: 603 entries and 106 Rust files, but only four unique Rust blob contents.
 - Unity Sphere default tree: 22,148 entries and at least 18 tracked .env-style files.
 
-See [complete branch census](BRANCH_CENSUS.md) and [source gap register in Unity Sphere](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d/blob/integration/sovereign-hybrid-ecosystem/docs/INTEGRATION_GAP_REGISTER.md).
+See [complete branch census](../integration/BRANCH_CENSUS.md) and [source gap register in Unity Sphere](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d/blob/integration/sovereign-hybrid-ecosystem/docs/INTEGRATION_GAP_REGISTER.md).
 
 ## Verified source observations
 
