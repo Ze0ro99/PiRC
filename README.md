@@ -15,6 +15,12 @@ This integration branch contains the proposed cross-repository architecture base
 
 All material in this branch is subject to technical review. A proposal or reference implementation is not an official Pi Network specification, endorsement, production deployment, price guarantee, or financial product. Pi Cash and Pi Bank are proposed software modules. OUSD must not be represented as USD-backed or redeemable until issuer, reserve, custody, legal and redemption evidence exists.
 
+## Source audit and branch intake
+
+- [Complete branch census (577 refs)](docs/integration/BRANCH_CENSUS.md)
+- [Source-grounded integration audit](docs/audit/SOURCE_GROUNDED_INTEGRATION_AUDIT.md)
+- [Seven colored layer mapping](docs/architecture/SEVEN_COLORED_LAYERS_SOURCE_MAPPING.md)
+
 ## Contribution and validation
 
 Contributions should include a specification reference, implementation scope, tests, threat model, dependency impact and reproducible evidence. Preserve source branches; do not merge unreviewed changes or commit secrets.
