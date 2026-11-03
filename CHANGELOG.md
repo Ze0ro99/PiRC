@@ -2,6 +2,28 @@
 
 All notable repository changes are documented here. Dates use ISO 8601.
 
+## [3.2.0-rc.2] - 2026-11-03
+
+### Added
+- End-to-end economic lifecycle and cross-component integration map.
+- Treasury revenue recognition and participant distribution controls.
+- V18 metrics dictionary with explicit definitions and data-quality flags.
+- Application-token launchpad lifecycle and supply invariants.
+- Oracle data-quality, quorum, freshness and circuit-breaker standard.
+- JSON Schema Draft 2020-12 contracts for payment intents, product valuations, commerce events and V18 metrics reports.
+- Versioned schema registry and compatibility policy.
+- Standard-library release validator and GitHub Actions validation workflow.
+
+### Clarified
+- Full commerce cycle from discovery through settlement, verification, fulfillment, reconciliation and metrics.
+- GMV is not revenue; internal reference values are not redemption claims.
+- Cross-repository ownership boundaries remain PiRC / SmartContracts / Unity Sphere.
+- Testnet-only writes and separate Mainnet authorization.
+
+### Validation
+- CI workflow is newly added; successful execution is pending.
+- Full contract, integration, Testnet, security and maintainer evidence remains outstanding.
+
 ## [3.2.0-rc.1] - 2026-11-03
 
 ### Added
