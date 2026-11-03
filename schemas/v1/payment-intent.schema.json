@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pirc.example/schemas/v1/payment-intent.schema.json",
+  "title": "PiRC QR NFC Payment Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "network_id", "merchant_app_id", "merchant_key_id", "order_id", "product_id", "valuation_id", "asset_id", "amount_atomic", "quantity", "fee_policy_id", "nonce", "issued_at", "expires_at", "signature"],
+  "properties": {
+    "schema": {"const": "pirc.payment-intent"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "network_id": {"type": "string", "minLength": 1},
+    "merchant_app_id": {"type": "string", "minLength": 1},
+    "merchant_key_id": {"type": "string", "minLength": 1},
+    "order_id": {"type": "string", "minLength": 1},
+    "product_id": {"type": "string", "minLength": 1},
+    "valuation_id": {"type": "string", "minLength": 1},
+    "asset_id": {"type": "string", "minLength": 1},
+    "amount_atomic": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "quantity": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "fee_policy_id": {"type": "string", "minLength": 1},
+    "nonce": {"type": "string", "minLength": 16, "maxLength": 256},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "callback_uri": {"type": "string", "format": "uri"},
+    "signature": {"type": "string", "minLength": 1}
+  }
+}
