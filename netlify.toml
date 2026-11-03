@@ -1,0 +1,17 @@
+[build]
+  command = "corepack enable && corepack prepare pnpm@10.8.1 --activate && pnpm install --frozen-lockfile && pnpm --filter @workspace/pirc-wealth-core build"
+  publish = "artifacts/pirc-wealth-core/dist/public"
+
+[build.environment]
+  NODE_VERSION = "22.14.0"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/index.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

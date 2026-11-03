@@ -1,0 +1,77 @@
+name: PiRC Documentation and Netlify Build Validation
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "schemas/**"
+      - "registries/**"
+      - "fixtures/**"
+      - "netlify.toml"
+      - "scripts/validate_docs_and_deploy_config.py"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "artifacts/pirc-wealth-core/**"
+      - ".github/workflows/integrated-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "schemas/**"
+      - "registries/**"
+      - "fixtures/**"
+      - "netlify.toml"
+      - "scripts/validate_docs_and_deploy_config.py"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "artifacts/pirc-wealth-core/**"
+      - ".github/workflows/integrated-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pirc-integrated-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs-and-config:
+    name: Validate schemas and Netlify configuration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate repository documentation and deployment metadata
+        run: python scripts/validate_docs_and_deploy_config.py
+
+  netlify-frontend-build:
+    name: Build static frontend for Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.14.0"
+      - name: Activate pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.8.1 --activate
+          pnpm --version
+      - name: Install locked workspace
+        run: pnpm install --frozen-lockfile
+      - name: Build PiRC Wealth Core
+        run: pnpm --filter @workspace/pirc-wealth-core build
+      - name: Upload static build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pirc-wealth-core-static
+          path: artifacts/pirc-wealth-core/dist/public
+          if-no-files-found: error
+          retention-days: 7
