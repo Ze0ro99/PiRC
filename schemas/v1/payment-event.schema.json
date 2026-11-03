@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pirc:schema:v1:payment-event",
+  "title": "PiRC Payment and Subscription Event",
+  "description": "Versioned event envelope for payment and subscription lifecycle consumers. Validation does not prove chain finality or authorize a financial action.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "version", "event_id", "event_type", "occurred_at", "network",
+    "contract_id", "transaction_hash", "ledger_sequence", "subscription_id",
+    "idempotency_key", "status", "amount_atomic", "asset_id", "reason_code"
+  ],
+  "properties": {
+    "schema": { "const": "pirc.payment-event" },
+    "version": { "const": "1.0.0" },
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_type": {
+      "enum": [
+        "subscription.created", "subscription.updated", "subscription.paused",
+        "subscription.resumed", "subscription.cancelled", "subscription.ended",
+        "payment.succeeded", "payment.failed", "payment.retry_scheduled",
+        "payment.already_processed", "payment.expired"
+      ]
+    },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "network": { "enum": ["local", "pi-testnet", "pi-mainnet"] },
+    "contract_id": { "type": ["string", "null"] },
+    "transaction_hash": { "type": ["string", "null"] },
+    "ledger_sequence": { "type": ["integer", "null"], "minimum": 0 },
+    "subscription_id": { "type": ["string", "null"] },
+    "idempotency_key": { "type": ["string", "null"] },
+    "status": {
+      "enum": [
+        "PENDING", "SUCCEEDED", "FAILED", "RETRY_SCHEDULED",
+        "CANCELLED", "ALREADY_PROCESSED", "EXPIRED"
+      ]
+    },
+    "amount_atomic": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "description": "Base-10 integer atomic units; no sign, decimal point, exponent, or leading zero."
+    },
+    "asset_id": { "type": "string", "minLength": 1 },
+    "reason_code": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "SUCCEEDED" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "transaction_hash": { "type": "string", "minLength": 1 },
+          "ledger_sequence": { "type": "integer", "minimum": 1 },
+          "contract_id": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "ALREADY_PROCESSED" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "idempotency_key": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  ]
+}

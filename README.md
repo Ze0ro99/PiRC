@@ -79,6 +79,7 @@ The application must never bypass contract authorization. External agents may pr
 
 ### Standards and evidence
 - [Versioned Schema Registry](docs/standards/SCHEMA_REGISTRY.md)
+- [Payment Event Schema](schemas/v1/payment-event.schema.json)
 - [Economic Settlement Schema](schemas/v1/economic-settlement.schema.json)
 - [Oracle Observation Schema](schemas/v1/oracle-observation.schema.json)
 - [Asset Provenance Schema](schemas/v1/asset-provenance.schema.json)
@@ -202,3 +203,19 @@ A local pass is not a hosted deployment. A CI pass is not an independent securit
 Every pull request should include the relevant PiRC standard(s) and revision, ownership boundary and affected repositories, schema/interface compatibility impact, threat model and permissions changed, tests and reproducible commands, evidence links and limitations, and migration/rollback/release notes where applicable.
 
 Preserve source branches. Prefer focused PRs over broad merges. Do not commit secrets. Do not describe proposed or simulated capabilities as live.
+
+## Integrated delivery and release evidence
+- [Cross-repository integration delivery dossier](docs/integration/INTEGRATION_DELIVERY_DOSSIER_2026-11-03.md)
+- [Architecture decision records](docs/architecture/INTEGRATION_DECISION_RECORDS.md)
+- [Integrated release acceptance checklist](docs/release/INTEGRATED_RELEASE_ACCEPTANCE_CHECKLIST.md)
+
+## Integration status report
+- [Cross-repository integration status report](docs/release/INTEGRATION_STATUS_REPORT_2026-11-03.md)
+
+## Upstream PiRC review and mathematical gap analysis
+- [Upstream PiRC feedback, economic model, and integration gap analysis](docs/integration/UPSTREAM_PIRC_FEEDBACK_AND_ECONOMIC_GAP_ANALYSIS_2026-11-03.md)
+
+
+## Economic settlement handoff
+
+- [Cross-repository economic settlement contract handoff](docs/integration/ECONOMIC_SETTLEMENT_CONTRACT_HANDOFF_2026-11-03.md)

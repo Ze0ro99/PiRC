@@ -13,6 +13,7 @@
 | Commerce event | Append-only cross-component lifecycle event | [commerce-event.schema.json](../../schemas/v1/commerce-event.schema.json) |
 | V18 metrics report | Reproducible commerce velocity report | [v18-metrics-report.schema.json](../../schemas/v1/v18-metrics-report.schema.json) |
 | Implementation evidence | Machine-readable feature, source, test, review, and deployment evidence record | [implementation-evidence.schema.json](../../schemas/v1/implementation-evidence.schema.json) |
+| Payment event | Versioned payment/subscription event envelope with replay and finality references | [payment-event.schema.json](../../schemas/v1/payment-event.schema.json) |
 | Economic settlement | Atomic-unit accounting result and deterministic allocation record | [economic-settlement.schema.json](../../schemas/v1/economic-settlement.schema.json) |
 | Oracle observation | Signed source observation envelope with sequence and freshness fields | [oracle-observation.schema.json](../../schemas/v1/oracle-observation.schema.json) |
 | Asset provenance | Issuer, origin, ownership-event, and verification-state record | [asset-provenance.schema.json](../../schemas/v1/asset-provenance.schema.json) |
