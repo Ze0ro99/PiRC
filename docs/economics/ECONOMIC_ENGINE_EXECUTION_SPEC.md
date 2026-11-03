@@ -6,6 +6,7 @@
 
 - Reference implementation: `reference/economic_engine.py`
 - Unit tests: `tests/test_economic_engine.py`
+- Cross-implementation golden vectors: `fixtures/economic-engine-vectors.json`
 - CI command: `python -m unittest discover -s tests -p 'test_economic_engine.py' -v`
 - Monetary equation background: [Monetary Model and Inflation Equations](MONETARY_MODEL_AND_INFLATION_EQUATIONS.md)
 
@@ -46,7 +47,7 @@ Requires Python 3.10+ and no third-party packages:
 python -m unittest discover -s tests -p 'test_economic_engine.py' -v
 ```
 
-The test suite covers net revenue, insolvency, largest-remainder allocation, zero weights, empty populations, invalid numeric types, reserve coverage, supply growth, and period settlement conservation.
+The test suite covers net revenue, insolvency, largest-remainder allocation, zero weights, empty populations, invalid numeric types, reserve coverage, supply growth, period settlement conservation, and portable golden vectors. SmartContracts and Unity Sphere can consume the same fixture cases to detect cross-language rounding or semantic drift.
 
 ## Cross-component integration contract
 
