@@ -19,7 +19,10 @@ on:
       - "CHANGELOG.md"
       - "docs/**"
       - "schemas/**"
+      - "reference/**"
+      - "tests/**"
       - "scripts/validate_release.py"
+      - "scripts/validate_solohost_profile.py"
       - ".github/workflows/pirc-release-validation.yml"
 
 permissions:
