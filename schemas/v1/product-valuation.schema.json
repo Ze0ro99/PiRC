@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pirc.example/schemas/v1/product-valuation.schema.json",
+  "title": "PiRC Product Valuation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["valuation_id", "product_id", "seller_app_id", "revision", "unit", "quantity_available", "unit_price_atomic", "asset_id", "asset_decimals", "valuation_method", "created_at", "valid_until", "review_state"],
+  "properties": {
+    "valuation_id": {"type": "string", "minLength": 1},
+    "product_id": {"type": "string", "minLength": 1},
+    "seller_app_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "unit": {"type": "string", "minLength": 1},
+    "quantity_available": {"type": "string", "pattern": "^(0|[1-9][0-9]*)$"},
+    "unit_price_atomic": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "asset_decimals": {"type": "integer", "minimum": 0, "maximum": 18},
+    "valuation_method": {"enum": ["seller-set", "comparable-sales", "oracle-assisted", "governance-reviewed"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "valid_until": {"type": "string", "format": "date-time"},
+    "quote_source": {"type": "string"},
+    "quote_timestamp": {"type": "string", "format": "date-time"},
+    "confidence_bps": {"type": "integer", "minimum": 0, "maximum": 10000},
+    "evidence_hashes": {"type": "array", "items": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}},
+    "review_state": {"enum": ["unreviewed", "pending", "approved", "rejected", "expired"]},
+    "supersedes_valuation_id": {"type": "string"}
+  }
+}
