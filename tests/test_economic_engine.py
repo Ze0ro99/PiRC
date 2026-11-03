@@ -1,4 +1,6 @@
+import json
 import unittest
+from pathlib import Path
 
 from reference.economic_engine import (
     EconomicInvariantError,
@@ -57,6 +59,28 @@ class EconomicEngineTests(unittest.TestCase):
         result = settle_period(ledger, {"a": 1, "b": 1})
         self.assertEqual(result.total, 100)
         self.assertEqual(sum(result.amounts.values()), 100)
+
+    def test_portable_golden_vectors(self):
+        fixture_path = Path(__file__).resolve().parents[1] / "fixtures" / "economic-engine-vectors.json"
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        self.assertEqual(fixture["fixture_version"], "1.0.0")
+        for case in fixture["cases"]:
+            with self.subTest(case_id=case["case_id"]):
+                if case["kind"] == "period_ledger":
+                    ledger = PeriodLedger(**case["input"])
+                    if "expected_error" in case:
+                        with self.assertRaisesRegex(EconomicInvariantError, case["expected_error"]):
+                            _ = ledger.distributable
+                    else:
+                        self.assertEqual(ledger.distributable, case["expected_distributable"])
+                elif case["kind"] == "allocation":
+                    self.assertEqual(allocate_largest_remainder(case["total"], case["weights"]).amounts, case["expected_allocations"])
+                elif case["kind"] == "reserve_coverage_bps":
+                    self.assertEqual(reserve_coverage_bps(case["eligible_reserves"], case["redeemable_liabilities"]), case["expected"])
+                elif case["kind"] == "supply_growth_bps":
+                    self.assertEqual(supply_growth_bps(case["previous_supply"], case["current_supply"]), case["expected"])
+                else:
+                    self.fail(f"unknown golden vector kind: {case['kind']}")
 
 
 if __name__ == "__main__":
