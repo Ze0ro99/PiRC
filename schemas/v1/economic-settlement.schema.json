@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pirc:economic-settlement:v1",
+  "title": "PiRC Economic Settlement Event",
+  "description": "An auditable payment or settlement lifecycle event with explicit asset, network, idempotency and evidence references.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "schema_version",
+    "event_type",
+    "idempotency_key",
+    "network_id",
+    "asset_id",
+    "amount_base_units",
+    "decimals",
+    "status",
+    "occurred_at",
+    "evidence_refs"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "event_type": {
+      "enum": [
+        "PAYMENT_INTENT_CREATED",
+        "PAYMENT_AUTHORIZED",
+        "SETTLEMENT_SUBMITTED",
+        "SETTLEMENT_CONFIRMED",
+        "PAYMENT_REFUNDED",
+        "SETTLEMENT_REVERSED",
+        "RECONCILIATION_EXCEPTION"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 16
+    },
+    "network_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "amount_base_units": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "decimals": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "AUTHORIZED",
+        "SUBMITTED",
+        "SETTLED",
+        "REFUNDED",
+        "REVERSED",
+        "FAILED",
+        "EXCEPTION"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "transaction_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ledger_sequence": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

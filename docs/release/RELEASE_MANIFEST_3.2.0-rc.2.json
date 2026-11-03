@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "release": "3.2.0-rc.2",
+  "channel": "release-candidate",
+  "repository": "Ze0ro99/PiRC",
+  "branch": "integration/sovereign-hybrid-ecosystem",
+  "baseline_commit": "d470e31a2b45c8ccb750e297a6309a54359ebbca",
+  "language": "en",
+  "network_policy": {
+    "target": "pi-testnet",
+    "protocol_compatibility_baseline": "28",
+    "mainnet_enabled": false,
+    "mainnet_requires_separate_approval": true
+  },
+  "scope": [
+    "seven-layer proposal mapping",
+    "economic lifecycle",
+    "treasury and revenue controls",
+    "product valuation and provenance",
+    "QR and NFC payment intents",
+    "PiRC1 application token launchpad",
+    "PiRC2 subscription lifecycle",
+    "V18 commerce velocity metrics",
+    "oracle data quality and governance",
+    "AI agent capability boundaries",
+    "Testnet release gates"
+  ],
+  "implementation_status": "mixed-specification-and-reference-code",
+  "testnet_evidence": "not-yet-attached",
+  "maintainer_approval": "pending",
+  "mainnet_authorization": "not-authorized"
+}
