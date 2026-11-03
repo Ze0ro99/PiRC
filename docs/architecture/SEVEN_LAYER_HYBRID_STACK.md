@@ -1,37 +1,53 @@
-# Seven-Layer Hybrid Economic Stack
+# Seven Colored Economic Layers and Shared Technical Planes
 
-The seven layers form one controlled workflow with explicit interfaces. Color labels are visual identifiers only.
+This document corrects the distinction between the seven colored PiRC-207 proposal layers and the software services that support them. The colors are economic/UI labels from the repository proposal; they are not network protocol layers.
 
-## L1 — Blue: Network and Settlement
-Own network adapters, chain IDs/passphrases, RPC/Horizon configuration, transaction submission, confirmation tracking and reconciliation. Maintain separate Pi Mainnet, Pi Testnet, Stellar Mainnet and Stellar Testnet profiles. Pin protocol and SDK compatibility independently.
+## Seven colored proposal layers
 
-## L2 — Green: Pi Cash and Payments
-Own payment intents, merchant invoices, quotes, authorization, settlement, refunds and reconciliation. Suggested state machine: CREATED, QUOTED, AUTHORIZED, SUBMITTED, CONFIRMED, SETTLED, FAILED, EXPIRED, REFUNDED. Every transition is idempotent and backed by a transaction reference or explicit failure reason. Proposed software module, not an official Pi product.
+| Order | Color | Chakra | Proposal label | Intended domain |
+|---:|---|---|---|---|
+| 1 | Red | Root | Governance / GOV | Governance and decision rights |
+| 2 | Orange | Sacral | 3141 Orange | Mid-tier utility |
+| 3 | Yellow | Solar Plexus | 31,140 Yellow | High-tier utility |
+| 4 | Green | Heart | PiCash / 3.14 | Daily utility and merchant payment workflows |
+| 5 | Blue | Throat | Banking / 314 | Institutional treasury and financial integrations |
+| 6 | Indigo | Third Eye | Premium reserve / 314159 | Proposed premium/reserve accounting category |
+| 7 | Purple | Crown | Mined Pi / fractions | Native mined Pi representation and fractions |
 
-## L3 — Gold: Pi Bank and Treasury
-Own accounting sub-ledgers, reserve records, treasury policy, custody integrations, multi-signature approvals and redemption workflow. Separate customer liabilities from treasury assets. Do not imply deposit-taking, insured balances, guaranteed yield or regulated banking. Stable assets require enforceable redemption rights, reserve custody and independent attestations.
+These are source proposal labels, not market prices or a statement that every layer is a separate live token. The existing registry CSV lists Gold instead of Indigo; this must be resolved by a versioned mapping proposal before canonical registry assignment.
 
-## L4 — Orange: Hybrid Assets and PiDEX
-Own asset registry, token metadata, issuer/contract verification, trading pairs, pool accounting, fee policy and market-integrity controls. Asset states: DISCOVERED, UNVERIFIED, VERIFIED_TESTNET, VERIFIED_MAINNET, SUSPENDED, RETIRED. A logo is not proof of legitimacy. Unverified assets are excluded from trading by default.
+## Shared technical planes (orthogonal to the colored layers)
 
-## L5 — Red: Economic Intelligence
-Own fixed-point calculations, valuation labels, liquidity, velocity, risk and simulation. Every formula needs dimensional analysis, units, rounding rules, overflow bounds, invalid-input behavior and property tests. Market price, internal reference and redeemable value remain separate.
+The following capabilities support the seven proposal layers. They are software architecture planes, not additional colored tokens:
 
-## L6 — Violet: Oracle and Interoperability
-Own commodity/service feeds, market adapters, reserve attestations, source reputation, freshness windows, deviation limits, quorum and cross-network verification. Oracle output carries source IDs, timestamp, unit, quality flags and aggregation method. Chainlink is network-specific; do not assume EVM contracts run on Soroban.
+1. **Network and settlement:** Pi network adapter, Stellar/Horizon adapter, Soroban RPC adapter, finality and reconciliation.
+2. **Asset registry:** canonical asset IDs, issuer, contract address, decimals, metadata, logo URI and verification evidence.
+3. **Payments and merchant services:** payment intents, quotes, invoices, settlement, refunds and reconciliation. PiCash is a proposed application module, not an official Pi product.
+4. **Treasury and institutional controls:** segregated ledgers, reserve records, custody evidence, multisig, timelocks and withdrawal policy. Pi Bank is a proposed software module, not a licensed bank.
+5. **PiDEX and liquidity:** asset verification, pools, quotes, routing, fee accounting, slippage limits and market-integrity controls.
+6. **Economic engine:** exact fixed-point calculations, contribution allocation, liquidity and velocity analytics, scenario simulation and risk controls.
+7. **Oracle and real-world data:** source adapters, timestamps, unit normalization, quorum, deviation limits, signed evidence and consumer verification.
+8. **Identity, governance and security:** roles, proposal execution, DID/VC interfaces, privacy, audit events, incident response and release approvals.
 
-## L7 — Charcoal: Governance, Identity and Security
-Own proposal lifecycle, roles, multisig, timelocks, identity proofs, privacy, audit events, compliance configuration, incident response and release approval.
+## Cross-plane payment flow
 
-## Cross-layer transaction flow
-1. L2 creates a payment intent and requests a quote from L5.
-2. L4 validates the asset and route.
-3. L6 supplies external data where required.
-4. L7 validates roles, policy and risk limits.
-5. L1 submits to the selected network.
-6. L1 tracks finality; L2 reconciles merchant payment.
-7. L3 records treasury/liability entries where applicable.
-8. All layers emit correlated audit events with a shared operation ID.
+1. A merchant or user creates a payment intent.
+2. The asset registry confirms the asset's network and verification status.
+3. The economic engine returns a typed quote with units, source, timestamp and expiry.
+4. Oracle data is consumed only if the quote requires external data and the feed passes freshness/quorum policy.
+5. Governance/policy checks approve limits and roles.
+6. The network adapter submits the transaction to the selected environment.
+7. The settlement monitor verifies finality and reconciles the transaction.
+8. Treasury records the resulting asset/liability movement where applicable.
+9. All services emit correlated audit events.
 
-## Mandatory message envelope
-Every cross-service message includes schema_version, operation_id, correlation_id, created_at, environment, network_id, asset_id, amount_atomic, decimals, source, status and idempotency key. Never include secrets or unnecessary personal data.
+## Financial boundaries
+
+- Market price, internal reference, merchant quote, collateral valuation and redeemable cash value are distinct.
+- A model constant such as 3.14, 314, 3141, 31140 or 314159 is not a USD price or redemption promise.
+- OUSD remains proposed/test-only until issuer, enforceable redemption, custody, independently verified reserves, legal terms and depeg controls exist.
+- An EVM Chainlink contract is not automatically deployable on Soroban; a network-specific adapter and verification model are required.
+
+## Version and evidence policy
+
+Track Pi protocol version, Soroban SDK version, contract release, application release and economic specification version separately. Mark each feature PROPOSED, SPECIFIED, IMPLEMENTED, TESTED, TESTNET_VERIFIED, AUDITED or MAINNET_VERIFIED with evidence links.
