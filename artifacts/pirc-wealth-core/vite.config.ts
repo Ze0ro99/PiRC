@@ -7,7 +7,7 @@ import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
 
 // Vite must be able to load this config during a static production build,
 // where hosting runtime variables are not necessarily injected.
-const rawPort = process.env.PORT ?? '3000';
+const rawPort = process.env.PORT?.trim() || '3000';
 const port = Number(rawPort);
 
 if (!Number.isInteger(port) || port <= 0 || port > 65535) {
@@ -16,7 +16,7 @@ if (!Number.isInteger(port) || port <= 0 || port > 65535) {
 
 // The default deployment is hosted at the domain root. Set BASE_PATH only
 // when the application is intentionally mounted below a URL prefix.
-const basePath = process.env.BASE_PATH ?? '/';
+const basePath = process.env.BASE_PATH?.trim() || '/';
 
 export default defineConfig({
   base: basePath,
