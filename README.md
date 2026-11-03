@@ -237,3 +237,9 @@ Preserve source branches. Prefer focused PRs over broad merges. Do not commit se
 - CI workflow: `.github/workflows/integrated-validation.yml` (schema/config validation plus the same static frontend build used by Netlify; publishes a short-lived build artifact)
 
 The Netlify configuration targets the static Vite frontend only. The existing Vercel catch-all API entry is not a Netlify Function; `/api/*` deliberately returns 404 until a separately hosted API or tested Netlify Functions adapter is configured.
+
+## Integrated sovereign economic architecture
+- [Sovereign Economic System Architecture](docs/architecture/SOVEREIGN_ECONOMIC_SYSTEM_ARCHITECTURE.md)
+- [Integrated Economic Flow Maps](docs/architecture/INTEGRATED_ECONOMIC_FLOW_MAPS.md)
+
+These documents define the dual-value boundary, revenue-funded utility, mint/burn semantics, fairness allocation, sovereign-index limitations, cross-repository ownership and release lifecycle. They are community reference specifications, not official Pi Network policy or evidence of a live peg, reserve, bank, exchange or redemption facility.
