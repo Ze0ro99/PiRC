@@ -79,6 +79,11 @@ The application must never bypass contract authorization. External agents may pr
 
 ### Standards and evidence
 - [Versioned Schema Registry](docs/standards/SCHEMA_REGISTRY.md)
+- [Economic Settlement Schema](schemas/v1/economic-settlement.schema.json)
+- [Oracle Observation Schema](schemas/v1/oracle-observation.schema.json)
+- [Asset Provenance Schema](schemas/v1/asset-provenance.schema.json)
+- [Seven-Layer Registry Schema](schemas/v1/seven-layer-registry.schema.json)
+- [Seven-Layer Registry Data](registries/seven-layer-registry.v1.json)
 - [Asset and Token Lifecycle](docs/standards/ASSET_TOKEN_LIFECYCLE_AND_LAUNCHPAD.md)
 - [Oracle Data Quality and Governance](docs/standards/ORACLE_DATA_QUALITY_AND_GOVERNANCE.md)
 - [Commerce Valuation and Provenance](docs/standards/COMMERCE_VALUATION_AND_PROVENANCE_STANDARD.md)
