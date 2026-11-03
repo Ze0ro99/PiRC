@@ -16,15 +16,15 @@
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "follow-redirects": "^1.16.0",
+    "follow-redirects": "^1.16.2",
     "lucide-react": "^0.546.0",
-    "minimatch": "^10.2.5",
+    "minimatch": "^11.0.1",
     "motion": "^12.23.24",
     "path-to-regexp": "^8.4.2",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "tar": "^7.5.22",
-    "undici": "^8.10.2",
+    "undici": "^8.12.2",
     "vite": "^7.3.7"
   },
   "devDependencies": {
