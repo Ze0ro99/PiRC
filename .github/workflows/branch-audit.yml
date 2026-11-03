@@ -1,0 +1,53 @@
+name: Read-only Cross-Repository Branch Audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/audit_branch_inventory.py"
+      - ".github/workflows/branch-audit.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cross-repository-branch-audit
+  cancel-in-progress: true
+
+jobs:
+  self-test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile and self-test
+        run: |
+          python -m py_compile scripts/audit_branch_inventory.py
+          python scripts/audit_branch_inventory.py --self-test
+
+  full-audit:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run read-only audit across all configured repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/audit_branch_inventory.py --output-dir branch-audit-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cross-repository-branch-audit
+          path: branch-audit-report/
+          retention-days: 30
+          if-no-files-found: error
