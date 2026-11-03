@@ -25,12 +25,36 @@ async function githubJson(url: string): Promise<any> {
 
 router.get("/github/branches", async (req, res) => {
   try {
-    const branches = await githubJson(
-      `https://api.github.com/repos/${owner}/${repo}/branches?per_page=100`,
-    );
+    const allBranches: { name: string }[] = [];
+    const pageSize = 100;
+    const maxPages = 20;
+
+    for (let page = 1; page <= maxPages; page += 1) {
+      const batch = await githubJson(
+        `https://api.github.com/repos/${owner}/${repo}/branches?per_page=${pageSize}&page=${page}`,
+      );
+      if (!Array.isArray(batch)) {
+        throw new Error("GitHub returned an invalid branch list");
+      }
+
+      allBranches.push(...batch);
+      if (batch.length < pageSize) {
+        res.json({
+          status: "success",
+          complete: true,
+          count: allBranches.length,
+          data: allBranches.map((branch) => branch.name),
+        });
+        return;
+      }
+    }
+
     res.json({
       status: "success",
-      data: branches.map((branch: { name: string }) => branch.name),
+      complete: false,
+      count: allBranches.length,
+      warning: "Branch listing reached the configured pagination limit.",
+      data: allBranches.map((branch) => branch.name),
     });
   } catch (error) {
     req.log.warn({ err: error }, "GitHub branches unavailable");
@@ -92,6 +116,13 @@ router.post("/github/import", async (req, res) => {
     return;
   }
 
+  if (process.env.VERCEL === "1") {
+    res.status(501).json({
+      error: "Repository imports are disabled on serverless deployments until an authenticated persistent GitHub write integration is configured.",
+    });
+    return;
+  }
+
   const importRoot = path.resolve(process.cwd(), "imported");
   const localPath = path.resolve(importRoot, filePath);
   const relativePath = path.relative(importRoot, localPath);
@@ -129,14 +160,16 @@ router.get("/pirc_matrix", (_req, res) => {
   const timestamp = Date.now();
   res.json({
     status: "success",
+    mode: "demo",
+    source: "illustrative-placeholder",
     data: [
-      { id: "L1", layer: "Physical", nodeCount: 1560, health: "Optimal", volume: "1.2M", timestamp },
-      { id: "L2", layer: "Data Link", nodeCount: 1300, health: "Good", volume: "800k", timestamp },
-      { id: "L3", layer: "Network", nodeCount: 3000, health: "Optimal", volume: "3.5M", timestamp },
-      { id: "L4", layer: "Transport", nodeCount: 2200, health: "Warning", volume: "4.1M", timestamp },
-      { id: "L5", layer: "Session", nodeCount: 1000, health: "Optimal", volume: "1.5M", timestamp },
-      { id: "L6", layer: "Presentation", nodeCount: 850, health: "Optimal", volume: "900k", timestamp },
-      { id: "L7", layer: "Application", nodeCount: 4500, health: "Optimal", volume: "8.2M", timestamp },
+      { id: "L1", layer: "Physical", nodeCount: 1560, health: "Sample", volume: "1.2M", timestamp },
+      { id: "L2", layer: "Data Link", nodeCount: 1300, health: "Sample", volume: "800k", timestamp },
+      { id: "L3", layer: "Network", nodeCount: 3000, health: "Sample", volume: "3.5M", timestamp },
+      { id: "L4", layer: "Transport", nodeCount: 2200, health: "Sample", volume: "4.1M", timestamp },
+      { id: "L5", layer: "Session", nodeCount: 1000, health: "Sample", volume: "1.5M", timestamp },
+      { id: "L6", layer: "Presentation", nodeCount: 850, health: "Sample", volume: "900k", timestamp },
+      { id: "L7", layer: "Application", nodeCount: 4500, health: "Sample", volume: "8.2M", timestamp },
     ],
   });
 });
@@ -144,10 +177,12 @@ router.get("/pirc_matrix", (_req, res) => {
 router.get("/contracts", (_req, res) => {
   res.json({
     status: "success",
+    mode: "demo",
+    source: "illustrative-placeholder",
     data: [
-      { id: "C-001", name: "PiRC Vault Soroban", status: "Active", tvl: 4500000, audits: "Passed" },
-      { id: "C-002", name: "Matrix Subscription", status: "Deploying", tvl: 0, audits: "Pending" },
-      { id: "C-003", name: "RWA Real Estate Tokenizer", status: "Active", tvl: 12500000, audits: "Passed" },
+      { id: "C-001", name: "PiRC Vault Soroban (reference)", status: "Reference", tvl: 0, audits: "Not verified" },
+      { id: "C-002", name: "Matrix Subscription (reference)", status: "Proposed", tvl: 0, audits: "Not verified" },
+      { id: "C-003", name: "RWA Real Estate Tokenizer (reference)", status: "Proposed", tvl: 0, audits: "Not verified" },
     ],
   });
 });
