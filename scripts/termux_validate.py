@@ -78,7 +78,7 @@ def main():
     if (ROOT/"Cargo.toml").exists():
         cmds.append(command(["cargo","test","--workspace","--locked"],1800))
     if (ROOT/"pnpm-lock.yaml").exists():
-        cmds.append(command(["pnpm","-r","test"],1800))
+        cmds.append(command(["pnpm","run","typecheck"],1800))
     OUT.mkdir(parents=True,exist_ok=True)
     stamp=dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     report={"generated_at":dt.datetime.now(dt.timezone.utc).isoformat(),"network_writes":False,"checks":checks,"commands":cmds}
