@@ -1,15 +1,36 @@
-# Complete Branch Census — Ze0ro99 Hybrid Ecosystem
+# Branch Census and Latest Audit Snapshot — Ze0ro99 Hybrid Ecosystem
 
-Generated from GitHub REST branch refs on 2026-11-03. This is a complete branch-name/head inventory for the three named repositories at retrieval time. A listed branch is not considered merged, reviewed, tested, or production-ready merely because it exists.
+## Latest read-only audit — 2026-11-04
 
-## Summary
+The latest GitHub REST audit examined **604 branch refs** across the three repositories and found **585 distinct branch-head commits**. Branch existence does not imply review, merge, test success, or production readiness.
 
 | Repository | Branch refs | Unique head commits |
 |---|---:|---:|
-| [PiRC](https://github.com/Ze0ro99/PiRC) | 155 | 137 |
-| [SmartContracts](https://github.com/Ze0ro99/SmartContracts) | 276 | 275 |
-| [project-unity-sphere-0e2c810d](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d) | 146 | 146 |
-| **Total** | **577** | **558** |
+| [PiRC](https://github.com/Ze0ro99/PiRC) | 167 | 149 |
+| [SmartContracts](https://github.com/Ze0ro99/SmartContracts) | 285 | 284 |
+| [project-unity-sphere-0e2c810d](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d) | 152 | 152 |
+| **Total** | **604** | **585** |
+
+### Audit signals
+
+| Signal | Count |
+|---|---:|
+| Diverged branches requiring review | 371 |
+| Branches with no unique commits | 228 |
+| Nested snapshot/vendor review flags | 118 |
+| Privileged automation review flags | 131 |
+| Secret/environment review flags | 128 |
+| Compare unavailable | 2 |
+| Path diff unavailable | 2 |
+| Duplicate-head groups | 5 |
+
+Flags overlap and are triage signals, not proof of a vulnerability or an instruction to delete/merge a branch. The audit was read-only.
+
+[Open the full 2026-11-04 JSON/Markdown audit artifact](https://github.com/Ze0ro99/PiRC/actions/runs/41736231567/artifacts/13290211261).
+
+## Historical detailed branch/head listing — 2026-11-03
+
+The branch tables below preserve the earlier 577-ref snapshot. They are retained for historical traceability and must not be treated as the current branch-head inventory. Use the linked 2026-11-04 artifact for current per-branch names, SHAs, ahead/behind counts, changed paths, and flags.
 
 ## Review rules
 
@@ -21,7 +42,7 @@ Generated from GitHub REST branch refs on 2026-11-03. This is a complete branch-
 6. Run repository-native tests, dependency and secret scans before promoting any change.
 7. Treat deployment addresses, token logos, API status and reserve claims as unverified until independently queried and evidenced.
 
-## PiRC (155 refs)
+## PiRC (155 refs — historical 2026-11-03)
 
 | Branch | Head commit |
 |---|---|
@@ -181,7 +202,7 @@ Generated from GitHub REST branch refs on 2026-11-03. This is a complete branch-
 | `warehouse-build` | [`3b1f002e4b8f`](https://github.com/Ze0ro99/PiRC/commit/3b1f002e4b8f094514a4abe951822de083198027) |
 | `withdrawal-request/warehouse-professional-integration` | [`386a864396b5`](https://github.com/Ze0ro99/PiRC/commit/386a864396b57d62f6bbf20dea5333649c1fc7a7) |
 
-## SmartContracts (276 refs)
+## SmartContracts (276 refs — historical 2026-11-03)
 
 | Branch | Head commit |
 |---|---|
@@ -462,7 +483,7 @@ Generated from GitHub REST branch refs on 2026-11-03. This is a complete branch-
 | `integration/sovereign-hybrid-ecosystem` | [`8c6568698bee`](https://github.com/Ze0ro99/SmartContracts/commit/8c6568698bee66272d5fa6e8a88f64b4fc8c23dd) |
 | `main` | [`12f5542a9561`](https://github.com/Ze0ro99/SmartContracts/commit/12f5542a95618b3a44af11f1c5940bd332d2cd0b) |
 
-## project-unity-sphere-0e2c810d (146 refs)
+## project-unity-sphere-0e2c810d (146 refs — historical 2026-11-03)
 
 | Branch | Head commit |
 |---|---|
