@@ -542,3 +542,5 @@ GitHub Actions is not required to execute the local validation workflow. Use the
 - Reports are generated under `artifacts/termux-reports/` and must be reviewed/redacted before publishing.
 
 The default runner performs local checks only. The optional `--network-smoke` profile performs read-only health checks against Pi Testnet and Stellar Testnet; it does not sign, submit transactions, deploy contracts, or target Mainnet. The economic model keeps internal reference values, external market observations, merchant utility quotes, accounting values, collateral marks, and redeemable liabilities as distinct typed domains. External CEX/DEX observations may inform a governed utility/valuation process but cannot automatically mutate internal prices or balances.
+
+- [Termux secret handling and cross-repository intake triage](docs/security/TERMUX_SECRET_HANDLING_AND_REPO_TRIAGE.md)
