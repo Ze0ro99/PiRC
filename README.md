@@ -531,3 +531,14 @@ Related application references:
 
 ---
 This README is an engineering reference for a community proposal. It is not financial advice, an offer, a guarantee, a legal opinion, an official Pi Network specification, or evidence of live deployment, reserves, liquidity, audit or endorsement.
+
+
+## 12. Independent Termux testing and economic integration
+
+GitHub Actions is not required to execute the local validation workflow. Use the offline-first [Termux testing and economic architecture guide](docs/testing/TERMUX_TESTING_AND_ECONOMIC_ARCHITECTURE.md) and its runner:
+
+- [Termux shell entrypoint](scripts/termux-test.sh)
+- [Python validation runner](scripts/termux_validate.py)
+- Reports are generated under `artifacts/termux-reports/` and must be reviewed/redacted before publishing.
+
+The default runner performs local checks only. The optional `--network-smoke` profile performs read-only health checks against Pi Testnet and Stellar Testnet; it does not sign, submit transactions, deploy contracts, or target Mainnet. The economic model keeps internal reference values, external market observations, merchant utility quotes, accounting values, collateral marks, and redeemable liabilities as distinct typed domains. External CEX/DEX observations may inform a governed utility/valuation process but cannot automatically mutate internal prices or balances.
