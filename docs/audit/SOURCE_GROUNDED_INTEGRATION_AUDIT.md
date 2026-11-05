@@ -3,8 +3,9 @@
 This report supplements the complete branch inventory and the initial architecture proposal. It is based on inspected repository files and Git object metadata; it does not certify a deployment, market price, reserve or Pi Core Team acceptance.
 
 ## Repository-wide facts
-- 577 branch refs across PiRC (155), SmartContracts (276) and Unity Sphere (146).
-- 558 distinct branch-head commits across those refs.
+- Latest read-only audit (2026-11-04): 604 branch refs across PiRC (167), SmartContracts (285) and Unity Sphere (152), with 585 distinct branch-head commits.
+- The audit flagged 371 diverged branches for review, 228 with no unique commits, 118 nested snapshot/vendor cases, 131 privileged-automation review cases and 128 secret/environment review cases. These flags overlap and require inspection; they are not proof of compromise.
+- Default-tree size observations below are from the earlier 2026-11-03 source snapshot and were not recomputed by the 2026-11-04 branch census.
 - PiRC default tree: 35,688 entries, including nested backups and copied workspaces.
 - SmartContracts default tree: 603 entries and 106 Rust files, but only four unique Rust blob contents.
 - Unity Sphere default tree: 22,148 entries and at least 18 tracked .env-style files.
