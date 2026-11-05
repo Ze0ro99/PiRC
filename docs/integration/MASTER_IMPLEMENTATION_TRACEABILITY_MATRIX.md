@@ -27,3 +27,10 @@
 `PROPOSED`, `SCAFFOLDED`, `IMPLEMENTED_UNTESTED`, `TESTED_LOCAL`, `TESTED_TESTNET`, `AUDITED`, `DEPLOYED_VERIFIED`, `BLOCKED`, `DEPRECATED`.
 
 No capability advances state without its acceptance evidence. The table is a review baseline, not a certification that every branch/file has been audited.
+
+## Active implementation tranche (2026-11-05)
+
+- SmartContracts Draft PR #1104 introduces an isolated experimental PiRC-214 Oracle Quorum V3 crate. It is not yet compiled, tested in CI, deployed or approved for settlement: https://github.com/Ze0ro99/SmartContracts/pull/1104
+- The V3 crate does not replace Oracle V2. Its current scope is feed-scoped reporter allowlisting, monotonic per-reporter sequence, unit matching, freshness, bounded median/deviation aggregation and fail-closed quorum checks.
+- Distinct reporter addresses are not proof of independent data sources. Governance must validate ownership and operational independence before enabling a feed.
+- Unity Sphere integration remains pending an adapter contract, failure-state mapping and client conformance tests.
