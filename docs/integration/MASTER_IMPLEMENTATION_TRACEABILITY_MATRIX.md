@@ -1,6 +1,6 @@
 # Master Implementation Traceability Matrix
 
-**Review baseline:** PiRC main `066c9085d93e3a2f8d91507a06b1ca47458adf9a`; SmartContracts main `33290f56a75ca3ad7ae8da44e23d42ab95fd0fe2`; Unity Sphere main `7e3f09105f4956f74aece99d3e7db965578e6b3b` (retrieved 2026-11-05). Refresh SHAs before release.
+**Review baseline:** PiRC main `cd29011bc6ea2d0f6bcfe4e433a77bb548c14aff`; SmartContracts main `33290f56a75ca3ad7ae8da44e23d42ab95fd0fe2`; Unity Sphere main `7e3f09105f4956f74aece99d3e7db965578e6b3b` (retrieved 2026-11-05 after PiRC PR #365 merge). Refresh SHAs before release.
 
 | Capability | Current evidence | Gap / risk | Required completion | Acceptance evidence |
 |---|---|---|---|---|
