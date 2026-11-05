@@ -544,3 +544,21 @@ GitHub Actions is not required to execute the local validation workflow. Use the
 The default runner performs local checks only. The optional `--network-smoke` profile performs read-only health checks against Pi Testnet and Stellar Testnet; it does not sign, submit transactions, deploy contracts, or target Mainnet. The economic model keeps internal reference values, external market observations, merchant utility quotes, accounting values, collateral marks, and redeemable liabilities as distinct typed domains. External CEX/DEX observations may inform a governed utility/valuation process but cannot automatically mutate internal prices or balances.
 
 - [Termux secret handling and cross-repository intake triage](docs/security/TERMUX_SECRET_HANDLING_AND_REPO_TRIAGE.md)
+
+
+## 10. Integrated architecture and implementation standards
+
+The following documents form the current cross-domain reference package:
+
+- [Master ecosystem architecture](docs/architecture/MASTER_ECOSYSTEM_ARCHITECTURE.md)
+- [RAW evidence and Developer Studio factory](docs/architecture/RAW_FACTORY_AND_DEVELOPER_STUDIO.md)
+- [Dual-value and utility accounting standard](docs/economics/DUAL_VALUE_AND_UTILITY_ACCOUNTING_STANDARD.md)
+- [Oracle quorum and market-data standard](docs/oracle/ORACLE_QUORUM_AND_MARKET_DATA_STANDARD.md)
+- [Cross-repository API and contract interfaces](docs/integration/CROSS_REPOSITORY_API_AND_CONTRACT_INTERFACES.md)
+- [Security threat model and release gates](docs/security/SECURITY_THREAT_MODEL_AND_RELEASE_GATES.md)
+- [Master implementation traceability matrix](docs/integration/MASTER_IMPLEMENTATION_TRACEABILITY_MATRIX.md)
+- [Integration runbook and test matrix](docs/operations/INTEGRATION_RUNBOOK_AND_TEST_MATRIX.md)
+- [End-to-end factory, oracle, liquidity and settlement diagrams](docs/diagrams/END_TO_END_ECONOMIC_AND_FACTORY_FLOWS.md)
+- [Branch intake and completion policy](docs/integration/BRANCH_INTAKE_AND_COMPLETION_POLICY.md)
+
+The Termux validation runner is offline-first and read-only by default. Optional network checks validate JSON responses and Soroban JSON-RPC `getHealth`; HTTP 200 alone is not considered proof of RPC health. The runner does not sign, submit transactions, deploy contracts or perform Mainnet operations.
