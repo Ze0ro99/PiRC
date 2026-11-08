@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://pirc.example/schemas/v1/dynamic-ippr-observation.schema.json",
+  "$id": "urn:pirc:schema:dynamic-ippr-observation:1.0.0",
   "title": "Dynamic IPPR Observation",
   "type": "object",
   "additionalProperties": false,
