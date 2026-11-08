@@ -23,32 +23,32 @@ def passing_gates():
         active_merchants=4,
         available_listings=20,
         fulfilled_orders_window=15,
-        settled_volume_micro_usd=5_000_000,
+        settled_volume_nano_usd=5_000_000,
         average_supply_atomic=10_000_000,
-        liquid_depth_micro_usd=2_000_000,
-        minimum_liquid_depth_micro_usd=1_000_000,
-        eligible_reserves_micro_usd=1_000_000,
-        outstanding_ref_liability_micro_usd=500_000,
+        liquid_depth_nano_usd=2_000_000,
+        minimum_liquid_depth_nano_usd=1_000_000,
+        eligible_reserves_nano_usd=1_000_000,
+        outstanding_ref_liability_nano_usd=500_000,
     )
 
 
 class DynamicIPPRTests(unittest.TestCase):
     def test_live_price_times_ten_million(self):
         result = calculate_ippr(observations(), 1_000, passing_gates())
-        self.assertEqual(result.external_price_micro_usd_per_pi, 31_415_900)
-        self.assertEqual(result.raw_ippr_micro_usd_per_pi, 314_159_000_000_000)
-        self.assertEqual(result.guarded_reference_micro_usd_per_pi, 314_159_000_000_000)
+        self.assertEqual(result.external_price_nano_usd_per_pi, 31_415_900)
+        self.assertEqual(result.raw_ippr_nano_usd_per_pi, 314_159_000_000_000)
+        self.assertEqual(result.guarded_reference_nano_usd_per_pi, 314_159_000_000_000)
         self.assertEqual(result.status, "REFERENCE_ONLY_GATES_PASSED")
 
     def test_index_tracks_market_price_not_fixed_constant(self):
         low = calculate_ippr(observations((10_000_000, 10_000_000, 10_000_000)), 1_000, passing_gates())
         high = calculate_ippr(observations((20_000_000, 20_000_000, 20_000_000)), 1_000, passing_gates())
-        self.assertEqual(high.raw_ippr_micro_usd_per_pi, low.raw_ippr_micro_usd_per_pi * 2)
+        self.assertEqual(high.raw_ippr_nano_usd_per_pi, low.raw_ippr_nano_usd_per_pi * 2)
 
     def test_guardrail_reduces_reference_not_market_quote(self):
         result = calculate_ippr(observations(), 1_000, passing_gates(), guardrail_bps=5_000)
-        self.assertEqual(result.external_price_micro_usd_per_pi, 31_415_900)
-        self.assertEqual(result.guarded_reference_micro_usd_per_pi, result.raw_ippr_micro_usd_per_pi // 2)
+        self.assertEqual(result.external_price_nano_usd_per_pi, 31_415_900)
+        self.assertEqual(result.guarded_reference_nano_usd_per_pi, result.raw_ippr_nano_usd_per_pi // 2)
 
     def test_oracle_requires_three_independent_venues(self):
         with self.assertRaisesRegex(IPPRValidationError, "quorum"):
@@ -56,7 +56,7 @@ class DynamicIPPRTests(unittest.TestCase):
 
     def test_oracle_rejects_duplicate_venue(self):
         obs = observations()
-        obs[1] = PriceObservation(obs[0].venue_id, obs[1].price_micro_usd_per_pi, obs[1].observed_at)
+        obs[1] = PriceObservation(obs[0].venue_id, obs[1].price_nano_usd_per_pi, obs[1].observed_at)
         with self.assertRaisesRegex(IPPRValidationError, "independent"):
             aggregate_oracle(obs, 1_000)
 
@@ -73,7 +73,7 @@ class DynamicIPPRTests(unittest.TestCase):
 
     def test_fourth_gate_blocks_under_collateralized_liability(self):
         g = passing_gates()
-        g = EconomicGates(**{**g.__dict__, "eligible_reserves_micro_usd": 10})
+        g = EconomicGates(**{**g.__dict__, "eligible_reserves_nano_usd": 10})
         result = calculate_ippr(observations(), 1_000, g)
         self.assertFalse(result.gates.solvency_gate)
         self.assertEqual(result.status, "REFERENCE_ONLY_GATED")
@@ -82,7 +82,7 @@ class DynamicIPPRTests(unittest.TestCase):
         g = EconomicGates(**{
             **passing_gates().__dict__,
             "active_merchants": 0,
-            "settled_volume_micro_usd": 0,
+            "settled_volume_nano_usd": 0,
         })
         result = calculate_ippr(observations(), 1_000, g)
         self.assertFalse(result.gates.utility_gate)
