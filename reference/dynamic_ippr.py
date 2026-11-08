@@ -4,7 +4,7 @@ This module computes an informational internal reference index from a validated
 multi-venue Pi/USD observation. It does not create a redeemable balance, REF
 liability, collateral claim, wallet conversion, or payment authorization.
 
-All prices are integer micro-USD per PI; ratios use basis points. No floats.
+All prices are integer nano-USD per PI; ratios use basis points. No floats.
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ class IPPRValidationError(ValueError):
 @dataclass(frozen=True)
 class PriceObservation:
     venue_id: str
-    price_micro_usd_per_pi: int
+    price_nano_usd_per_pi: int
     observed_at: int
 
 
@@ -32,7 +32,7 @@ class OraclePolicy:
 
 @dataclass(frozen=True)
 class OracleResult:
-    median_price_micro_usd_per_pi: int
+    median_price_nano_usd_per_pi: int
     source_count: int
     observed_at: int
     max_deviation_bps: int
@@ -45,13 +45,13 @@ class EconomicGates:
     available_listings: int
     fulfilled_orders_window: int
     # Gate 3: real settled activity and accessible same-window liquidity.
-    settled_volume_micro_usd: int
+    settled_volume_nano_usd: int
     average_supply_atomic: int
-    liquid_depth_micro_usd: int
-    minimum_liquid_depth_micro_usd: int
+    liquid_depth_nano_usd: int
+    minimum_liquid_depth_nano_usd: int
     # Gate 4: independently eligible collateral/reserves vs issued liability.
-    eligible_reserves_micro_usd: int
-    outstanding_ref_liability_micro_usd: int
+    eligible_reserves_nano_usd: int
+    outstanding_ref_liability_nano_usd: int
 
 
 @dataclass(frozen=True)
@@ -69,11 +69,11 @@ class GateResult:
 
 @dataclass(frozen=True)
 class IPPRResult:
-    external_price_micro_usd_per_pi: int
+    external_price_nano_usd_per_pi: int
     qwf_multiplier: int
-    raw_ippr_micro_usd_per_pi: int
+    raw_ippr_nano_usd_per_pi: int
     guardrail_bps: int
-    guarded_reference_micro_usd_per_pi: int
+    guarded_reference_nano_usd_per_pi: int
     oracle: OracleResult
     gates: GateResult
     status: str
@@ -109,9 +109,9 @@ def aggregate_oracle(
     if any(not v for v in venues) or len(set(venues)) != len(venues):
         raise IPPRValidationError("oracle venues must be non-empty and independent")
     for i, obs in enumerate(observations):
-        _nonnegative_int(f"price[{i}]", obs.price_micro_usd_per_pi)
+        _nonnegative_int(f"price[{i}]", obs.price_nano_usd_per_pi)
         _nonnegative_int(f"observed_at[{i}]", obs.observed_at)
-        if obs.price_micro_usd_per_pi == 0:
+        if obs.price_nano_usd_per_pi == 0:
             raise IPPRValidationError("oracle price must be positive")
         if obs.observed_at > now_ts:
             raise IPPRValidationError("future-dated oracle observation")
@@ -119,15 +119,15 @@ def aggregate_oracle(
             raise IPPRValidationError("stale oracle observation")
     if len(observations) < policy.min_sources:
         raise IPPRValidationError("oracle quorum not met")
-    median = median_int([o.price_micro_usd_per_pi for o in observations])
+    median = median_int([o.price_nano_usd_per_pi for o in observations])
     max_dev = max(
-        (abs(o.price_micro_usd_per_pi - median) * 10_000) // median
+        (abs(o.price_nano_usd_per_pi - median) * 10_000) // median
         for o in observations
     )
     if max_dev > policy.max_deviation_bps:
         raise IPPRValidationError("oracle deviation circuit breaker")
     return OracleResult(
-        median_price_micro_usd_per_pi=median,
+        median_price_nano_usd_per_pi=median,
         source_count=len(observations),
         observed_at=min(o.observed_at for o in observations),
         max_deviation_bps=max_dev,
@@ -144,15 +144,15 @@ def evaluate_gates(g: EconomicGates) -> GateResult:
         and g.fulfilled_orders_window > 0
     )
     velocity_liquidity_gate = (
-        g.settled_volume_micro_usd > 0
+        g.settled_volume_nano_usd > 0
         and g.average_supply_atomic > 0
-        and g.liquid_depth_micro_usd >= g.minimum_liquid_depth_micro_usd
-        and g.minimum_liquid_depth_micro_usd > 0
+        and g.liquid_depth_nano_usd >= g.minimum_liquid_depth_nano_usd
+        and g.minimum_liquid_depth_nano_usd > 0
     )
     # A zero liability is NOT_APPLICABLE, not an infinite coverage ratio.
     solvency_gate = (
-        g.outstanding_ref_liability_micro_usd == 0
-        or g.eligible_reserves_micro_usd >= g.outstanding_ref_liability_micro_usd
+        g.outstanding_ref_liability_nano_usd == 0
+        or g.eligible_reserves_nano_usd >= g.outstanding_ref_liability_nano_usd
     )
     return GateResult(oracle_gate, utility_gate, velocity_liquidity_gate, solvency_gate)
 
@@ -172,15 +172,15 @@ def calculate_ippr(
         raise IPPRValidationError("invalid QWF multiplier or guardrail")
     oracle = aggregate_oracle(observations, now_ts, oracle_policy)
     gate_result = evaluate_gates(gates)
-    raw = oracle.median_price_micro_usd_per_pi * qwf_multiplier
+    raw = oracle.median_price_nano_usd_per_pi * qwf_multiplier
     guarded = (raw * guardrail_bps) // 10_000
     status = "REFERENCE_ONLY_GATES_PASSED" if gate_result.all_passed else "REFERENCE_ONLY_GATED"
     return IPPRResult(
-        external_price_micro_usd_per_pi=oracle.median_price_micro_usd_per_pi,
+        external_price_nano_usd_per_pi=oracle.median_price_nano_usd_per_pi,
         qwf_multiplier=qwf_multiplier,
-        raw_ippr_micro_usd_per_pi=raw,
+        raw_ippr_nano_usd_per_pi=raw,
         guardrail_bps=guardrail_bps,
-        guarded_reference_micro_usd_per_pi=guarded,
+        guarded_reference_nano_usd_per_pi=guarded,
         oracle=oracle,
         gates=gate_result,
         status=status,
