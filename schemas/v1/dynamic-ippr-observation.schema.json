@@ -11,7 +11,7 @@
     "asset_id": {"type": "string", "minLength": 1},
     "quote_asset": {"type": "string", "const": "USD"},
     "price_nano_usd_per_pi": {"type": "integer", "minimum": 1},
-    "qwf_multiplier": {"type": "integer", "minimum": 1, "maximum": 10000000},
+    "qwf_multiplier": {"type": "integer", "minimum": 1},
     "raw_ippr_nano_usd_per_pi": {"type": "integer", "minimum": 1},
     "guarded_reference_nano_usd_per_pi": {"type": "integer", "minimum": 0},
     "guardrail_bps": {"type": "integer", "minimum": 0, "maximum": 10000},
