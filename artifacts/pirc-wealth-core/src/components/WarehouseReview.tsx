@@ -15,7 +15,7 @@ import {
   ShieldX,
 } from "lucide-react";
 
-type Envelope<T> = { status: string; data: T };
+type Envelope<T> = { status: string; data: T; mode?: string; source?: string };
 type BranchList = Envelope<string[]> & { complete?: boolean; count?: number; warning?: string };
 type TreeEntry = { path: string; type: string; sha: string; size?: number; url: string };
 type RemoteFile = { content: string; name: string; path: string };
@@ -248,15 +248,39 @@ export default function WarehouseReview() {
         },
         {
           id: "contracts",
-          title: "Contracts endpoint",
-          state: "error" in contracts ? "attention" : contracts.value.status === "success" && Array.isArray(contracts.value.data) ? "verified" : "attention",
-          evidence: "error" in contracts ? [contracts.error] : [`Response: ${contracts.value.status}`, `Records: ${Array.isArray(contracts.value.data) ? contracts.value.data.length : "unexpected shape"}`],
+          title: "Contracts API response",
+          state: "error" in contracts
+            ? "attention"
+            : contracts.value.status === "success" && Array.isArray(contracts.value.data) && contracts.value.mode !== "demo" && !/placeholder/i.test(contracts.value.source || "")
+              ? "verified"
+              : "attention",
+          evidence: "error" in contracts
+            ? [contracts.error]
+            : [
+                `Response: ${contracts.value.status}`,
+                `Records: ${Array.isArray(contracts.value.data) ? contracts.value.data.length : "unexpected shape"}`,
+                `Mode: ${contracts.value.mode || "not reported"}`,
+                `Source: ${contracts.value.source || "not reported"}`,
+                "A successful response verifies route availability, not the truth of source records.",
+              ],
         },
         {
           id: "matrix",
-          title: "PiRC matrix endpoint",
-          state: "error" in matrix ? "attention" : matrix.value.status === "success" && Array.isArray(matrix.value.data) ? "verified" : "attention",
-          evidence: "error" in matrix ? [matrix.error] : [`Response: ${matrix.value.status}`, `Records: ${Array.isArray(matrix.value.data) ? matrix.value.data.length : "unexpected shape"}`],
+          title: "PiRC matrix API response",
+          state: "error" in matrix
+            ? "attention"
+            : matrix.value.status === "success" && Array.isArray(matrix.value.data) && matrix.value.mode !== "demo" && !/placeholder/i.test(matrix.value.source || "")
+              ? "verified"
+              : "attention",
+          evidence: "error" in matrix
+            ? [matrix.error]
+            : [
+                `Response: ${matrix.value.status}`,
+                `Records: ${Array.isArray(matrix.value.data) ? matrix.value.data.length : "unexpected shape"}`,
+                `Mode: ${matrix.value.mode || "not reported"}`,
+                `Source: ${matrix.value.source || "not reported"}`,
+                "A successful response verifies route availability, not the truth of source records.",
+              ],
         },
         {
           id: "payments",
