@@ -14,7 +14,11 @@ All financial flows, token issuance, contract deployments, QR/NFC settlement, an
 
 Distinguish Pi-denominated product prices from fiat reference estimates; market quotes from internal indices; product valuation from token price and collateral value; testnet balances from real value; KYB records from integrated providers; app-token proposals from issued tokens; and contract-instance lookup from verified source, WASM hash, issuer authority, and audit status.
 
-## 2. V18 Commerce Velocity Index
+## 2A. Dynamic IPPR and economic gate integration
+
+The V18 activity vector is an input to the dynamic IPPR/QWF reflexive review, not a direct price multiplier. IPPR follows the validated external PI/USD median multiplied by the governed QWF baseline (10,000,000), then passes the four gates defined in `docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md`. Velocity must be measured from verified settled activity over a declared window; TPS, self-transfers, wash volume, GMV and unfulfilled listings cannot substitute for economic velocity or utility supply.
+
+
 
 V18 is an application/economic throughput metric, not a ledger protocol version.
 
