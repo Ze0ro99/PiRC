@@ -11,9 +11,9 @@ The internal purchasing-power reference (IPPR) must not be a hard-coded USD amou
 
 `IPPR_raw(t) = P_exchange_median(t) × QWF(t)`
 
-The baseline QWF is `10,000,000`. The market quote is expressed in USD per PI, and the result is a reference USD-unit per PI under this proposal. For deterministic implementations, use integer micro-USD per PI and integer arithmetic:
+The baseline QWF is `10,000,000`. For example, PI/USD = `$0.0314159` is represented as `31,415,900` nano-USD; multiplying by QWF yields `314,159,000,000,000` nano-USD, or `$314,159` per Pi as an internal reference index. The market quote is expressed in USD per PI, and the result is a reference USD-unit per PI under this proposal. For deterministic implementations, use integer nano-USD per PI and integer arithmetic:
 
-`raw_ippr_micro_usd_per_pi = median_price_micro_usd_per_pi * qwf_multiplier`
+`raw_ippr_nano_usd_per_pi = median_price_nano_usd_per_pi * qwf_multiplier`
 
 This makes the reference move with the market price. A price change must propagate to the next accepted quote/epoch; it must never silently remain a fixed legacy amount.
 
