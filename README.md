@@ -560,5 +560,6 @@ The following documents form the current cross-domain reference package:
 - [Integration runbook and test matrix](docs/operations/INTEGRATION_RUNBOOK_AND_TEST_MATRIX.md)
 - [End-to-end factory, oracle, liquidity and settlement diagrams](docs/diagrams/END_TO_END_ECONOMIC_AND_FACTORY_FLOWS.md)
 - [Branch intake and completion policy](docs/integration/BRANCH_INTAKE_AND_COMPLETION_POLICY.md)
+- [Unified payment rails and purchasing-power accounting standard](docs/PAYMENT_RAILS_AND_PURCHASING_POWER_STANDARD.md)
 
 The Termux validation runner is offline-first and read-only by default. Optional network checks validate JSON responses and Soroban JSON-RPC `getHealth`; HTTP 200 alone is not considered proof of RPC health. The runner does not sign, submit transactions, deploy contracts or perform Mainnet operations.
