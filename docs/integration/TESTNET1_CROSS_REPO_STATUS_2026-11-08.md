@@ -120,7 +120,7 @@ This section supersedes earlier statements in this historical status record that
 | Repository | PR | Merge commit | Result |
 |---|---:|---|---|
 | PiRC | #369 | `e8c2b2bf4f67b0f1fda29c34ead0804e66fb96ff` | Cross-repository Testnet1 status and payment-rails standard merged |
-| PiRC | #370 | `79f4568e484652c0b001086e82dc101c0b001086e` | PiRC-2 registry RPC metadata aligned to Pi Testnet RPC |
+| PiRC | #370 | `79f4568e4846529e7bd6c3e82dc101c0b001086e` | PiRC-2 registry RPC metadata aligned to Pi Testnet RPC |
 | SmartContracts | #1108 | `2bca4658f58dc097085f1956d87a5f7f3b756a05` | Canonical PiDEX AMM and test-asset source merged |
 | SmartContracts | #1110 | `80cd65e707bc0bf54f4ab2fe33f5691a07b711fb` | Delegated-burn total-supply test expectation corrected |
 | SmartContracts | #1111 | `8200713e49979820593b50a34421ce2fe28072b2` | PiRC packet source registry imported without claiming deployment |
