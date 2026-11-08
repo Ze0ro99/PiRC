@@ -15,3 +15,24 @@ body {
 h1, h2, h3, h4, h5, h6 {
   @apply font-display tracking-tight;
 }
+
+.warehouse-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.warehouse-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.warehouse-scrollbar::-webkit-scrollbar-thumb { background: #3a4a4e; border-radius: 8px; }
+.warehouse-scrollbar::-webkit-scrollbar-thumb:hover { background: #566a6d; }
+
+@keyframes warehouse-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.warehouse-enter { animation: warehouse-rise 420ms cubic-bezier(.2,.8,.2,1) both; }
+.warehouse-delay { animation-delay: 70ms; }
+.warehouse-skeleton {
+  background: linear-gradient(90deg, #202c30 20%, #2a383b 45%, #202c30 70%);
+  background-size: 220% 100%;
+  animation: warehouse-skeleton-shift 1.4s ease-in-out infinite;
+}
+@keyframes warehouse-skeleton-shift { to { background-position-x: -220%; } }
+@media (prefers-reduced-motion: reduce) {
+  .warehouse-enter, .warehouse-skeleton { animation: none; }
+}
