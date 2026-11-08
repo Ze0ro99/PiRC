@@ -16,7 +16,7 @@ Distinguish Pi-denominated product prices from fiat reference estimates; market 
 
 ## 2A. Dynamic IPPR and economic gate integration
 
-The V18 activity vector is an input to the dynamic IPPR/QWF reflexive review, not a direct price multiplier. IPPR follows the validated external PI/USD median multiplied by the governed QWF baseline (10,000,000), then passes the four gates defined in `docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md`. Velocity must be measured from verified settled activity over a declared window; TPS, self-transfers, wash volume, GMV and unfulfilled listings cannot substitute for economic velocity or utility supply.
+The V18 activity vector is an input to the dynamic IPPR/QWF reflexive review, not a direct price multiplier. IPPR is re-based on each accepted external PI/USD tick multiplied by the fixed IPPR supply multiplier (10,000,000); adaptive QWF is a separate state used in Φ = (L_n × IPPR) / QWF, then passes the four gates defined in `docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md`. Velocity must be measured from verified settled activity over a declared window; TPS, self-transfers, wash volume, GMV and unfulfilled listings cannot substitute for economic velocity or utility supply.
 
 
 
