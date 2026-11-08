@@ -18,13 +18,14 @@ import {
 type Envelope<T> = { status: string; data: T; mode?: string; source?: string };
 type BranchList = Envelope<string[]> & { complete?: boolean; count?: number; warning?: string };
 type TreeEntry = { path: string; type: string; sha: string; size?: number; url: string };
+type TreeResult = Envelope<TreeEntry[]> & { complete?: boolean; count?: number; truncated?: boolean; warning?: string };
 type RemoteFile = { content: string; name: string; path: string };
 type State = "verified" | "blocked" | "attention" | "unverified";
 type Check = { id: string; title: string; state: State; evidence: string[] };
 type FieldCheck = { label: string; value: string; present: boolean };
 type RequestDocument = {
   path: string;
-  kind: "integration" | "financial";
+  kind: "integration" | "financial" | "unclassified";
   fields: FieldCheck[];
   branch?: { name: string; exists: boolean; listComplete: boolean };
   claims: string[];
@@ -36,6 +37,8 @@ type Review = {
   branch: string;
   branches: string[];
   treeCount: number;
+  treeComplete: boolean;
+  treeWarning: string;
   found: number;
   skipped: number;
   checks: Check[];
@@ -63,13 +66,15 @@ function firstMatch(source: string, patterns: RegExp[]): string {
   return "";
 }
 
-function inspectDocument(file: RemoteFile, branches: string[], branchListComplete: boolean): RequestDocument {
-  const content = (file.content || "").replace(/\\r?\\n/g, "\n");
-  const sample = `${file.path} ${content.slice(0, 3000)}`;
+export function inspectDocument(file: RemoteFile, branches: string[], branchListComplete: boolean): RequestDocument {
+  const content = (file.content || "").replace(/\\r\\n?/g, "\n");
+  const sample = `${file.path} ${content.slice(0, 5000)}`;
+  const financial =
+    /on[- ]chain|token withdrawal|fund withdrawal|wallet destination|asset\s*[:=-]|amount\s*[:=-]|recipient\s*[:=-]/i.test(sample) ||
+    /(?:^|\/)(?:financial|onchain|wallet|payout|payment-request)(?:[-_/]|$)/i.test(file.path);
   const integration =
-    /integration|repository|pull request|merge request/i.test(sample) &&
-    !/on[- ]chain|token withdrawal|fund withdrawal|wallet destination/i.test(sample);
-  const kind = integration ? "integration" : "financial";
+    !financial && /integration|repository|pull request|merge request|branch intake|code change/i.test(sample);
+  const kind = financial ? "financial" : integration ? "integration" : "unclassified";
   const requirements: [string, RegExp[]][] = integration
     ? [
         ["Request ID", [/(?:request|withdrawal)\s*id\**\s*[:#-]\s*([^\n]+)/i]],
@@ -87,6 +92,11 @@ function inspectDocument(file: RemoteFile, branches: string[], branchListComplet
         ["Chain / network", [/\b(?:chain|network)\**\s*[:=-]\s*([^\n]+)/i]],
         ["Destination", [/\b(?:destination|recipient|to address|wallet)\**\s*[:=-]\s*([^\n]+)/i]],
         ["Evidence / signature", [/\b(?:evidence|signature|transaction hash|tx hash|proof)\**\s*[:=-]\s*([^\n]+)/i]],
+      ]
+    : [
+        ["Request ID", [/(?:request|withdrawal)\\s*id\\**\\s*[:#-]\\s*([^\\n]+)/i]],
+        ["Status", [/\\bstatus\\**\\s*[:=-]\\s*([^\\n]+)/i]],
+        ["Request context", [/#{1,4}\\s*(?:request summary|summary)\\s*\\n+([^\\n]+)/i, /\\b(?:purpose|summary)\\s*[:=-]\\s*([^\\n]+)/i]],
       ];
   const fields = requirements.map(([label, patterns]) => {
     const value = firstMatch(content, patterns);
@@ -184,14 +194,18 @@ export default function WarehouseReview() {
 
       let tree: TreeEntry[] = [];
       let treeError = "";
+      let treeComplete = true;
+      let treeWarning = "";
       try {
-        const result = await getJson<Envelope<TreeEntry[]>>(
+        const result = await getJson<TreeResult>(
           `/api/github/tree?branch=${encodeURIComponent(branch)}`,
         );
         if (result.status !== "success" || !Array.isArray(result.data)) {
           throw new Error("Unexpected branch-tree response");
         }
         tree = result.data;
+        treeComplete = result.complete !== false && result.truncated !== true;
+        treeWarning = result.warning || (treeComplete ? "" : "GitHub returned a truncated recursive tree.");
       } catch (reason) {
         treeError = errorText(reason);
       }
@@ -235,10 +249,10 @@ export default function WarehouseReview() {
         {
           id: "tree",
           title: "Selected branch tree",
-          state: treeError ? "attention" : "verified",
+          state: treeError || !treeComplete ? "attention" : "verified",
           evidence: treeError
             ? [`Tree request failed: ${treeError}`]
-            : [`${tree.length} entries returned`, `${matching.length} request documents found; ${documents.length} inspected`],
+            : [`${tree.length} entries returned`, `${matching.length} request documents found; ${documents.length} inspected`, ...(treeWarning ? [treeWarning] : [])],
         },
         {
           id: "health",
@@ -285,10 +299,10 @@ export default function WarehouseReview() {
         {
           id: "payments",
           title: "Payments configuration",
-          state: "error" in payments ? "attention" : payments.value.configured ? "verified" : "blocked",
+          state: "error" in payments ? "attention" : payments.value.configured && payments.value.mode === "production" && payments.value.paymentsEnabled === true ? "attention" : "blocked",
           evidence: "error" in payments
             ? [payments.error]
-            : [`Configured flag: ${String(payments.value.configured)}`, "This does not verify token activation or on-chain readiness."],
+            : [`Configured flag: ${String(payments.value.configured)}`, `Mode: ${payments.value.mode || "not reported"}`, `Payments enabled: ${String(payments.value.paymentsEnabled)}`, "Configuration alone does not verify token activation, transaction settlement, or on-chain readiness."],
         },
         { id: "chain", title: "Chain / RPC configuration", state: "unverified", evidence: ["No chain or RPC target is supplied by the available endpoints."] },
         { id: "logos", title: "Task-to-logo readiness", state: "unverified", evidence: ["No task-to-logo mapping is supplied by the available endpoints."] },
@@ -299,8 +313,10 @@ export default function WarehouseReview() {
         branch,
         branches: liveBranches,
         treeCount: tree.length,
+        treeComplete,
+        treeWarning,
         found: matching.length,
-        skipped: Math.max(0, matching.length - documents.length),
+        skipped: Math.max(0, matching.length - 25),
         checks,
         documents,
       });
@@ -439,7 +455,7 @@ function DocumentCard({ document }: { document: RequestDocument }) {
   return (
     <details data-testid={`card-document-${document.path}`} className="border border-[#344145] bg-[#172124]">
       <summary data-testid={`button-expand-document-${document.path}`} className="flex cursor-pointer flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-[#1b292c]">
-        <span className="min-w-0"><span className="block truncate font-mono text-xs text-[#d2ddd6]">{document.path}</span><span className="mt-1 block font-mono text-[9px] uppercase tracking-[.13em] text-[#7f918c]">{document.kind === "integration" ? "Repository integration request" : "Financial / on-chain request"}</span></span>
+        <span className="min-w-0"><span className="block truncate font-mono text-xs text-[#d2ddd6]">{document.path}</span><span className="mt-1 block font-mono text-[9px] uppercase tracking-[.13em] text-[#7f918c]">{document.kind === "integration" ? "Repository integration request" : document.kind === "financial" ? "Financial / on-chain request" : "Unclassified request document"}</span></span>
         <span data-testid={`status-document-${document.path}`} className="font-mono text-[10px] text-[#dfb478]">{document.error ? "File unavailable" : `${missing} missing field${missing === 1 ? "" : "s"}`}</span>
       </summary>
       <div className="border-t border-[#344145] px-4 py-4">
@@ -465,12 +481,13 @@ function createReport(review: Review): string {
     "## Live checks",
     ...review.checks.flatMap((check) => [`### ${check.title} — ${labelFor(check.state)}`, ...check.evidence.map((item) => `- Evidence: ${item}`), ""]),
     "## Repository tree",
-    `- ${review.treeCount} entries returned; ${review.found} matching Markdown request documents found; ${review.documents.length} inspected; ${review.skipped} skipped by the safety limit.`,
+    `- ${review.treeCount} entries returned; tree completeness: ${review.treeComplete ? "complete" : "incomplete"}${review.treeWarning ? ` (${review.treeWarning})` : ""}.`,
+    `- ${review.found} matching Markdown request documents found; ${review.documents.length} inspected; ${review.skipped} skipped by the 25-document safety limit; ${review.documents.filter((document) => document.error).length} could not be fetched.`,
     "",
     "## Withdrawal request documents",
     ...(review.documents.length
       ? review.documents.flatMap((document) => [
-          `### \`${document.path}\` — ${document.kind === "integration" ? "Repository integration request" : "Financial / on-chain request"}`,
+          `### \`${document.path}\` — ${document.kind === "integration" ? "Repository integration request" : document.kind === "financial" ? "Financial / on-chain request" : "Unclassified request document"}`,
           ...(document.error ? [`- Fetch failed: ${document.error}`] : []),
           ...document.fields.map((field) => `- ${field.present ? "Present" : "MISSING"} — **${field.label}:** ${field.value}`),
           ...(document.branch ? [`- Referenced branch \`${document.branch.name}\`: ${document.branch.exists ? "exists" : document.branch.listComplete ? "not found in complete list" : "not found in incomplete list"}` ] : []),
