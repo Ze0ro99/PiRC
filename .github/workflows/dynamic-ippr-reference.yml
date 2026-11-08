@@ -1,0 +1,36 @@
+name: Dynamic IPPR Reference Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md"
+      - "reference/dynamic_ippr.py"
+      - "tests/test_dynamic_ippr.py"
+      - ".github/workflows/dynamic-ippr-reference.yml"
+  push:
+    branches: [main]
+    paths:
+      - "docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md"
+      - "reference/dynamic_ippr.py"
+      - "tests/test_dynamic_ippr.py"
+      - ".github/workflows/dynamic-ippr-reference.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dynamic-ippr-reference-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reference-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test fixed-point IPPR, QWF and four-gate reference
+        run: python -m unittest discover -s tests -p "test_dynamic_ippr.py" -v
