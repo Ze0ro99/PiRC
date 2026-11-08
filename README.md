@@ -26,6 +26,10 @@ Core principles:
 
 **Ownership rule:** PiRC defines what a standard requires; SmartContracts implements contract-level behavior; Unity Sphere consumes versioned interfaces and exposes application workflows. Changes crossing these boundaries require traceability updates and coordinated review.
 
+## Dynamic IPPR and economic gateways
+
+The current proposed market-linked IPPR controller, PiRC-101 QWF alignment, four economic gates/gateways, fixed-point quote schema and deterministic tests are defined in [DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md](docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md). The reference engine is [dynamic_ippr.py](reference/dynamic_ippr.py); its tests are [test_dynamic_ippr.py](tests/test_dynamic_ippr.py). These are Testnet/reference components only and do not imply redemption, collateral or live deployment.
+
 ## 3. System architecture
 
 The architecture is organized into seven conceptual layers. Their colors and names are proposal/UI semantics, not official Pi Network token classes or deployed asset tiers.
