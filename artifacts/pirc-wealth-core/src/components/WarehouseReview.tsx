@@ -67,7 +67,7 @@ function firstMatch(source: string, patterns: RegExp[]): string {
 }
 
 export function inspectDocument(file: RemoteFile, branches: string[], branchListComplete: boolean): RequestDocument {
-  const content = (file.content || "").replace(/\\r\\n?/g, "\n");
+  const content = (file.content || "").replace(/\r\n?/g, "\n");
   const sample = `${file.path} ${content.slice(0, 5000)}`;
   const financial =
     /on[- ]chain|token withdrawal|fund withdrawal|wallet destination|asset\s*[:=-]|amount\s*[:=-]|recipient\s*[:=-]/i.test(sample) ||
@@ -94,9 +94,9 @@ export function inspectDocument(file: RemoteFile, branches: string[], branchList
         ["Evidence / signature", [/\b(?:evidence|signature|transaction hash|tx hash|proof)\**\s*[:=-]\s*([^\n]+)/i]],
       ]
     : [
-        ["Request ID", [/(?:request|withdrawal)\\s*id\\**\\s*[:#-]\\s*([^\\n]+)/i]],
-        ["Status", [/\\bstatus\\**\\s*[:=-]\\s*([^\\n]+)/i]],
-        ["Request context", [/#{1,4}\\s*(?:request summary|summary)\\s*\\n+([^\\n]+)/i, /\\b(?:purpose|summary)\\s*[:=-]\\s*([^\\n]+)/i]],
+        ["Request ID", [/(?:request|withdrawal)\s*id\**\s*[:#-]\s*([^\n]+)/i]],
+        ["Status", [/\bstatus\**\s*[:=-]\s*([^\n]+)/i]],
+        ["Request context", [/#{1,4}\s*(?:request summary|summary)\s*\n+([^\n]+)/i, /\b(?:purpose|summary)\s*[:=-]\s*([^\n]+)/i]],
       ];
   const fields = requirements.map(([label, patterns]) => {
     const value = firstMatch(content, patterns);
