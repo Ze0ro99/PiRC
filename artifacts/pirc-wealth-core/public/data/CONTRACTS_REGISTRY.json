@@ -12,12 +12,22 @@
       "address": "CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV",
       "network": "Pi Testnet (Soroban)",
       "role": "Recurring payments via Soroban token allowance (no re-signing)",
-      "soroban_rpc": "https://soroban-testnet.stellar.org:443",
-      "explorer": "https://stellar.expert/explorer/testnet/contract/CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV"
+      "soroban_rpc": "https://rpc.testnet.minepi.com",
+      "explorer": "https://stellar.expert/explorer/testnet/contract/CCUF75B6W3HRJTJD6O7OXNI72HGJ7DERZ5MUNOMFMSK23ME5GUIKPFYV",
+      "network_passphrase": "Pi Testnet",
+      "network_id": "pi-testnet1"
     },
     "packets": {
       "registry": "7_layer_packets.json",
-      "colors": ["RED", "GREEN", "ORANGE", "YELLOW", "BLUE", "PURPLE", "GOLD"]
+      "colors": [
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "YELLOW",
+        "BLUE",
+        "PURPLE",
+        "GOLD"
+      ]
     }
   },
   "pirc_1": {
