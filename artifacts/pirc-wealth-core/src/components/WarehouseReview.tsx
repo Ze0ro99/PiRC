@@ -84,7 +84,8 @@ export function inspectDocument(file: RemoteFile, branches: string[], branchList
         ["Change scope", [/#{1,4}\s*(?:items for withdrawal|change scope)\s*\n+([^\n]+)/i, /\b(?:scope|changes|files)\s*[:=-]\s*([^\n]+)/i]],
         ["Review evidence", [/\b(?:evidence|validation|checks|test results)\**\s*[:=-]\s*([^\n]+)/i]],
       ]
-    : [
+    : financial
+    ? [
         ["Request ID", [/(?:request|withdrawal)\s*id\**\s*[:#-]\s*([^\n]+)/i]],
         ["Status", [/\bstatus\**\s*[:=-]\s*([^\n]+)/i]],
         ["Asset / token", [/\b(?:asset|token|currency)\**\s*[:=-]\s*([^\n]+)/i]],
@@ -491,6 +492,7 @@ function createReport(review: Review): string {
           ...(document.error ? [`- Fetch failed: ${document.error}`] : []),
           ...document.fields.map((field) => `- ${field.present ? "Present" : "MISSING"} — **${field.label}:** ${field.value}`),
           ...(document.branch ? [`- Referenced branch \`${document.branch.name}\`: ${document.branch.exists ? "exists" : document.branch.listComplete ? "not found in complete list" : "not found in incomplete list"}` ] : []),
+          ...(document.claims.length ? ["- Document claims (not independently verified):", ...document.claims.map((claim) => `  - ${claim}`)] : []),
           "",
         ])
       : ["No matching Markdown request files were found by path-based discovery.", ""]),
