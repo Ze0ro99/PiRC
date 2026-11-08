@@ -1,15 +1,22 @@
-"""Deterministic Testnet/reference controller for a market-linked IPPR index.
+"""PiRC-101 market-tick IPPR and reflexive QWF reference model.
 
-This module computes an informational internal reference index from a validated
-multi-venue Pi/USD observation. It does not create a redeemable balance, REF
-liability, collateral claim, wallet conversion, or payment authorization.
+IPPR is re-based on every accepted market tick:
+    IPPR = median(PI/USD) * 10_000_000
+QWF is a separate adaptive state, never the IPPR multiplier.
+Reflexive constraint:
+    Phi = (L_n * IPPR) / QWF
 
-All prices are integer nano-USD per PI; ratios use basis points. No floats.
+All external prices use integer nano-USD per PI; velocity is integer ppm.
+This is a reference model, not a wallet, issuance, redemption, or settlement rail.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Sequence
+
+PRICE_SCALE = 1_000_000_000  # nano-USD per USD
+VELOCITY_SCALE = 1_000_000   # ppm per unit velocity
+IPPR_SUPPLY_MULTIPLIER = 10_000_000
 
 
 class IPPRValidationError(ValueError):
@@ -40,16 +47,13 @@ class OracleResult:
 
 @dataclass(frozen=True)
 class EconomicGates:
-    # Gate 2: verifiable utility supply and completed commerce.
     active_merchants: int
     available_listings: int
     fulfilled_orders_window: int
-    # Gate 3: real settled activity and accessible same-window liquidity.
     settled_volume_nano_usd: int
     average_supply_atomic: int
     liquid_depth_nano_usd: int
     minimum_liquid_depth_nano_usd: int
-    # Gate 4: independently eligible collateral/reserves vs issued liability.
     eligible_reserves_nano_usd: int
     outstanding_ref_liability_nano_usd: int
 
@@ -63,17 +67,20 @@ class GateResult:
 
     @property
     def all_passed(self) -> bool:
-        return all(value is True for value in (self.oracle_gate, self.utility_gate,
-                    self.velocity_liquidity_gate, self.solvency_gate))
+        return all(value is True for value in (
+            self.oracle_gate, self.utility_gate,
+            self.velocity_liquidity_gate, self.solvency_gate,
+        ))
 
 
 @dataclass(frozen=True)
 class IPPRResult:
     external_price_nano_usd_per_pi: int
-    qwf_multiplier: int
-    raw_ippr_nano_usd_per_pi: int
-    guardrail_bps: int
-    guarded_reference_nano_usd_per_pi: int
+    ippr_supply_multiplier: int
+    ippr_nano_usd_per_pi: int
+    qwf_current: int
+    network_velocity_ppm: int
+    phi_ppm: int
     oracle: OracleResult
     gates: GateResult
     status: str
@@ -91,7 +98,6 @@ def median_int(values: Sequence[int]) -> int:
     middle = len(ordered) // 2
     if len(ordered) % 2:
         return ordered[middle]
-    # Deterministic integer midpoint; floor is the specified rounding rule.
     return (ordered[middle - 1] + ordered[middle]) // 2
 
 
@@ -137,7 +143,6 @@ def aggregate_oracle(
 def evaluate_gates(g: EconomicGates) -> GateResult:
     for name, value in g.__dict__.items():
         _nonnegative_int(name, value)
-    oracle_gate = True  # Set only after aggregate_oracle has succeeded.
     utility_gate = (
         g.active_merchants > 0
         and g.available_listings > 0
@@ -149,38 +154,44 @@ def evaluate_gates(g: EconomicGates) -> GateResult:
         and g.liquid_depth_nano_usd >= g.minimum_liquid_depth_nano_usd
         and g.minimum_liquid_depth_nano_usd > 0
     )
-    # A zero liability is NOT_APPLICABLE, not an automatic solvency PASS.
     solvency_gate = (
         None if g.outstanding_ref_liability_nano_usd == 0
         else g.eligible_reserves_nano_usd >= g.outstanding_ref_liability_nano_usd
     )
-    return GateResult(oracle_gate, utility_gate, velocity_liquidity_gate, solvency_gate)
+    return GateResult(True, utility_gate, velocity_liquidity_gate, solvency_gate)
 
 
 def calculate_ippr(
     observations: Sequence[PriceObservation],
     now_ts: int,
     gates: EconomicGates,
-    qwf_multiplier: int = 10_000_000,
-    guardrail_bps: int = 10_000,
+    qwf_current: int,
+    network_velocity_ppm: int,
     oracle_policy: OraclePolicy = OraclePolicy(),
 ) -> IPPRResult:
-    """Calculate the live market-linked reference; guardrails never mint or settle."""
-    _nonnegative_int("qwf_multiplier", qwf_multiplier)
-    _nonnegative_int("guardrail_bps", guardrail_bps)
-    if qwf_multiplier == 0 or guardrail_bps > 10_000:
-        raise IPPRValidationError("invalid QWF multiplier or guardrail")
+    """Re-base IPPR on each accepted tick; calculate Phi with independent QWF."""
+    _nonnegative_int("qwf_current", qwf_current)
+    _nonnegative_int("network_velocity_ppm", network_velocity_ppm)
+    if qwf_current == 0:
+        raise IPPRValidationError("qwf_current must be positive")
+    if network_velocity_ppm > 100_000_000:
+        raise IPPRValidationError("network velocity exceeds the supported safety bound")
     oracle = aggregate_oracle(observations, now_ts, oracle_policy)
     gate_result = evaluate_gates(gates)
-    raw = oracle.median_price_nano_usd_per_pi * qwf_multiplier
-    guarded = (raw * guardrail_bps) // 10_000
+    ippr = oracle.median_price_nano_usd_per_pi * IPPR_SUPPLY_MULTIPLIER
+    # Phi_ppm = (L_n * IPPR / QWF) * 1e6, preserving fixed-point precision.
+    phi_ppm = (
+        network_velocity_ppm * ippr
+        // (PRICE_SCALE * qwf_current)
+    )
     status = "REFERENCE_ONLY_GATES_PASSED" if gate_result.all_passed else "REFERENCE_ONLY_GATED"
     return IPPRResult(
         external_price_nano_usd_per_pi=oracle.median_price_nano_usd_per_pi,
-        qwf_multiplier=qwf_multiplier,
-        raw_ippr_nano_usd_per_pi=raw,
-        guardrail_bps=guardrail_bps,
-        guarded_reference_nano_usd_per_pi=guarded,
+        ippr_supply_multiplier=IPPR_SUPPLY_MULTIPLIER,
+        ippr_nano_usd_per_pi=ippr,
+        qwf_current=qwf_current,
+        network_velocity_ppm=network_velocity_ppm,
+        phi_ppm=phi_ppm,
         oracle=oracle,
         gates=gate_result,
         status=status,
