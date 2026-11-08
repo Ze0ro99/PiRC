@@ -6,9 +6,9 @@ Status: research model. Parameters are not official Pi prices or guarantees.
 
 For the proposed PiRC-101-aligned reference controller, the live internal purchasing-power reference is:
 
-`IPPR_raw(t) = median(P_exchange_PI/USD(t)) * QWF(t)`
+`IPPR_t = median(P_exchange_PI/USD(t)) * 10,000,000`
 
-with baseline `QWF = 10,000,000`. Use a multi-source, fresh, normalized PI/USD median, explicit quote timestamps and deterministic fixed-point arithmetic. The legacy USD 2.248M figure is a historical snapshot, not a constant. The QWF may change only through the bounded, versioned and approved controller specified in the dynamic IPPR standard. The reference is informational; it does not establish redemption, collateral, or the merchant's actual accepted price.
+with baseline `IPPR supply multiplier = 10,000,000; QWF is a separate adaptive state`. Use a multi-source, fresh, normalized PI/USD median, explicit quote timestamps and deterministic fixed-point arithmetic. The legacy USD 2.248M figure is a historical snapshot, not a constant. The QWF may change only through the bounded, versioned and approved controller specified in the dynamic IPPR standard. The reference is informational; it does not establish redemption, collateral, or the merchant's actual accepted price.
 
 See `docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md` for oracle policy and the four required gates.
 
@@ -35,3 +35,7 @@ Use integer atomic token units. Rates use explicit scale factors selected per in
 
 ## 8. Version naming
 Do not use V18 as a synonym for velocity or a network protocol until its source proposal defines it. Keep network protocol, SDK version, application release and economic model version separate.
+
+## 9. PiRC-101 live-tick IPPR and reflexive constraint
+
+`IPPR_t = median(PI/USD_t) * 10,000,000` is recalculated on every accepted market tick. The fixed 10^7 IPPR supply multiplier is not QWF. QWF is a separate adaptive state. The Unity Sphere PiRC-101 reference controller uses `Phi = (L_n * IPPR) / QWF`; QWF updates require the approved bounded governance rule and verified velocity/TVL inputs. See `docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md`.
