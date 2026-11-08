@@ -14,10 +14,10 @@ Changes crossing these boundaries require pinned commit SHAs, schema/ABI compati
 
 | Repository | Pull request | Purpose | Current state |
 |---|---|---|---|
-| [SmartContracts](https://github.com/Ze0ro99/SmartContracts/pull/1108) | #1108 | Establish canonical SmartContracts-owned PiDEX AMM crate | Open Draft; CI pending |
-| [Unity Sphere](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d/pull/52) | #52 | Pi wallet-address binding, shared connection state, Testnet1 network identity guard, asset probe guard, PiDEX fail-closed behavior and integration manifest | Open Draft; CI/runtime validation pending |
+| [SmartContracts](https://github.com/Ze0ro99/SmartContracts/pull/1108) | #1108 | Canonical PiDEX AMM/test-asset crates, focused contract tests and settlement test-auth fix | Open Draft; latest Rust/CodeQL/OMNI checks in progress |
+| [Unity Sphere](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d/pull/52) | #52 | Pi wallet-address binding, shared connection state, Testnet1 identity guard, asset probe guard, fail-closed PiDEX, identity-gated multi-contract event inbox and source pins | Open Draft; frontend, Deno, asset API, network probe, static build and secret-scan CI green; live runtime still pending |
 
-These PRs do not deploy contracts, activate liquidity, enable Soroban signing, or authorize Mainnet writes.
+Current reviewed heads: PiRC #369 `96e9cc89d1ec0f854f5dfa2bad02487ed2f72851`; SmartContracts #1108 `f75484c8dd901e5186033d44176a06693445e490`; Unity Sphere #52 `4a7fa1ca5e4766937725d9d163cb0580ea618802`. Refresh these pins before release. These PRs do not deploy contracts, activate liquidity, enable Soroban signing, or authorize Mainnet writes.
 
 ## 3. Testnet1 profile
 
@@ -55,6 +55,8 @@ The probe is read-only and does not establish that no other assets exist on Pi T
 - PiDEX browser order entry, balances, fills and liquidity remain local simulation data.
 - The AMM reference contract has been proposed for canonical ownership in SmartContracts PR #1108.
 - The PiDEX core subscription gate previously returned unconditional success without querying PiRC-2. Unity Sphere PR #52 changes this placeholder to fail closed and adds a denial test. The actual PiRC-2 cross-contract adapter remains incomplete.
+- SmartContracts PR #1108 now adds focused AMM and test-asset unit tests; their latest CI is still running.
+- The active `contracts/subscription` implementation is currently only a scaffold and does not match the recurring-billing API described by its README. PR #1108 adds an explicit warning; do not use it as a PiRC-2 authorization source.
 - A real PiDEX launch requires verified token contracts, an allowlisted AMM deployment, code-hash readback, wallet signing, liquidity, min-out/slippage checks, event reconciliation and security review.
 
 ## 6. Asset registry and seven-layer migration
@@ -88,7 +90,7 @@ OUSD remains TEST ONLY: no USD peg, reserve backing or redemption claim is estab
 6. Pi Browser and Pi Developer Sandbox authentication checks.
 7. A supported wallet-signing flow for Soroban transactions, separate from Pi account authentication.
 8. PiDEX AMM functional tests with verified test tokens and real Testnet readback.
-9. PiRC-2 subscription cross-contract authorization tests.
+9. A complete PiRC-2 subscription implementation whose active source, README, ABI and tests agree, followed by cross-contract authorization tests.
 10. Idempotent event decoding, transaction finality and contract-state reconciliation.
 11. Asset issuer/metadata/supply synchronization with network and ledger provenance.
 12. Independent security review, monitoring and rollback evidence.
