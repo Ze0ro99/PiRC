@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pirc:schema:dynamic-ippr-observation:1.0.0",
+  "title": "Dynamic IPPR Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "network_id", "asset_id", "quote_asset", "price_nano_usd_per_pi", "ippr_supply_multiplier", "ippr_nano_usd_per_pi", "qwf_current", "network_velocity_ppm", "phi_ppm", "observed_at", "expires_at", "source_count", "policy_version", "gate_status"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "1.0.0"},
+    "network_id": {"type": "string", "const": "pi-testnet"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "quote_asset": {"type": "string", "const": "USD"},
+    "price_nano_usd_per_pi": {"type": "integer", "minimum": 1},
+    "ippr_supply_multiplier": {"type": "integer", "const": 10000000},
+    "qwf_current": {"type": "integer", "minimum": 1},
+    "network_velocity_ppm": {"type": "integer", "minimum": 0},
+    "phi_ppm": {"type": "integer", "minimum": 0},
+    "ippr_nano_usd_per_pi": {"type": "integer", "minimum": 1},
+    "observed_at": {"type": "integer", "minimum": 1},
+    "expires_at": {"type": "integer", "minimum": 1},
+    "source_count": {"type": "integer", "minimum": 3},
+    "source_ids": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "policy_version": {"type": "string", "minLength": 1},
+    "gate_status": {"enum": ["REFERENCE_ONLY_GATES_PASSED", "REFERENCE_ONLY_GATED", "STALE", "QUARANTINED"]},
+    "settlement_authorized": {"type": "boolean", "const": false},
+    "mainnet_enabled": {"type": "boolean", "const": false}
+  }
+}
