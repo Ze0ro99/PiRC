@@ -209,6 +209,8 @@ export default function WarehouseReview() {
         treeWarning = result.warning || (treeComplete ? "" : "GitHub returned a truncated recursive tree.");
       } catch (reason) {
         treeError = errorText(reason);
+        treeComplete = false;
+        treeWarning = "Tree completeness could not be verified because the GitHub tree request failed.";
       }
 
       const matching = tree.filter(
