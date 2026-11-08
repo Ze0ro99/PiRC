@@ -89,6 +89,12 @@ class DynamicIPPRTests(unittest.TestCase):
         self.assertFalse(result.gates.velocity_liquidity_gate)
         self.assertEqual(result.status, "REFERENCE_ONLY_GATED")
 
+    def test_zero_liability_is_not_applicable_and_does_not_open_gate(self):
+        g = EconomicGates(**{**passing_gates().__dict__, "outstanding_ref_liability_nano_usd": 0})
+        result = calculate_ippr(observations(), 1_000, g)
+        self.assertIsNone(result.gates.solvency_gate)
+        self.assertEqual(result.status, "REFERENCE_ONLY_GATED")
+
     def test_qwf_and_guardrail_are_bounded(self):
         with self.assertRaises(IPPRValidationError):
             calculate_ippr(observations(), 1_000, passing_gates(), qwf_multiplier=0)
