@@ -178,7 +178,7 @@ export default function WarehouseReview() {
         getJson<{ status: string }>("/api/healthz").then((value) => ({ value })).catch((reason) => ({ error: errorText(reason) })),
         getJson<Envelope<unknown[]>>("/api/contracts").then((value) => ({ value })).catch((reason) => ({ error: errorText(reason) })),
         getJson<Envelope<unknown[]>>("/api/pirc_matrix").then((value) => ({ value })).catch((reason) => ({ error: errorText(reason) })),
-        getJson<{ configured: boolean }>("/api/payments/config").then((value) => ({ value })).catch((reason) => ({ error: errorText(reason) })),
+        getJson<{ configured: boolean; mode?: string; paymentsEnabled?: boolean }>("/api/payments/config").then((value) => ({ value })).catch((reason) => ({ error: errorText(reason) })),
       ]);
       if (branchResult.status !== "success" || !Array.isArray(branchResult.data)) {
         throw new Error("Repository branch check returned an unexpected response");
