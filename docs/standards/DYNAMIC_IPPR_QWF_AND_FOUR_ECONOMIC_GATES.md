@@ -54,6 +54,17 @@ Measure settled eligible transaction value over a defined window divided by aver
 ### Gate 4 — Collateral, solvency and settlement
 For any issued REF or redeemable liability, independently verified eligible reserves after haircuts must cover outstanding liabilities under the approved risk policy. Validate custody, encumbrance, legal issuer, redemption terms, concentration, exit queue and settlement read-back. A zero-liability denominator is NOT_APPLICABLE, not infinite coverage. Under-collateralization, missing evidence or uncertain finality => no issuance/settlement; fail closed.
 
+## 4A. Four interoperable gateway services
+
+These are four software/API gateways implementing the four economic gates; they are not four new tokens or independent sources of monetary authority.
+
+1. **Market Data Gateway:** accepts signed venue observations, normalizes PI/USD pairs, computes the median, enforces freshness/quorum/deviation, and publishes immutable quote IDs and expiry.
+2. **Utility & Commerce Gateway:** connects merchant catalogues, verified listings, inventory, product/service evidence, buyer orders, fulfilment, refunds and merchant-accepted asset quotes.
+3. **Velocity & Liquidity Gateway:** consumes reconciled settlement events, calculates declared-window turnover/velocity, order/repeat-purchase metrics, PiDEX depth, spread, slippage and concentration.
+4. **Solvency & Settlement Gateway:** verifies reserve attestations, liabilities, haircuts, exit queues, network identity, transaction finality and canonical read-back; it alone may return settlement-eligible status after all required checks.
+
+Each gateway exposes versioned request/response schemas, network_id, observed_at, expires_at, policy_version, evidence references, correlation IDs and idempotency keys. Gateways communicate through typed events and stable asset IDs. The client must not bypass a gateway or infer PASS from a successful HTTP response. A failed dependency propagates a fail-closed status. PiRC owns standards; SmartContracts owns on-chain enforcement; Unity Sphere/Lovable consume the versioned API contracts. All writes remain Testnet1-only.
+
 ## 5. Economic loop and feedback controls
 
 The measurable loop is:
