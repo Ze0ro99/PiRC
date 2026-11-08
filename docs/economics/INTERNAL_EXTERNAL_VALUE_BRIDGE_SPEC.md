@@ -110,7 +110,27 @@ Failures must be visible, auditable and fail closed. No retry may create a secon
 - [ ] Mainnet actions remain disabled pending separate authorization and evidence.
 
 
-## 12. External market value as a governed utility input
+## 12. Dynamic market-linked IPPR reference
+
+The IPPR reference is dynamic, not a fixed USD constant. Under the proposed PiRC-101-aligned Testnet controller, calculate it from a validated multi-source PI/USD median:
+
+`IPPR_raw(t) = median(P_exchange(t)) * QWF(t)`
+
+The baseline QWF is 10,000,000. The exact units, quote freshness, source quorum, outlier policy and QWF governance version must accompany every result. See `docs/standards/DYNAMIC_IPPR_QWF_AND_FOUR_ECONOMIC_GATES.md`.
+
+This dynamic reference does not replace the merchant's accepted asset-denominated price and does not create a redeemable balance. The four gates (oracle integrity, real utility supply, velocity/liquidity, and collateral/settlement solvency) control whether any credit expansion or settlement workflow may proceed. If evidence is absent, stale or under-collateralized, fail closed. The reference can remain informational only.
+
+The intended commerce feedback loop is:
+
+Merchant goods/services/technology → accepted utility quote → authorized payment intent → supported settlement → reconciliation → earned revenue recognition → costs/refunds/provisions/liquidity reserves → governed distributable surplus → approved ecosystem utility and service investment → more available goods/services → measured completed demand and velocity.
+
+Use the revenue equation from the Treasury model, not gross merchandise volume:
+
+`D_t = max(0, R_t - C_t - P_t - L_t)`
+
+Any participant allocation must be computed from eligible, reconciled distributable resources and conserve atomic units after deterministic rounding. This model is a proposal and does not imply a guaranteed token value, fixed parity, or Pi Core Team policy.
+
+
 
 External CEX/DEX observations are part of the project's economic information environment and may inform merchant quote presentation, market-risk controls, accounting views, and a separately governed pricing policy. They do not replace the internal reference schedule automatically. A quote must remain typed by venue, pair, timestamp, source, confidence, and policy version. It cannot mutate wallet balances, create redemption liabilities, or rewrite an internal reference value without a separately authorized specification and user-approved settlement flow.
 
