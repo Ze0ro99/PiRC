@@ -59,11 +59,11 @@ class GateResult:
     oracle_gate: bool
     utility_gate: bool
     velocity_liquidity_gate: bool
-    solvency_gate: bool
+    solvency_gate: bool | None
 
     @property
     def all_passed(self) -> bool:
-        return all((self.oracle_gate, self.utility_gate,
+        return all(value is True for value in (self.oracle_gate, self.utility_gate,
                     self.velocity_liquidity_gate, self.solvency_gate))
 
 
@@ -149,10 +149,10 @@ def evaluate_gates(g: EconomicGates) -> GateResult:
         and g.liquid_depth_nano_usd >= g.minimum_liquid_depth_nano_usd
         and g.minimum_liquid_depth_nano_usd > 0
     )
-    # A zero liability is NOT_APPLICABLE, not an infinite coverage ratio.
+    # A zero liability is NOT_APPLICABLE, not an automatic solvency PASS.
     solvency_gate = (
-        g.outstanding_ref_liability_nano_usd == 0
-        or g.eligible_reserves_nano_usd >= g.outstanding_ref_liability_nano_usd
+        None if g.outstanding_ref_liability_nano_usd == 0
+        else g.eligible_reserves_nano_usd >= g.outstanding_ref_liability_nano_usd
     )
     return GateResult(oracle_gate, utility_gate, velocity_liquidity_gate, solvency_gate)
 
