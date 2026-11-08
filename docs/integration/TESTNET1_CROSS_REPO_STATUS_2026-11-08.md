@@ -14,10 +14,10 @@ Changes crossing these boundaries require pinned commit SHAs, schema/ABI compati
 
 | Repository | Pull request | Purpose | Current state |
 |---|---|---|---|
-| [SmartContracts](https://github.com/Ze0ro99/SmartContracts/pull/1108) | #1108 | Canonical PiDEX AMM/test-asset crates, focused contract tests and settlement test-auth fix | Open Draft; latest Rust/CodeQL/OMNI checks in progress |
-| [Unity Sphere](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d/pull/52) | #52 | Pi wallet-address binding, shared connection state, Testnet1 identity guard, asset probe guard, fail-closed PiDEX, identity-gated multi-contract event inbox and source pins | Open Draft; frontend, Deno, asset API, network probe, static build and secret-scan CI green; live runtime still pending |
+| [SmartContracts](https://github.com/Ze0ro99/SmartContracts/pull/1108) | #1108 | Canonical PiDEX AMM/test-asset crates, focused contract tests and settlement test-auth fix | Open Draft; CodeQL, OMNI discovery, reference-contract tests and economic vectors passed, but full workspace compilation/test failed |
+| [Unity Sphere](https://github.com/Ze0ro99/project-unity-sphere-0e2c810d/pull/52) | #52 | Pi wallet-address binding, shared connection state, Testnet1 identity guard, asset probe guard, fail-closed PiDEX, identity-gated multi-contract event inbox and source pins | Open Draft; frontend build, Deno static check, API tests, static artifact and secret scan green; publishing was skipped; live runtime still pending |
 
-Current reviewed heads: PiRC #369 `96e9cc89d1ec0f854f5dfa2bad02487ed2f72851`; SmartContracts #1108 `f75484c8dd901e5186033d44176a06693445e490`; Unity Sphere #52 `4a7fa1ca5e4766937725d9d163cb0580ea618802`. Refresh these pins before release. These PRs do not deploy contracts, activate liquidity, enable Soroban signing, or authorize Mainnet writes.
+Current reviewed heads: PiRC #369 current head `805611770159170e9498fd79845bd892f3f0b16b`; SmartContracts #1108 current head `8f361062c39c8502cdf0dcdf7c998b6ce9425433`; Unity Sphere #52 current head `8e292abb4251054edc910d609a4df25ee96fce10`. These are review pins, not release approvals; refresh after every new commit. These PRs do not deploy contracts, activate liquidity, enable Soroban signing, or authorize Mainnet writes.
 
 ## 3. Testnet1 profile
 
@@ -96,3 +96,16 @@ OUSD remains TEST ONLY: no USD peg, reserve backing or redemption claim is estab
 12. Independent security review, monitoring and rollback evidence.
 
 Unknown values must remain `null` or `UNVERIFIED`. No address, screenshot, branch name, API health response or successful frontend build may be substituted for deployment evidence.
+
+
+## 11. CI evidence refresh — 2026-11-08
+
+The latest inspected SmartContracts #1108 check set is mixed, not green:
+- Passed: CodeQL (Rust/actions), OMNI contract discovery/import, reference-contract tests, shared economic-vector validation and subscription deep audit.
+- Failed: `Compile and test Soroban workspace` (workflow run 42488268545). The `pirc-economic-settlement` test suite reports 12 failures with Soroban host `Error(Auth, ExistingValue)` / `frame is already authorized`. This is an authorization-test harness failure requiring diagnosis; do not dismiss it or mark the workspace green.
+- Skipped: Testnet deployment verification and registry synchronization. These skipped jobs are not deployment evidence.
+
+The latest inspected Unity Sphere #52 checks passed for frontend build, Deno static checks, API tests, publish-artifact build and secret scan. The GitHub Pages publish job was skipped; no hosted release was verified.
+
+PiRC #369 has only a successful Vercel preview-comment check in the inspected check set; this is not a schema/documentation validation result. The new payment-rails standard is proposed documentation and still requires schema crosswalk, review and implementation.
+
