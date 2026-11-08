@@ -5,29 +5,46 @@
 **Network:** Pi Testnet1 only.  
 **Authority:** Community engineering proposal; not official Pi Network monetary policy, a price guarantee, a redemption commitment or proof of collateral.
 
-## 1. Corrected dynamic reference
+## 1. Corrected live-tick reference
 
-The internal purchasing-power reference (IPPR) must not be a hard-coded USD amount. Its raw market-linked reference is recalculated from a validated current Pi/USD market observation:
+IPPR is re-based on every accepted live exchange-index tick. The supply multiplier is fixed at 10,000,000 for this calculation; it is NOT the adaptive QWF:
 
-`IPPR_raw(t) = P_exchange_median(t) × QWF(t)`
+`IPPR_t = median(PI/USD_t) × 10,000,000`
 
-The baseline QWF is `10,000,000`. For example, PI/USD = `$0.0314159` is represented as `31,415,900` nano-USD; multiplying by QWF yields `314,159,000,000,000` nano-USD, or `$314,159` per Pi as an internal reference index. The market quote is expressed in USD per PI, and the result is a reference USD-unit per PI under this proposal. For deterministic implementations, use integer nano-USD per PI and integer arithmetic:
+Use integer nano-USD per PI for seven-decimal quote precision. Example from the supplied simulation snapshot:
 
-`raw_ippr_nano_usd_per_pi = median_price_nano_usd_per_pi * qwf_multiplier`
+- Displayed exchange index: $0.072956 (rounded to six decimals).
+- Underlying quote consistent with the displayed IPPR: $0.0729555.
+- IPPR: $0.0729555 × 10,000,000 = $729,555.
+- QWF: 10,072,123 (separate adaptive state).
+- Network velocity (L_n): 0.5115.
+- Reflexive constraint: `Φ = (L_n × IPPR) / QWF`, which is approximately 0.0370495 for these values.
 
-This makes the reference move with the market price. A price change must propagate to the next accepted quote/epoch; it must never silently remain a fixed legacy amount.
+The five-dollar difference between multiplying the rounded display price ($0.072956) and the displayed IPPR ($729,555) is explained by the unrounded source quote ($0.0729555). The UI should retain and display sufficient precision or clearly label rounded values.
+
+The reference implementation therefore keeps these fields separate:
+- `external_price_nano_usd_per_pi`
+- `ippr_supply_multiplier = 10,000,000`
+- `ippr_nano_usd_per_pi`
+- `qwf_current`
+- `network_velocity_ppm`
+- `phi_ppm)
+
+A QWF change may alter Phi and downstream policy gates, but must never rewrite the IPPR market rebase formula.
 
 ## 2. PiRC-101 reflexive controller
 
-The archived PiRC-101 source describes QWF as a governed base multiplier of 10^7 with bounded adjustment informed by economic velocity and TVL/liquidity, and an IPPR reference around USD 2.248M in that historical snapshot. That fixed number is not the live formula and must not be carried forward as a constant.
+The Unity Sphere PiRC-101 source describes QWF as a separately governed adaptive state, with discrete updates constrained by velocity and TVL/liquidity:
 
-The intended control boundary is:
+`QWF_next = clamp(QWF_current × (1 + approved_adjustment_rate), MIN_QWF, MAX_QWF)`
 
-`QWF_next = clamp(QWF_current * (1 + adjustment_rate), QWF_min, QWF_max)`
+The adjustment must be proposal/governance approved, versioned, bounded and backed by timestamped inputs. The exact `adjustment_rate`, `MIN_QWF`, `MAX_QWF`, TVL definition, epoch and controller `Φ` semantics must be pinned to the approved canonical PiRC-101 revision before autonomous changes are enabled. The reference engine consumes the current verified QWF; it does not invent or silently adjust it.
 
-Any QWF adjustment must be discrete, versioned, proposal/governance approved, and backed by published input metrics. The exact `adjustment_rate`, `QWF_min`, `QWF_max`, epoch, TVL definition and PiRC-101 `Phi` function must be taken from an approved canonical PiRC-101 revision. Until pinned and reviewed, the multiplier remains the 10,000,000 baseline and no autonomous QWF changes are permitted.
+The PiRC-101 reference equation used by the current Unity Sphere economics source is:
 
-The reference controller may apply a bounded `guardrail_bps` to produce a risk-adjusted index. It is a reporting/gating factor only; it is not a minting instruction.
+`Φ = (L_n × IPPR) / QWF`
+
+Do not substitute `IPPR = price × QWF`. The live IPPR supply multiplier and adaptive QWF are different variables.
 
 ## 3. Oracle aggregation and freshness
 
@@ -101,4 +118,4 @@ Each gate returns `PASS`, `FAIL`, `STALE`, `NOT_APPLICABLE` or `REVIEW_REQUIRED`
 - `reference/dynamic_ippr.py`
 - `tests/test_dynamic_ippr.py`
 
-The reference implementation calculates the median market-linked IPPR, enforces oracle freshness/quorum/deviation, and evaluates the four gates. It intentionally does not deploy contracts, submit payments, issue REF, custody assets, or claim the gates have been satisfied by live network evidence.
+The reference implementation re-bases IPPR from the live PI/USD median × 10,000,000, keeps adaptive QWF independent, calculates the PiRC-101 reflexive Phi constraint, enforces oracle freshness/quorum/deviation, and evaluates the four gates. It intentionally does not deploy contracts, submit payments, issue REF, custody assets, or claim the gates have been satisfied by live network evidence.
