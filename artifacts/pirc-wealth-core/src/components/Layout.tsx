@@ -10,13 +10,15 @@ import {
   Layers,
   Building2,
   CreditCard,
-  GitMerge
+  GitMerge,
+  ShieldCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Repository Sync", href: "/sync", icon: GitMerge },
+  { name: "Warehouse CI", href: "/warehouse-ci", icon: ShieldCheck },
   { name: "Matrix Registry", href: "/matrix", icon: Database },
   { name: "Contracts Hub", href: "/contracts", icon: FileCode2 },
   { name: "Data Explorer", href: "/explorer", icon: Search },

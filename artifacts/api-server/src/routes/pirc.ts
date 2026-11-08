@@ -64,6 +64,10 @@ router.get("/github/branches", async (req, res) => {
 
 router.get("/github/tree", async (req, res) => {
   const branch = typeof req.query.branch === "string" ? req.query.branch : "main";
+  if (!branch || branch.length > 255 || /[\u0000-\u001f]/.test(branch)) {
+    res.status(400).json({ error: "Invalid branch name" });
+    return;
+  }
   try {
     const branchInfo = await githubJson(
       `https://api.github.com/repos/${owner}/${repo}/branches/${encodeURIComponent(branch)}`,
@@ -71,7 +75,15 @@ router.get("/github/tree", async (req, res) => {
     const tree = await githubJson(
       `https://api.github.com/repos/${owner}/${repo}/git/trees/${branchInfo.commit.sha}?recursive=1`,
     );
-    res.json({ status: "success", data: tree.tree });
+    const complete = tree.truncated !== true;
+    res.json({
+      status: "success",
+      complete,
+      truncated: tree.truncated === true,
+      count: Array.isArray(tree.tree) ? tree.tree.length : 0,
+      ...(complete ? {} : { warning: "GitHub truncated the recursive tree; this result is incomplete." }),
+      data: Array.isArray(tree.tree) ? tree.tree : [],
+    });
   } catch (error) {
     req.log.warn({ err: error, branch }, "GitHub tree unavailable");
     res.status(502).json({ error: "Unable to read repository tree" });
@@ -81,8 +93,8 @@ router.get("/github/tree", async (req, res) => {
 router.get("/github/file", async (req, res) => {
   const filePath = typeof req.query.path === "string" ? req.query.path : "";
   const branch = typeof req.query.branch === "string" ? req.query.branch : "main";
-  if (!filePath) {
-    res.status(400).json({ error: "Path is required" });
+  if (!filePath || filePath.length > 500 || !branch || branch.length > 255 || /[\\u0000-\\u001f]/.test(branch)) {
+    res.status(400).json({ error: "A valid file path and branch are required" });
     return;
   }
 

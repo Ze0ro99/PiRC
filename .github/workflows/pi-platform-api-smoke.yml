@@ -31,12 +31,12 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
-          cache: "pnpm"
 
       - name: Activate pnpm
         run: |
           corepack enable
           corepack prepare pnpm@10.28.0 --activate
+          pnpm --version
 
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile

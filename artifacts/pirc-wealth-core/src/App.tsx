@@ -14,6 +14,7 @@ const Contracts = lazy(() => import("./components/Contracts").then((m) => ({ def
 const Placeholder = lazy(() => import("./components/Placeholder").then((m) => ({ default: m.Placeholder })));
 const RepoSync = lazy(() => import("./components/RepoSync").then((m) => ({ default: m.RepoSync })));
 const Subscriptions = lazy(() => import("./components/Subscriptions").then((m) => ({ default: m.Subscriptions })));
+const WarehouseReview = lazy(() => import("./components/WarehouseReview"));
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
               <Route path="/sync" element={<RepoSync />} />
               <Route path="/matrix" element={<Matrix />} />
               <Route path="/contracts" element={<Contracts />} />
+              <Route path="/warehouse-ci" element={<WarehouseReview />} />
               <Route path="/explorer" element={<Placeholder title="Data Explorer" />} />
               <Route path="/economics" element={<Placeholder title="Economics Simulator" />} />
               <Route path="/layers" element={<Placeholder title="7-Layer Visualizer" />} />
