@@ -186,9 +186,10 @@ def run_rehearsal() -> dict[str, Any]:
 
     try:
         sim.swap("pioneer-a", 10_000, 99_999)
-        raise GateError("slippage guard failed to reject an impossible min_out")
     except GateError as exc:
         require("slippage" in str(exc), f"unexpected swap failure: {exc}")
+    else:
+        raise AssertionError("slippage guard failed to reject an impossible min_out")
     checks.append({"name": "pidex_min_out_guard", "status": "PASS", "detail": "impossible min_out rejected"})
 
     sim.create_payment("payment-001", "pioneer-a", 250)
@@ -200,9 +201,10 @@ def run_rehearsal() -> dict[str, Any]:
 
     try:
         sim.complete_payment("payment-001", "attacker", "testnet-tx-001")
-        raise GateError("payment owner guard failed")
     except GateError as exc:
         require("owner" in str(exc), f"unexpected payment failure: {exc}")
+    else:
+        raise AssertionError("payment owner guard failed")
     checks.append({"name": "payment_owner_guard", "status": "PASS", "detail": "foreign owner rejected"})
 
     require(sim.ingest_event("event-001"), "first event was not ingested")
@@ -217,17 +219,19 @@ def run_rehearsal() -> dict[str, Any]:
 
     try:
         sim.settle("period-001", 450_000, {"identity": 1}, "digest-duplicate")
-        raise GateError("duplicate settlement guard failed")
     except GateError as exc:
         require("already settled" in str(exc), f"unexpected settlement failure: {exc}")
+    else:
+        raise AssertionError("duplicate settlement guard failed")
     checks.append({"name": "settlement_replay_guard", "status": "PASS", "detail": "duplicate period rejected"})
 
     try:
         sim.request_withdrawal("withdrawal-denied", 100, identity=True, provenance=False,
                                eligible=True, reserve_available=1_000)
-        raise GateError("withdrawal provenance gate failed")
     except GateError as exc:
         require("eligibility" in str(exc), f"unexpected withdrawal failure: {exc}")
+    else:
+        raise AssertionError("withdrawal provenance gate failed")
     status = sim.request_withdrawal("withdrawal-approved", 100, identity=True, provenance=True,
                                      eligible=True, reserve_available=1_000)
     checks.append({"name": "withdrawal_eligibility_and_reserve_gate", "status": "PASS",
