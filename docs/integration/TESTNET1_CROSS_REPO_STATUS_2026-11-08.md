@@ -109,3 +109,49 @@ The latest inspected Unity Sphere #52 checks passed for frontend build, Deno sta
 
 PiRC #369 has only a successful Vercel preview-comment check in the inspected check set; this is not a schema/documentation validation result. The new payment-rails standard is proposed documentation and still requires schema crosswalk, review and implementation.
 
+
+
+## 12. Post-merge status refresh — 2026-11-08 15:45 UTC
+
+This section supersedes earlier statements in this historical status record that described the following pull requests as open or their checks as pending.
+
+### 12.1 Merged source changes
+
+| Repository | PR | Merge commit | Result |
+|---|---:|---|---|
+| PiRC | #369 | `e8c2b2bf4f67b0f1fda29c34ead0804e66fb96ff` | Cross-repository Testnet1 status and payment-rails standard merged |
+| PiRC | #370 | `79f4568e4846529e7bd6c3e82dc101c0b001086e` | PiRC-2 registry RPC metadata aligned to Pi Testnet RPC |
+| SmartContracts | #1108 | `2bca4658f58dc097085f1956d87a5f7f3b756a05` | Canonical PiDEX AMM and test-asset source merged |
+| SmartContracts | #1110 | `80cd65e707bc0bf54f4ab2fe33f5691a07b711fb` | Delegated-burn total-supply test expectation corrected |
+| SmartContracts | #1111 | `8200713e49979820593b50a34421ce2fe28072b2` | PiRC packet source registry imported without claiming deployment |
+
+### 12.2 Current CI evidence
+
+- SmartContracts #1110: the complete Soroban workspace compile/test job, economic-vector validation, Rust/Actions/Python analysis, subscription deep audit and CodeQL completed successfully. The earlier failing assertion was a test expectation error: mint 500, transfer 100 (no supply change), then burn 25; Alice holds 375 and total supply is 475.
+- SmartContracts #1111: source-registry import, analysis, CodeQL and master summary completed successfully. Deployment-verification and per-contract deployment jobs were skipped; this is not deployment evidence.
+- PiRC #370: workspace typecheck/build, schema/Netlify validation and SonarCloud checks completed successfully.
+- Unity Sphere #52 remains open at head `14ef9974d040c8fdc8807b992b8b5002e9c5ac37`. Its inspected build, tests, Deno static check, API tests and secret scan are green. The manual release-readiness workflow has not been run.
+
+### 12.3 Current Testnet activation blockers
+
+The verified read-only Pi Testnet profile is `https://api.testnet.minepi.com` and `https://rpc.testnet.minepi.com`, with passphrase `Pi Testnet`; the recorded Soroban protocol is 28 and Horizon reports support through protocol 29.
+
+The supplied issuer reference `GA3ECRFJ6SO5BW6NEIKW3ACJXNG5UNBTLRRXWC742NHUEDV6KL3RNEN6` is a Stellar StrKey G-account public key, not a Soroban C-contract ID. The repository records it as a source-declared issuer account only. Account existence, signer control and issuer/admin authority remain unverified.
+
+The last recorded live read-only probe found 0/7 registered layer contract instances. The deployment manifest therefore correctly keeps all seven canonical asset contract IDs null and deployment disabled. No balances, reserves, liquidity or token issuance can be treated as live or synchronized.
+
+Before activation, the project still requires:
+1. An explicitly authorized, isolated Testnet-only signer and a protected credential reference; no signer secret may enter source control or client bundles.
+2. Seven approved color-to-layer registry mappings, preserving the unresolved Gold/Indigo history.
+3. Reproducible WASM artifacts and hashes, deployment transactions, contract IDs, initialized-state and issuer/admin readback for every allowlisted contract.
+4. A complete PiRC-2 implementation and ABI/client authorization tests.
+5. A supported Soroban signing/submission flow separate from Pi SDK account authentication.
+6. XDR decoding, transaction finality, idempotent event reconciliation and canonical settlement-state checks.
+7. Completion of the 17 route-page localization migration and review of every advertised locale before enabling non-English selection.
+8. Pi Browser/Sandbox runtime verification and served-build provenance.
+
+### 12.4 Release boundary
+
+Unity Sphere #52 is a source-integration PR, not a Testnet deployment attestation. Keep it open until its source checks and intended scope are reviewed; do not infer live PiDEX operation from green frontend/API CI. Simulation balances, orders and liquidity must remain visibly simulated. Mainnet signing, deployment, issuance, payment capture and writes remain disabled.
+
+No deployment, signing, issuance, liquidity creation or Mainnet write is authorized by this status refresh.
