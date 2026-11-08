@@ -37,6 +37,19 @@ The official Pi Client SDK defines `wallet_address` as a separate authentication
 
 The returned wallet address binds a Pi account to an address. It does not expose the private key or prove arbitrary Soroban transaction signing capability. PiDEX must not treat account authentication as permission to submit an AMM transaction.
 
+## 4A. Live Pi Testnet read-only evidence — 2026-11-08
+
+The Unity Sphere focused validation workflow verified Pi Testnet identity using the explicit `Pi Testnet` passphrase:
+- Horizon and Soroban RPC reachable.
+- Both passphrase checks matched.
+- Soroban RPC healthy, protocol 28.
+- Horizon supported protocol 29.
+- Latest ledger observed: 27,596,965.
+
+The seven contract IDs currently stored in the Unity Sphere layer registry all returned `NOT_FOUND` on this verified Pi Testnet profile: root, sacral, solar, heart, throat, crown and gold-unmapped. This proves those registry references are not deployed contract instances on this network at the probe time. They remain unverified metadata and must not be represented as active tokens, balances, reserves or tradable assets.
+
+The probe is read-only and does not establish that no other assets exist on Pi Testnet.
+
 ## 5. PiDEX and contract status
 
 - PiDEX browser order entry, balances, fills and liquidity remain local simulation data.
