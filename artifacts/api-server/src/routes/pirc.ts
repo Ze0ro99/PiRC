@@ -64,7 +64,7 @@ router.get("/github/branches", async (req, res) => {
 
 router.get("/github/tree", async (req, res) => {
   const branch = typeof req.query.branch === "string" ? req.query.branch : "main";
-  if (!branch || branch.length > 255 || /[\\u0000-\\u001f]/.test(branch)) {
+  if (!branch || branch.length > 255 || /[\u0000-\u001f]/.test(branch)) {
     res.status(400).json({ error: "Invalid branch name" });
     return;
   }
