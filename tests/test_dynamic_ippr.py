@@ -3,7 +3,6 @@ import unittest
 from reference.dynamic_ippr import (
     EconomicGates,
     IPPRValidationError,
-    OraclePolicy,
     PriceObservation,
     aggregate_oracle,
     calculate_ippr,
@@ -11,7 +10,7 @@ from reference.dynamic_ippr import (
 )
 
 
-def observations(prices=(31_415_900, 31_416_000, 31_415_800), age=10):
+def observations(prices=(72_955_500, 72_956_000, 72_955_000), age=10):
     return [
         PriceObservation(f"venue-{i}", price, 1_000 - age)
         for i, price in enumerate(prices)
@@ -33,26 +32,48 @@ def passing_gates():
 
 
 class DynamicIPPRTests(unittest.TestCase):
-    def test_live_price_times_ten_million(self):
-        result = calculate_ippr(observations(), 1_000, passing_gates())
-        self.assertEqual(result.external_price_nano_usd_per_pi, 31_415_900)
-        self.assertEqual(result.raw_ippr_nano_usd_per_pi, 314_159_000_000_000)
-        self.assertEqual(result.guarded_reference_nano_usd_per_pi, 314_159_000_000_000)
+    def test_ippr_rebases_from_live_pi_usd_times_fixed_ten_million(self):
+        result = calculate_ippr(
+            observations((72_955_500, 72_955_500, 72_955_500)),
+            1_000, passing_gates(), qwf_current=10_072_123,
+            network_velocity_ppm=511_500,
+        )
+        self.assertEqual(result.external_price_nano_usd_per_pi, 72_955_500)
+        self.assertEqual(result.ippr_supply_multiplier, 10_000_000)
+        self.assertEqual(result.ippr_nano_usd_per_pi, 729_555_000_000_000)
+        self.assertEqual(result.qwf_current, 10_072_123)
+        self.assertEqual(result.network_velocity_ppm, 511_500)
+        self.assertEqual(result.phi_ppm, 37_049)
         self.assertEqual(result.status, "REFERENCE_ONLY_GATES_PASSED")
 
-    def test_index_tracks_market_price_not_fixed_constant(self):
-        low = calculate_ippr(observations((10_000_000, 10_000_000, 10_000_000)), 1_000, passing_gates())
-        high = calculate_ippr(observations((20_000_000, 20_000_000, 20_000_000)), 1_000, passing_gates())
-        self.assertEqual(high.raw_ippr_nano_usd_per_pi, low.raw_ippr_nano_usd_per_pi * 2)
+    def test_ippr_tracks_market_price_not_qwf(self):
+        low = calculate_ippr(
+            observations((10_000_000, 10_000_000, 10_000_000)),
+            1_000, passing_gates(), qwf_current=10_000_000,
+            network_velocity_ppm=500_000,
+        )
+        high = calculate_ippr(
+            observations((20_000_000, 20_000_000, 20_000_000)),
+            1_000, passing_gates(), qwf_current=20_000_000,
+            network_velocity_ppm=500_000,
+        )
+        self.assertEqual(high.ippr_nano_usd_per_pi, low.ippr_nano_usd_per_pi * 2)
 
-    def test_guardrail_reduces_reference_not_market_quote(self):
-        result = calculate_ippr(observations(), 1_000, passing_gates(), guardrail_bps=5_000)
-        self.assertEqual(result.external_price_nano_usd_per_pi, 31_415_900)
-        self.assertEqual(result.guarded_reference_nano_usd_per_pi, result.raw_ippr_nano_usd_per_pi // 2)
+    def test_qwf_changes_phi_but_does_not_change_ippr_rebase(self):
+        low_qwf = calculate_ippr(
+            observations(), 1_000, passing_gates(),
+            qwf_current=10_000_000, network_velocity_ppm=511_500,
+        )
+        high_qwf = calculate_ippr(
+            observations(), 1_000, passing_gates(),
+            qwf_current=20_000_000, network_velocity_ppm=511_500,
+        )
+        self.assertEqual(low_qwf.ippr_nano_usd_per_pi, high_qwf.ippr_nano_usd_per_pi)
+        self.assertGreater(low_qwf.phi_ppm, high_qwf.phi_ppm)
 
     def test_oracle_requires_three_independent_venues(self):
         with self.assertRaisesRegex(IPPRValidationError, "quorum"):
-            aggregate_oracle(observations((100_000, 101_000)) , 1_000)
+            aggregate_oracle(observations((72_955_500, 72_956_000)), 1_000)
 
     def test_oracle_rejects_duplicate_venue(self):
         obs = observations()
@@ -63,18 +84,17 @@ class DynamicIPPRTests(unittest.TestCase):
     def test_oracle_rejects_stale_or_future_quotes(self):
         with self.assertRaisesRegex(IPPRValidationError, "stale"):
             aggregate_oracle(observations(age=121), 1_000)
-        future = [PriceObservation(f"v{i}", 31_415_900, 1_001) for i in range(3)]
+        future = [PriceObservation(f"v{i}", 72_955_500, 1_001) for i in range(3)]
         with self.assertRaisesRegex(IPPRValidationError, "future"):
             aggregate_oracle(future, 1_000)
 
     def test_oracle_deviation_circuit_breaker(self):
         with self.assertRaisesRegex(IPPRValidationError, "deviation"):
-            aggregate_oracle(observations((31_415_900, 31_415_900, 62_831_800)), 1_000)
+            aggregate_oracle(observations((72_955_500, 72_955_500, 145_911_000)), 1_000)
 
     def test_fourth_gate_blocks_under_collateralized_liability(self):
-        g = passing_gates()
-        g = EconomicGates(**{**g.__dict__, "eligible_reserves_nano_usd": 10})
-        result = calculate_ippr(observations(), 1_000, g)
+        g = EconomicGates(**{**passing_gates().__dict__, "eligible_reserves_nano_usd": 10})
+        result = calculate_ippr(observations(), 1_000, g, 10_000_000, 500_000)
         self.assertFalse(result.gates.solvency_gate)
         self.assertEqual(result.status, "REFERENCE_ONLY_GATED")
 
@@ -84,22 +104,22 @@ class DynamicIPPRTests(unittest.TestCase):
             "active_merchants": 0,
             "settled_volume_nano_usd": 0,
         })
-        result = calculate_ippr(observations(), 1_000, g)
+        result = calculate_ippr(observations(), 1_000, g, 10_000_000, 500_000)
         self.assertFalse(result.gates.utility_gate)
         self.assertFalse(result.gates.velocity_liquidity_gate)
         self.assertEqual(result.status, "REFERENCE_ONLY_GATED")
 
     def test_zero_liability_is_not_applicable_and_does_not_open_gate(self):
         g = EconomicGates(**{**passing_gates().__dict__, "outstanding_ref_liability_nano_usd": 0})
-        result = calculate_ippr(observations(), 1_000, g)
+        result = calculate_ippr(observations(), 1_000, g, 10_000_000, 500_000)
         self.assertIsNone(result.gates.solvency_gate)
         self.assertEqual(result.status, "REFERENCE_ONLY_GATED")
 
-    def test_qwf_and_guardrail_are_bounded(self):
-        with self.assertRaises(IPPRValidationError):
-            calculate_ippr(observations(), 1_000, passing_gates(), qwf_multiplier=0)
-        with self.assertRaises(IPPRValidationError):
-            calculate_ippr(observations(), 1_000, passing_gates(), guardrail_bps=10_001)
+    def test_qwf_and_velocity_must_be_valid(self):
+        with self.assertRaisesRegex(IPPRValidationError, "qwf_current"):
+            calculate_ippr(observations(), 1_000, passing_gates(), 0, 500_000)
+        with self.assertRaisesRegex(IPPRValidationError, "velocity"):
+            calculate_ippr(observations(), 1_000, passing_gates(), 10_000_000, 100_000_001)
 
     def test_median_integer_rounding(self):
         self.assertEqual(median_int([1, 2, 4, 5]), 3)
