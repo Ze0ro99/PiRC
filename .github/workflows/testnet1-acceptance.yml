@@ -14,7 +14,7 @@ on:
         description: "Also probe live Pi Testnet Horizon and Soroban RPC (read-only; no signing or writes)"
         required: true
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: read
