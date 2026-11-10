@@ -37,7 +37,7 @@ jobs:
           python scripts/testnet1_acceptance.py --output artifacts/testnet1-acceptance-report.json
           python -m unittest tests.test_testnet1_acceptance -v
       - name: Upload rehearsal evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pirc-testnet1-rehearsal
           path: artifacts/testnet1-acceptance-report.json
@@ -57,7 +57,7 @@ jobs:
       - name: Verify Pi Testnet network identity and RPC health (read-only)
         run: python scripts/testnet1_acceptance.py --live-read-only --output artifacts/testnet1-live-read-only-report.json
       - name: Upload live probe evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pirc-testnet1-live-read-only
           path: artifacts/testnet1-live-read-only-report.json
