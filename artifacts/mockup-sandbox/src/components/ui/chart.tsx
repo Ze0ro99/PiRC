@@ -115,7 +115,8 @@ const ChartTooltipContent = React.forwardRef<
       payload?: TooltipItem[]
       label?: React.ReactNode
       labelFormatter?: (label: React.ReactNode, payload: TooltipItem[]) => React.ReactNode
-      formatter?: (value: string | number, name: string | number, item: TooltipItem, index: number, payload: TooltipItem[]) => React.ReactNode
+      labelClassName?: string
+      formatter?: (value: string | number, name: string | number, item: TooltipItem, index: number, payload: unknown) => React.ReactNode
       color?: string
       hideLabel?: boolean
       hideIndicator?: boolean
@@ -201,7 +202,7 @@ const ChartTooltipContent = React.forwardRef<
             .map((item, index) => {
               const key = `${nameKey || item.name || item.dataKey || "value"}`
               const itemConfig = getPayloadConfigFromPayload(config, item, key)
-              const indicatorColor = color || item.payload.fill || item.color
+              const indicatorColor = color || item.payload?.fill || item.color
 
               return (
                 <div
