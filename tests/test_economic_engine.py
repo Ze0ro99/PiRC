@@ -88,5 +88,52 @@ class EconomicEngineTests(unittest.TestCase):
                     self.fail(f"unknown golden vector kind: {case['kind']}")
 
 
+    def test_weighted_score_uses_explicit_basis_point_weights(self):
+        from reference.economic_engine import weighted_score_bps
+        self.assertEqual(
+            weighted_score_bps(
+                {"identity": 10_000, "contribution": 8_000, "utility": 6_000},
+                {"identity": 3_000, "contribution": 4_000, "utility": 3_000},
+            ),
+            8_000,
+        )
+
+    def test_weighted_allocation_applies_eligibility_before_distribution(self):
+        from reference.economic_engine import allocate_weighted
+        result = allocate_weighted(
+            7,
+            {
+                "alice": {"identity": 10_000, "contribution": 10_000},
+                "bob": {"identity": 10_000, "contribution": 5_000},
+                "carol": {"identity": 10_000, "contribution": 10_000},
+            },
+            {"identity": 5_000, "contribution": 5_000},
+            {"alice": True, "bob": True, "carol": False},
+        )
+        self.assertEqual(result.scores_bps, {"alice": 10_000, "bob": 7_500, "carol": 0})
+        self.assertEqual(result.allocation.amounts, {"alice": 4, "bob": 3, "carol": 0})
+        self.assertEqual(sum(result.allocation.amounts.values()), 7)
+
+    def test_weighted_score_rejects_weights_that_do_not_sum_to_basis(self):
+        from reference.economic_engine import weighted_score_bps
+        with self.assertRaises(EconomicInvariantError):
+            weighted_score_bps({"identity": 10_000}, {"identity": 9_999})
+
+    def test_weighted_score_rejects_missing_factors_and_float_values(self):
+        from reference.economic_engine import weighted_score_bps
+        with self.assertRaises(EconomicInvariantError):
+            weighted_score_bps({"identity": 10_000}, {"identity": 5_000, "utility": 5_000})
+        with self.assertRaises(EconomicInvariantError):
+            weighted_score_bps({"identity": 1.5}, {"identity": 10_000})
+
+    def test_weighted_allocation_requires_exact_eligibility_map(self):
+        from reference.economic_engine import allocate_weighted
+        with self.assertRaises(EconomicInvariantError):
+            allocate_weighted(
+                1, {"alice": {"identity": 10_000}},
+                {"identity": 10_000}, {"bob": True},
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
