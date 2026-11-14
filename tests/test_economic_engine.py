@@ -111,7 +111,7 @@ class EconomicEngineTests(unittest.TestCase):
             {"alice": True, "bob": True, "carol": False},
         )
         self.assertEqual(result.scores_bps, {"alice": 10_000, "bob": 7_500, "carol": 0})
-        self.assertEqual(result.allocation.amounts, {"alice": 5, "bob": 2, "carol": 0})
+        self.assertEqual(result.allocation.amounts, {"alice": 4, "bob": 3, "carol": 0})
         self.assertEqual(sum(result.allocation.amounts.values()), 7)
 
     def test_weighted_score_rejects_weights_that_do_not_sum_to_basis(self):
