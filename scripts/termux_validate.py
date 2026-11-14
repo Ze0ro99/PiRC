@@ -15,31 +15,57 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "artifacts" / "termux-reports"
 
+# Redact credentials before any command or endpoint output reaches a report.
+REDACTIONS = [
+    (re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"), "[REDACTED PRIVATE KEY]"),
+    (re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}\b"), "[REDACTED GITHUB TOKEN]"),
+    (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "[REDACTED AWS ACCESS KEY]"),
+    (re.compile(r"(?i)\b(?:secret|token|api[_-]?key|password)\b\s*[:=]\s*['\"]?[^'\"\s,;]+"), "[REDACTED CREDENTIAL ASSIGNMENT]"),
+]
+
+
+def redact(value):
+    text = str(value)
+    for pattern, replacement in REDACTIONS:
+        text = pattern.sub(replacement, text)
+    return text
+
 
 def result(ok, name, detail=""):
-    return {"name": name, "status": "PASS" if ok else "FAIL", "detail": detail}
+    return {"name": name, "status": "PASS" if ok else "FAIL", "detail": redact(detail)}
 
 
 def command(args, timeout=900):
+    safe_command = redact(" ".join(args))
     try:
         p = subprocess.run(args, cwd=ROOT, text=True, stdout=subprocess.PIPE,
                            stderr=subprocess.STDOUT, timeout=timeout)
-        return {"command": " ".join(args), "exit_code": p.returncode, "output": p.stdout[-8000:]}
+        return {"command": safe_command, "exit_code": p.returncode,
+                "output": redact(p.stdout[-8000:])}
     except FileNotFoundError:
-        return {"command": " ".join(args), "exit_code": 127, "output": "Optional tool not installed"}
+        return {"command": safe_command, "exit_code": 127, "output": "Optional tool not installed"}
     except subprocess.TimeoutExpired:
-        return {"command": " ".join(args), "exit_code": 124, "output": "Timed out"}
+        return {"command": safe_command, "exit_code": 124, "output": "Timed out"}
+    except OSError as exc:
+        return {"command": safe_command, "exit_code": 126, "output": redact(exc)}
 
 
 def json_check():
-    files = []
+    checked, errors = [], []
     for folder in ("schemas", "registries", "fixtures"):
         base = ROOT / folder
-        if base.exists():
-            for path in base.rglob("*.json"):
+        if not base.exists():
+            continue
+        for path in base.rglob("*.json"):
+            try:
                 json.loads(path.read_text(encoding="utf-8"))
-                files.append(str(path.relative_to(ROOT)))
-    return result(bool(files), "json_documents_parse", f"{len(files)} JSON files parsed")
+                checked.append(str(path.relative_to(ROOT)))
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+                errors.append(f"{path.relative_to(ROOT)} ({type(exc).__name__})")
+    detail = f"{len(checked)} JSON files parsed"
+    if errors:
+        detail += "; invalid/unreadable: " + ", ".join(errors)
+    return result(bool(checked) and not errors, "json_documents_parse", detail)
 
 
 def economics():
@@ -63,21 +89,45 @@ def economics():
 def secret_scan():
     patterns = [
         re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
-        re.compile(r"gh[pousr]_[A-Za-z0-9]{30,}"),
+        re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}\b"),
+        re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+        re.compile(r"(?i)(?:secret|token|api[_-]?key|password)\s*[:=]\s*['\"][^'\"]{8,}"),
     ]
-    hits = []
-    for folder in (".github", "scripts", "docs", "schemas", "registries"):
+    sensitive_names = {".env", ".env.local", ".env.production", "id_rsa", "id_ed25519"}
+    sensitive_suffixes = {".pem", ".p12", ".pfx", ".key"}
+    ignored_examples = {".env.example", ".env.sample", ".env.template"}
+    hits = set()
+    for folder in (".",):
         base = ROOT / folder
-        if base.exists():
-            for path in base.rglob("*"):
-                if path.is_file() and path.suffix.lower() in {
-                    ".py", ".sh", ".yml", ".yaml", ".json", ".toml", ".md", ".ts", ".js"
-                }:
-                    content = path.read_text(encoding="utf-8", errors="ignore")
-                    if any(pattern.search(content) for pattern in patterns):
-                        hits.append(str(path.relative_to(ROOT)))
+        for path in base.rglob("*"):
+            if not path.is_file():
+                continue
+            relative = path.relative_to(ROOT)
+            if any(part in {".git", ".venv", "node_modules", "target", "__pycache__"}
+                   for part in relative.parts):
+                continue
+            name = path.name.lower()
+            if name in ignored_examples:
+                continue
+            if name in sensitive_names or name.startswith(".env.") and name not in ignored_examples:
+                hits.add(str(relative))
+                continue
+            if path.suffix.lower() not in {
+                ".py", ".sh", ".yml", ".yaml", ".json", ".toml", ".md", ".ts",
+                ".tsx", ".js", ".mjs", ".cjs", ".rs", ".env", ".pem", ".p12",
+                ".pfx", ".key", ".properties", ".conf"
+            } and path.suffix.lower() not in sensitive_suffixes:
+                continue
+            try:
+                content = path.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                hits.add(str(relative))
+                continue
+            if any(pattern.search(content) for pattern in patterns):
+                hits.add(str(relative))
     return result(not hits, "tracked_secret_pattern_scan",
-                  "No high-confidence key patterns found" if not hits else "Review files: " + ", ".join(hits))
+                  "No high-confidence credential patterns or secret-named files found"
+                  if not hits else "Review paths only (contents withheld): " + ", ".join(sorted(hits)))
 
 
 def classify_http(status):
@@ -95,10 +145,7 @@ def health(name, url, rpc=False):
         return {"name": name, "status": "SKIP", "detail": "Not configured"}
     payload = {"jsonrpc": "2.0", "id": 1, "method": "getHealth"} if rpc else None
     data = json.dumps(payload).encode("utf-8") if rpc else None
-    headers = {
-        "Accept": "application/json",
-        "User-Agent": "PiRC-read-only-health-check/1.0",
-    }
+    headers = {"Accept": "application/json", "User-Agent": "PiRC-read-only-health-check/1.1"}
     if rpc:
         headers["Content-Type"] = "application/json"
     request = Request(url, data=data, headers=headers, method="POST" if rpc else "GET")
@@ -108,23 +155,19 @@ def health(name, url, rpc=False):
             raw = response.read(4096).decode("utf-8", errors="replace")
             content_type = response.headers.get("Content-Type", "")
     except HTTPError as exc:
-        try:
-            detail = exc.read(1000).decode("utf-8", errors="replace")
-        except Exception:
-            detail = str(exc)
         return {"name": name, "status": classify_http(exc.code),
-                "detail": f"HTTP {exc.code}: {detail[:250]}"}
-    except TimeoutError as exc:
-        return {"name": name, "status": "TIMEOUT", "detail": str(exc)[:250]}
+                "detail": f"HTTP {exc.code}; response body suppressed"}
+    except TimeoutError:
+        return {"name": name, "status": "TIMEOUT", "detail": "Request timed out"}
     except URLError as exc:
         reason = getattr(exc, "reason", exc)
         status = "TIMEOUT" if isinstance(reason, TimeoutError) else "FAIL"
-        return {"name": name, "status": status, "detail": str(reason)[:250]}
+        return {"name": name, "status": status, "detail": redact(type(reason).__name__)}
     except (OSError, ValueError) as exc:
-        return {"name": name, "status": "FAIL", "detail": str(exc)[:250]}
+        return {"name": name, "status": "FAIL", "detail": redact(type(exc).__name__)}
 
     if status != 200:
-        return {"name": name, "status": classify_http(status), "detail": f"HTTP {status}: {raw[:250]}"}
+        return {"name": name, "status": classify_http(status), "detail": f"HTTP {status}; body suppressed"}
     try:
         document = json.loads(raw)
     except json.JSONDecodeError:
@@ -135,17 +178,18 @@ def health(name, url, rpc=False):
     if rpc:
         if document.get("jsonrpc") != "2.0" or document.get("id") != 1 or "error" in document:
             return {"name": name, "status": "FAIL",
-                    "detail": f"Invalid JSON-RPC getHealth response: {json.dumps(document)[:250]}"}
+                    "detail": "Invalid JSON-RPC getHealth response; payload suppressed"}
         health_result = document.get("result")
         if not isinstance(health_result, dict):
             return {"name": name, "status": "FAIL", "detail": "JSON-RPC result missing or malformed"}
         state = str(health_result.get("status", "")).lower()
         if state not in ("healthy", "ok"):
             return {"name": name, "status": "FAIL",
-                    "detail": f"JSON-RPC responded but health status is not healthy: {health_result}"}
-        return {"name": name, "status": "PASS", "detail": "HTTP 200; JSON-RPC getHealth status=healthy"}
+                    "detail": "JSON-RPC responded but health status is not healthy"}
+        return {"name": name, "status": "PASS",
+                "detail": "HTTP 200; JSON-RPC getHealth status=healthy; network identity not verified"}
     return {"name": name, "status": "PASS",
-            "detail": f"HTTP 200; valid JSON object ({content_type})"}
+            "detail": f"HTTP 200; valid JSON object ({content_type}); endpoint identity not verified"}
 
 
 def main():
@@ -159,15 +203,12 @@ def main():
         *economics(),
         result((ROOT / "docs/economics/INTERNAL_EXTERNAL_VALUE_BRIDGE_SPEC.md").exists(),
                "economic_bridge_spec"),
-        result((ROOT / "docs/integration/IMPLEMENTATION_TRACEABILITY_MATRIX.md").exists(),
-               "legacy_traceability_matrix"),
         result((ROOT / "docs/integration/MASTER_IMPLEMENTATION_TRACEABILITY_MATRIX.md").exists(),
                "master_traceability_matrix"),
         secret_scan(),
     ]
     if args.network_smoke:
         checks += [
-            health("Pi Testnet Horizon", os.getenv("PI_HORIZON_URL", "https://api.testnet.minepi.com")),
             health("Pi Testnet Soroban RPC", os.getenv("PI_SOROBAN_RPC_URL", "https://rpc.testnet.minepi.com"), True),
             health("Stellar Testnet Horizon", os.getenv("STELLAR_HORIZON_URL", "https://horizon-testnet.stellar.org")),
             health("Stellar Testnet Soroban RPC",
@@ -188,13 +229,16 @@ def main():
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "network_writes": False,
         "mainnet_operations": False,
+        "network_identity_verified": False,
+        "contract_deployment_verified": False,
         "checks": checks,
         "commands": commands,
     }
     (OUT / f"report-{stamp}.json").write_text(json.dumps(report, indent=2) + "\n")
     lines = [
         "# Termux Validation Report", "", report["generated_at"], "",
-        "> No signing, transaction submission, deployment, or Mainnet operation was performed.",
+        "> Read-only checks only. No signing, transaction submission, deployment, or Mainnet operation was performed.",
+        "> Health checks do not prove network identity, contract deployment, WASM hash, or ledger balances.",
         "", "## Checks",
     ]
     lines += [f"- **{item['status']}** {item['name']}: {item.get('detail', '')}" for item in checks]
