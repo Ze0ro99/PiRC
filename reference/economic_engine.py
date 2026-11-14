@@ -128,3 +128,71 @@ def settle_period(ledger: PeriodLedger, eligible_weights: Mapping[str, int]) -> 
     distributable = ledger.distributable
     # Validate participant IDs and weights even when the payable total is zero.
     return allocate_largest_remainder(distributable, eligible_weights)
+
+
+BASIS_POINTS = 10_000
+
+
+@dataclass(frozen=True)
+class WeightedAllocation:
+    scores_bps: Mapping[str, int]
+    allocation: Allocation
+
+
+def weighted_score_bps(
+    factor_values_bps: Mapping[str, int],
+    factor_weights_bps: Mapping[str, int],
+) -> int:
+    """Calculate a deterministic 0..10,000 score from explicitly weighted factors.
+
+    Every factor value and weight is expressed in basis points. Weights must sum
+    exactly to 10,000; all arithmetic is integer-only and rounds down once.
+    """
+    if not factor_values_bps or set(factor_values_bps) != set(factor_weights_bps):
+        raise EconomicInvariantError("factor values and weights must have the same non-empty keys")
+    weight_sum = 0
+    numerator = 0
+    for factor_id in sorted(factor_weights_bps):
+        if not isinstance(factor_id, str) or not factor_id.strip():
+            raise EconomicInvariantError("factor IDs must be non-empty strings")
+        value = factor_values_bps[factor_id]
+        weight = factor_weights_bps[factor_id]
+        if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= BASIS_POINTS:
+            raise EconomicInvariantError(f"value for {factor_id!r} must be an integer in [0, 10000] bps")
+        if isinstance(weight, bool) or not isinstance(weight, int) or not 0 <= weight <= BASIS_POINTS:
+            raise EconomicInvariantError(f"weight for {factor_id!r} must be an integer in [0, 10000] bps")
+        weight_sum += weight
+        numerator += value * weight
+    if weight_sum != BASIS_POINTS:
+        raise EconomicInvariantError("factor weights must sum exactly to 10000 bps")
+    return numerator // BASIS_POINTS
+
+
+def allocate_weighted(
+    total: int,
+    participant_factor_values_bps: Mapping[str, Mapping[str, int]],
+    factor_weights_bps: Mapping[str, int],
+    eligibility: Mapping[str, bool] | None = None,
+) -> WeightedAllocation:
+    """Allocate a distributable amount by eligible weighted scores.
+
+    Eligibility is an independent binary gate: an ineligible participant receives
+    a zero score regardless of their weighted quality/contribution score. Remaining
+    atomic units are assigned by allocate_largest_remainder's stable ID tie-break.
+    """
+    if eligibility is not None and set(eligibility) != set(participant_factor_values_bps):
+        raise EconomicInvariantError("eligibility keys must match participant IDs exactly")
+    scores: dict[str, int] = {}
+    for participant_id in sorted(participant_factor_values_bps):
+        if not isinstance(participant_id, str) or not participant_id.strip():
+            raise EconomicInvariantError("participant IDs must be non-empty strings")
+        if eligibility is not None and not isinstance(eligibility[participant_id], bool):
+            raise EconomicInvariantError(f"eligibility for {participant_id!r} must be boolean")
+        is_eligible = eligibility is None or eligibility[participant_id]
+        score = weighted_score_bps(
+            participant_factor_values_bps[participant_id],
+            factor_weights_bps,
+        )
+        scores[participant_id] = score if is_eligible else 0
+    allocation = allocate_largest_remainder(total, scores)
+    return WeightedAllocation(scores_bps=scores, allocation=allocation)
