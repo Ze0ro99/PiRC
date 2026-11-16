@@ -3,6 +3,7 @@ import unittest
 from reference.dynamic_ippr import (
     EconomicGates,
     IPPRValidationError,
+    OraclePolicy,
     PriceObservation,
     aggregate_oracle,
     calculate_ippr,
