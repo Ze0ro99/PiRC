@@ -20,10 +20,10 @@ The following ratios are recorded as the proposed baseline supplied for this pro
 
 | Asset/layer | Baseline amount per 1 PiGold | Function | Conversion treatment |
 |---|---:|---|---|
-| Green / PiCash | 100,000 PiCash | Daily commerce and payments | Exact integer ratio, subject to a verified PiCash/PiGold pool or settlement route |
-| Blue / PiBank | 10,000 PiBank | Banking and institutional workflow | Service gateway by default; token conversion only if a separately approved PiBank asset exists |
-| Yellow | 1,000 Yellow | Internal/external balancing utility | Versioned ratio; require independent liquidity and oracle policy |
-| Orange / exchange layer | 100 Orange | Exchange and market access | Pair-specific quote, market depth, fee and slippage checks |
+| Green / PiCash | 10,000 PiCash | Daily commerce and payments | Illustrative internal reference tier; execution still requires a live verified route |
+| Blue / PiBank | 1,000 PiBank | Banking and institutional workflow | Illustrative internal reference tier if tokenized; otherwise the service rail remains non-tokenized |
+| Yellow | 10 Yellow | Internal/external balancing utility | Illustrative internal reference tier; require independent liquidity and oracle policy |
+| Orange / exchange layer | 100 Orange | Exchange and market access | Illustrative internal reference tier; pair-specific quote, market depth, fee and slippage checks |
 | Red / governance | No fixed PiGold ratio | Contribution-based governance and voting | Non-transferable governance weight by default; never cash-convertible by implication |
 | Purple / mined Pi bridge | 10,000,000 Purple atomic units = 1 mined-Pi unit; baseline 1 mined-Pi unit = 10 PiGold | Provenance/migration bridge | Escrow and migration proof required; no native Pi minting or supply editing |
 | PiGold | 1 PiGold | Reference and route coordination unit | Must have its own asset definition if represented as a token; coordinator contract alone is not a token |
@@ -41,12 +41,21 @@ layer_change_CAS = layer_input_CAS - PiGold_out_CAS * R
 The remainder must be retained for the user or rejected if the route cannot represent it. Never discard it silently. Inverse quotes use layer_input_CAS = PiGold_input_CAS * R, plus separately disclosed fees. Checked integer arithmetic and explicit rounding are mandatory.
 
 Illustrative exact conversions before fees:
-- 100,000 PiCash -> 1 PiGold.
-- 10,000 PiBank -> 1 PiGold.
-- 1,000 Yellow -> 1 PiGold.
-- 100 Orange -> 1 PiGold.
+- 10,000 PiCash -> 1 PiGold (illustrative reference schedule).
+- 1,000 PiBank -> 1 PiGold (illustrative reference schedule).
+- 10 Yellow -> 1 PiGold (illustrative reference schedule).
+- 100 Orange -> 1 PiGold (illustrative reference schedule).
 
-A user holding 1 whole unit of each asset does not hold equal PiGold value: under this schedule their reference quantities are 1/100,000, 1/10,000, 1/1,000 and 1/100 PiGold respectively. These are accounting ratios only; execution still requires a pool/provider quote.
+A user holding one whole unit of each asset does not hold equal reference purchasing power. Under the illustrative schedule, one Yellow = 1/10 PiGold, one Orange = 1/100 PiGold, one PiBank = 1/1,000 PiGold, and one PiCash = 1/10,000 PiGold. These are policy reference ratios only; execution still requires a fresh pool/provider quote and user authorization.
+
+
+### 2.2 Purchasing-power reference values (illustrative scenario)
+
+For the example where the PiGold internal reference is USD 600,000, the layer references are Yellow USD 60,000, Orange USD 6,000, PiBank USD 600 and PiCash USD 60 per whole unit. The derived unit counts per PiGold are respectively 10, 100, 1,000 and 10,000.
+
+This example defines a *reference purchasing-power ladder*, not a claim of current market price, guaranteed value, cash backing or redemption. Store the reference amount, unit, policy version, effective ledger/time, source/approver and status separately from external market quotes. If the reference value changes, publish a new policy version prospectively; never silently rewrite prior transactions.
+
+The layer stack is compositional: higher-level services may invoke lower-level rails, but each transfer, pool, issuer, balance and liability remains attributable to its own layer. A cross-layer action must return a linked receipt per leg, including asset ID, amount, CAS/atomic units, policy version, quote, fee, venue/provider, settlement state and trace ID. Do not combine balances or reserves merely because a route traverses multiple layers.
 
 ## 3. Red governance accrual
 
@@ -169,7 +178,7 @@ Privileged actions require deterministic policy checks, independent evidence, le
 ## 8. Required tests and release gates
 
 Test vectors must cover:
-- exact 100,000/10,000/1,000/100 layer-to-PiGold ratios and remainders;
+- exact 10/100/1,000/10,000 Yellow/Orange/PiBank/PiCash reference ratios and remainders;
 - rounding, overflow, decimals adapter and inverse conversion;
 - governance score caps and proof replay;
 - 10,000,000 baseline vs 100,000,000 expanded Purple denomination;
@@ -185,12 +194,12 @@ Release remains blocked until canonical asset mapping is approved, exact contrac
 
 ## 8. Legacy source reconciliation and compatibility gate
 
-The requested ratios are not yet consistently implemented by the current application sources. In particular, the Unity Sphere file assets/js/pirc207-layer-math.mjs currently declares:
+The new color-layer purchasing-power schedule is an additive policy and is not a replacement for the existing application conversion helpers. In particular, the Unity Sphere file assets/js/pirc207-layer-math.mjs currently declares:
 - 10,000 Heart/Throat units per Pi;
 - 1,000 Heart/Throat units per PiGCV;
 - conversion support only for heart, throat and crown, with other layers returning UNSPECIFIED.
 
-Those legacy constants conflict with the newly supplied PiGold ratios for PiCash, PiBank, Yellow and Orange. They MUST NOT be silently overwritten in a deployed client or contract. Implementation must introduce a new versioned conversion-policy identifier, retain the old policy for historical reads, and require all clients/API/contract adapters to specify the policy version. New policy tests must prove that historical balances and old transactions remain interpretable.
+The legacy Unity Sphere PiRC-207 helper currently supports Heart, Throat and Crown conventions only. Those functions are not to be reinterpreted as the new color-layer purchasing-power ladder. Preserve the existing helper and its historical tests unchanged; add the new ladder under a separate, explicit policy identifier and API so old transactions and client behavior remain readable. Every new quote must identify its policy version. New tests must prove both legacy outputs remain unchanged and the new reference schedule is exact.
 
 The SmartContracts Testnet1 asset manifest currently records seven colored test assets with null contract IDs and registry status NOT_DEPLOYED; its migration mapping is not approved. Therefore the ratios in this document are owner-provided proposed policy inputs, not discovered deployed constants. Before any code activates them, reviewers must approve canonical color-to-asset mapping, issuer identities, actual decimals/caps, PiGold representation, Purple provenance rules and the escrow contract interface.
 
