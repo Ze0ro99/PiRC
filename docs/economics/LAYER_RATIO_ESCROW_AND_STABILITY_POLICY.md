@@ -181,3 +181,25 @@ Test vectors must cover:
 - AI prompt/data manipulation and unauthorized privileged-action attempts.
 
 Release remains blocked until canonical asset mapping is approved, exact contract interfaces are implemented, tests pass, reproducible WASM builds are pinned, Testnet1 deployment and independent read-back exist, and every issuer/escrow/pool authority is reviewed. No mainnet action is authorized by this proposal.
+
+
+## 8. Legacy source reconciliation and compatibility gate
+
+The requested ratios are not yet consistently implemented by the current application sources. In particular, the Unity Sphere file assets/js/pirc207-layer-math.mjs currently declares:
+- 10,000 Heart/Throat units per Pi;
+- 1,000 Heart/Throat units per PiGCV;
+- conversion support only for heart, throat and crown, with other layers returning UNSPECIFIED.
+
+Those legacy constants conflict with the newly supplied PiGold ratios for PiCash, PiBank, Yellow and Orange. They MUST NOT be silently overwritten in a deployed client or contract. Implementation must introduce a new versioned conversion-policy identifier, retain the old policy for historical reads, and require all clients/API/contract adapters to specify the policy version. New policy tests must prove that historical balances and old transactions remain interpretable.
+
+The SmartContracts Testnet1 asset manifest currently records seven colored test assets with null contract IDs and registry status NOT_DEPLOYED; its migration mapping is not approved. Therefore the ratios in this document are owner-provided proposed policy inputs, not discovered deployed constants. Before any code activates them, reviewers must approve canonical color-to-asset mapping, issuer identities, actual decimals/caps, PiGold representation, Purple provenance rules and the escrow contract interface.
+
+The implementation sequence is:
+1. add a versioned read-only ratio/scale library and deterministic golden vectors;
+2. validate every ratio and inverse/remainder path without chain writes;
+3. add a policy registry and escrow migration state machine with authorization, replay protection and supply reconciliation;
+4. integrate the read-only quote API and dashboard with explicit UNKNOWN/UNVERIFIED states;
+5. only after review, deploy isolated Testnet1 artifacts and perform independent read-back.
+
+No source-level conversion helper, registry record or UI display is proof of live pool liquidity, contract deployment, escrow custody or fiat redemption.
+
