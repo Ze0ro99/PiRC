@@ -376,6 +376,14 @@ Use standardized, maintained implementations and versioned cryptographic profile
 
 The application must inventory existing keys and signature dependencies, support crypto-agile key identifiers and versioned envelopes, define rotation/revocation and recovery, and use hybrid classical/PQC transport during migration where appropriate. Never implement cryptographic primitives from scratch or treat a repository class name as proof of a secure implementation. Require known-answer tests, interoperability tests, dependency review, side-channel review and an independent security audit.
 
+**Repository security finding — current PQ-labeled modules are not production PQC.** The reviewed Unity Sphere sources contain placeholder or misleading implementations:
+- `post_quantum_cryptography.py` uses RSA-2048 OAEP/PSS, which is not post-quantum cryptography; its shown source also references padding/exception symbols without importing them.
+- `super-pi/packages/quantum-vault/src/vault.py` generates random byte strings and HMAC/hash placeholders while its comments explicitly defer real ML-KEM/ML-DSA operations to a future liboqs integration.
+- `super-pi/packages/super-pi-quantum/__init__.py` computes hashes and pseudo-encapsulation values; its `verify_nexuslaw_pq` checks commitment formatting rather than verifying a standardized PQ signature.
+- The Solidity QuantumVault sources rely on a custom precompile assumption or ordinary EVM signer approvals; the repository source alone does not prove a live, correctly implemented PQ signature verifier.
+
+These components MUST be classified `SIMULATED/UNVERIFIED`, excluded from production key management, transaction authorization and asset custody, and must not be described as quantum-safe. Replace them only through a separately reviewed implementation using audited FIPS-conformant libraries, real KAT/interoperability vectors, an actually available verifier on the target chain, and an independent audit. Do not generate or store production keys with these placeholder modules.
+
 PQC support in an off-chain service, API gateway or encrypted data channel does not automatically change Soroban or Pi Network transaction authorization. Before using a PQ signature on-chain, verify that the exact target network protocol and host functions support it and that wallet, SDK, RPC and validator paths agree. If not supported, retain the chain's native authorization scheme and protect off-chain data/signing workflows separately; do not wrap a PQ signature in a field that the chain does not verify.
 
 ### 15.2 AI and autonomous agents
