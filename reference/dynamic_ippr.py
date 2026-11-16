@@ -120,12 +120,13 @@ def aggregate_oracle(
         raise IPPRValidationError("oracle max deviation cannot exceed 10,000 bps")
     if not observations:
         raise IPPRValidationError("oracle observations are required")
-    venues = [o.venue_id.strip() for o in observations]
-    if any(not v for v in venues) or len(set(venues)) != len(venues):
-        raise IPPRValidationError("oracle venues must be non-empty and independent")
     for i, obs in enumerate(observations):
         if not isinstance(obs, PriceObservation):
             raise IPPRValidationError(f"observation[{i}] must be a PriceObservation")
+    venues = [o.venue_id.strip() if isinstance(o.venue_id, str) else "" for o in observations]
+    if any(not v for v in venues) or len(set(venues)) != len(venues):
+        raise IPPRValidationError("oracle venues must be non-empty and independent")
+    for i, obs in enumerate(observations):
         _nonnegative_int(f"price[{i}]", obs.price_nano_usd_per_pi)
         _nonnegative_int(f"observed_at[{i}]", obs.observed_at)
         if obs.price_nano_usd_per_pi == 0:
