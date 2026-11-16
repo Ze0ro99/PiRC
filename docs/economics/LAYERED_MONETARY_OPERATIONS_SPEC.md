@@ -19,7 +19,7 @@ PiGold is the coordinator/route registry. It is not a fungible token, issuer, cu
 
 ## 2. Layer map and functional boundaries
 
-The source proposal currently describes these seven color roles:
+The source proposal currently describes these seven color roles. The universal accounting scale defined in Section 3 applies to every fungible layer, independently of each layer's economic value:
 
 | Layer | Proposed role | Monetary treatment |
 |---|---|---|
@@ -33,37 +33,55 @@ The source proposal currently describes these seven color roles:
 
 OUSD remains a separate test asset. It has no implied USD backing, peg, redemption or reserve. PiDEX is the exchange execution module. PiGold coordinates route discovery and policy checks. Neither replaces the per-asset ledger.
 
-The existing source mapping contains legacy constants and alternative unit statements (including 10,000 or 10,000,000 subunits per Pi and an incomplete conversion rule for several layers). These are not mutually interchangeable. This document resolves the engineering convention as follows: **10,000,000 atomic subunits = 1 Pi for the Purple/Pi-denominated rail only.** All other tokens use their own immutable contract decimals. Legacy constants such as 3.14, 314, 3,141, 31,140 and 314,159 are reference labels only until a canonical versioned registry defines their units and semantics. No automatic parity or conversion is inferred.
+The existing source mapping contains legacy unit statements (including 10,000 or 10,000,000 subunits per Pi) and incomplete conversion rules for several layers. This specification supersedes those conventions for the common accounting interface: **1 whole unit of every fungible ecosystem asset = 10,000,000 canonical accounting subunits.** This is a denomination and precision rule only; it does not give the assets equal prices, equal purchasing power, parity, collateral, or redemption rights. Legacy constants such as 3.14, 314, 3,141, 31,140 and 314,159 are algorithm inputs/reference labels only until a canonical versioned registry defines their units and semantics. No automatic value conversion is inferred.
 
 ## 3. Canonical units and arithmetic
 
-### 3.1 Pi denomination
+### 3.1 Universal ecosystem accounting denomination
 
-For the Pi-denominated rail:
+For every fungible asset in every layer:
 
-- 1 Pi = 10,000,000 atomic subunits.
-- 1 atomic subunit = 0.0000001 Pi.
-- 0.25 Pi = 2,500,000 atomic subunits.
-- 1.0000001 Pi = 10,000,001 atomic subunits.
+- 1 whole asset unit = 10,000,000 canonical accounting subunits (CAS).
+- 1 CAS = 0.0000001 whole asset unit.
+- 0.25 asset units = 2,500,000 CAS.
+- 1.0000001 asset units = 10,000,001 CAS.
 
-Store and transmit amounts as unsigned integer atomic units or decimal strings. Never use binary floating point for balances, supply, fees, weights, prices or settlement. Display formatting is a UI concern and must not change the stored integer.
+This rule applies uniformly to PiCash, PiBank if it is later approved as a token, Governance if a voting token is approved, Orange, Yellow, Indigo, Purple, OUSD test assets and any further fungible layer token. Non-fungible service entitlements, account records and governance decisions are not token denominations and must not be forced into this unit model.
 
-### 3.2 Other token denominations
+CAS is a common precision/ledger interface, not a common value. One CAS of asset A is not equal in value to one CAS of asset B. Never add balances across asset IDs.
 
-Each token contract MUST publish immutable `asset_id`, `symbol`, `decimals`, `max_supply_atomic`, and a metadata/version hash. For a token with d decimals:
+### 3.2 Contract-decimal adapter and normalization
 
-`1 whole token = 10^d atomic units`.
+The common interface MUST expose amounts in integer CAS while preserving each deployed contract's actual immutable decimal setting. The asset registry stores both `canonical_subunits_per_unit = 10,000,000` and `contract_decimals`.
 
-A value in Pi atomic units cannot be added to or compared directly with another token's atomic units. Conversion requires an explicit quote containing input/output asset IDs, integer amounts, source, venue/pool, fee, slippage bound, expiry, network ID and policy version.
+For contract decimals d:
+- If d = 7, one contract atomic unit maps to one CAS.
+- If d < 7, convert contract atomic units to CAS by multiplying by 10^(7-d).
+- If d > 7, convert CAS to contract atomic units only when exactly representable; otherwise reject the amount or retain the remainder in a separately auditable precision accumulator. Never silently round away user value.
 
-### 3.3 Fixed-point scales
+On reads, convert contract atomic amounts to CAS using checked integer arithmetic. On writes, convert CAS to contract atomic units under the exactness rule above, then enforce the contract cap and balance. The adapter MUST be reversible for all accepted amounts and tested at zero, one CAS, maximum values and decimal boundaries. It MUST NOT change a deployed contract's decimals or reinterpret historical balances.
+
+Each contract MUST publish immutable `asset_id`, `symbol`, `decimals`, `max_supply_atomic`, and a metadata/version hash. Cross-asset conversion is not a decimal conversion: it requires an explicit quote containing input/output asset IDs, integer CAS amounts, algorithm/version, source, venue/pool, fee, slippage bound, expiry, network ID and policy version.
+
+### 3.3 Value algorithm is separate from denomination
+
+The amount in CAS describes quantity only. The algorithm computes the value/quote for that quantity using asset-specific inputs, such as accepted market observations, utility demand, verified settlement activity, liquidity depth, risk haircuts, reserve evidence and governance-approved parameters.
+
+A general quote interface may be represented as:
+
+`ValueQuote(asset, amount_CAS, t) = amount_CAS × UnitValue(asset, t) / 10,000,000`
+
+All terms must use declared integer scales and a documented rounding rule. `UnitValue` is asset-specific, time-stamped and versioned; it is not copied from another layer. If inputs are stale, insufficient, unverified or outside policy bounds, return NO_QUOTE rather than inventing a value. GCV, IPPR and QWF are not direct wallet conversion instructions or mint/burn triggers.
+
+### 3.4 Fixed-point scales
 
 - Basis points (bps): 10,000 bps = 100%.
 - Parts per million (ppm): 1,000,000 ppm = 100%.
 - Oracle price scale: explicit integer nano-USD or another declared scale.
 - Rates MUST carry a scale and rounding rule in the schema.
+- Every API, event, dashboard and payment intent MUST declare the asset ID and whether amount is CAS or contract atomic units.
 
-Use checked integer multiplication/division. Reject overflow, underflow, negative values, booleans, NaN, infinity, mismatched decimals and zero denominators. Specify floor/ceiling/nearest for each calculation. Allocation remainders use largest remainder and stable-ID tie-breaking.
+Use checked integer multiplication/division. Reject overflow, underflow, negative values, booleans, NaN, infinity, unknown asset IDs and zero denominators. Specify floor/ceiling/nearest for each calculation. Allocation remainders use largest remainder and stable-ID tie-breaking.
 
 ## 4. Issuance (mint) policy per layer
 
@@ -236,11 +254,11 @@ Unknown values remain UNKNOWN/UNMAPPED; they are not filled with guesses. Source
 ## 11. Test and acceptance matrix
 
 The Testnet1 suite must cover:
-- each asset's independent decimals, cap and supply accounting;
+- universal 10,000,000 CAS denomination across all fungible layers; contract-decimal adapter exactness for decimals below/equal/above 7; cap and supply accounting;
 - unauthorized mint/burn, cap overflow, zero/negative/boolean/overflow inputs;
 - exact mint/burn event and total-supply conservation;
 - transfer, allowance, expiry and burn_from authorization;
-- decimal mismatch and cross-asset addition rejection;
+- CAS/contract-atomic round-trip, precision remainder rejection, decimal mismatch and cross-asset addition rejection;
 - deterministic bps scoring and largest-remainder conservation;
 - underfunded period and zero-weight rejection;
 - velocity deduplication, circular-flow exclusion and window boundaries;
@@ -254,7 +272,7 @@ Acceptance requires pinned source, passing tests, reproducible Wasm build, indep
 
 ## 12. Explicit release blockers
 
-The current release matrix records the colored assets as unmapped/not deployed; PiGold as a registry/route validator; OUSD as a test-only asset; and PiDEX source as not proof of live pools. The seven-layer proposal also contains legacy denomination conflicts. Therefore:
+The current release matrix records the colored assets as unmapped/not deployed; PiGold as a registry/route validator; OUSD as a test-only asset; and PiDEX source as not proof of live pools. The seven-layer proposal also contains legacy denomination conflicts; the universal CAS rule and adapter are proposed here but have not yet been implemented in deployed contracts. Therefore:
 - do not mint any layer yet;
 - do not assume PiBank or PiGovernance is a fungible token;
 - do not enable cross-layer swaps before verified pool balances and quotes;
