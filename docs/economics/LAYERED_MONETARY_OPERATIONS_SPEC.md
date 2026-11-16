@@ -280,6 +280,7 @@ The Testnet1 suite must cover:
 - unauthorized mint/burn, cap overflow, zero/negative/boolean/overflow inputs;
 - exact mint/burn event and total-supply conservation;
 - transfer, allowance, expiry and burn_from authorization;
+- exact 10/100/1,000/10,000 Yellow/Orange/PiBank/PiCash reference ladder, inverse conversion and remainder preservation;
 - CAS/contract-atomic round-trip, precision remainder rejection, decimal mismatch and cross-asset addition rejection;
 - deterministic bps scoring and largest-remainder conservation;
 - underfunded period and zero-weight rejection;
@@ -294,7 +295,7 @@ Acceptance requires pinned source, passing tests, reproducible Wasm build, indep
 
 ## 12. Explicit release blockers
 
-The current release matrix records the colored assets as unmapped/not deployed; PiGold as a registry/route validator; OUSD as a test-only asset; and PiDEX source as not proof of live pools. The seven-layer proposal also contains legacy denomination conflicts; the universal CAS rule and adapter are proposed here but have not yet been implemented in deployed contracts. Therefore:
+The current release matrix records the colored assets as unmapped/not deployed; PiGold as a registry/route validator; OUSD as a test-only asset; and PiDEX source as not proof of live pools. The legacy PiRC-207 helper remains a separate historical conversion surface; the new color-layer purchasing-power policy is additive and versioned. The universal CAS rule and adapter are proposed here but have not yet been implemented in deployed contracts. Therefore:
 - do not mint any layer yet;
 - do not assume PiBank or PiGovernance is a fungible token;
 - do not enable cross-layer swaps before verified pool balances and quotes;
