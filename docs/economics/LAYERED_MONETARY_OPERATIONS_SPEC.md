@@ -280,3 +280,61 @@ The current release matrix records the colored assets as unmapped/not deployed; 
 - do not represent testnet assets as native Pi or redeemable USD.
 
 This standard is ready for review and implementation planning, not authorization to deploy, initialize, mint, burn, transfer, add liquidity or trade.
+
+
+## 13. Live market reference, asset-specific value and oracle controls
+
+A market observation is an input to a versioned valuation function; it is not itself a token balance, a guaranteed purchasing-power amount, or a mint instruction.
+
+For a market price quoted in USD per whole Pi, define:
+
+- `P_Pi_USD(t)`: accepted USD/Pi observation at time t, normalized to a declared fixed-point scale.
+- `CAS_PER_Pi = 10,000,000`: the accounting denomination.
+- `MarketIndex_Pi(t) = P_Pi_USD(t) * CAS_PER_Pi`: a project-defined index score, with an explicit scale and version.
+
+For the illustrative user-supplied observation `P_Pi_USD = 0.0642`:
+
+`MarketIndex_Pi = 0.0642 * 10,000,000 = 642,000`
+
+The result is an index score only. It is not 642,000 USD, not 642,000 Pi, and not automatically spendable CAS. The multiplication must not be used as an inverse exchange-rate formula.
+
+The dimensionally correct indicative conversion for a USD-denominated purchase is:
+
+`Pi_amount = USD_amount / P_Pi_USD`
+
+`CAS_amount = Pi_amount * 10,000,000`
+
+At the illustrative 0.0642 USD/Pi observation, a 100 USD item corresponds to approximately 1,557.632398 Pi, or 15,576,323,987 CAS before fees and rounding. The quote MUST use the accepted oracle price, exact fixed-point arithmetic, fee, slippage limit, expiry and a verified executable route. The example is not a live price assertion.
+
+Every asset has its own `UnitValue(asset,t)` and valuation policy. PiCash, PiBank (if tokenized), Indigo, Purple/Pi and OUSD must never inherit Pi's USD quote by symbol, color, or denomination. A common CAS scale does not create parity. The merchant's item price is a separate quote in a declared settlement currency and may be updated independently of the market index.
+
+Oracle observations MUST include source/provider, pair, network/domain, round or sequence, observed-at timestamp, received-at timestamp, decimals/scale, confidence or quorum metadata, and policy version. Reject stale, future-dated, duplicated, replayed, outlier, low-liquidity or insufficient-quorum observations. Use a bounded update cadence and circuit breakers; if the feed is unavailable or diverges beyond policy, freeze new conversions and return NO_QUOTE. Chainlink EVM feeds are not directly callable from Soroban; any bridge/relayer requires authenticated, domain-separated and replay-protected messages. An oracle reading is not proof of bank funds or merchant delivery.
+
+## 14. Merchant sale, OUSD issuance and fiat redemption lifecycle
+
+The following is a target workflow, not a claim that the integrations or reserves currently exist.
+
+1. A merchant publishes an item with an amount and currency (for example, USD 100), inventory reference, merchant identity, expiry and accepted payment rails.
+2. The quote service obtains current approved observations and calculates one or more asset-specific payment quotes. The buyer sees the exact asset, CAS amount, fees, route, minimum received, expiry and refund terms.
+3. A payment intent is created with an idempotency key. The payment provider or chain transaction is verified server-side. A browser callback, oracle price, QR scan or wallet screenshot is not settlement proof.
+4. Once the sale is finalized, the system records the merchant receivable and the buyer payment as separate ledger events. It does not mint OUSD merely because an item was sold or because an oracle reports a USD price.
+5. If the merchant requests fiat payout, a licensed/contracted payout provider confirms the beneficiary, currency, fees, compliance checks and settled bank transfer. Only then may the matching OUSD liability be retired/burned, according to the redemption contract and accounting policy. If payout fails or is pending, the liability remains outstanding and the burn must not occur.
+6. If external funds enter the ecosystem and OUSD issuance is contemplated, issuance is allowed only after independently verified, settled funds are received into the designated reserve/custody account, the liability is recorded, the issuer policy and cap are checked, and the mint is authorized. A pending transfer, card authorization, exchange quote, merchant sale or oracle price is not a reserve inflow.
+7. If a user pays through PiCash, PiBank service, Purple/Pi, another layer or a card rail, PiGold may coordinate route discovery and policy checks. The selected execution rail performs the transfer/swap/payment. PiGold does not pool or custody the funds. Each pool retains its own pair reserves and accounting identity.
+8. Refunds, card chargebacks, bank returns and payout reversals create linked compensating ledger entries. They must not erase the original sale or silently mint/burn an unrelated layer.
+
+For an item listed at USD 100 and a merchant asking for `0.00001` units of a particular asset, the implied unit value of that asset is USD 10,000,000 per whole token (before fees). That value is valid only if the asset's own approved pricing policy and executable liquidity support it; it must not be inferred from Pi's market price or from the 10,000,000 CAS denomination.
+
+### 14.1 OUSD liability invariant
+
+For a redeemable USD-denominated test liability, maintain a distinct liability ledger and reserve evidence:
+
+`OUSD_outstanding <= verified_eligible_USD_reserves_after_haircuts`
+
+This inequality is a conservative release invariant, not proof of legal redemption or a stablecoin peg. The reserve record must identify custodian/provider, account reference (non-secret), currency, settled amount, encumbrances, haircut, reconciliation timestamp and independent evidence. If reserve verification, provider settlement, reconciliation or issuer authorization is missing, OUSD mint amount is zero and fiat redemption is disabled.
+
+### 14.2 PiGold route coordinator and pooled liquidity
+
+PiGold is the route graph/coordinator across independently managed pools and payment rails. It may compare route cost, depth, latency, settlement certainty and risk, but MUST NOT represent all pools as one fungible balance sheet. A route such as Pi -> PiCash -> OUSD -> fiat is valid only when every conversion edge has an active pool/provider, independent reserves or settlement capacity, a fresh quote, and a defined failure/compensation path. No route may count the same reserve twice or assume that a bank or exchange will accept an asset.
+
+Bank cards, Visa/Mastercard, Banxa, Onramper or any other named provider remain disabled until an actual commercial integration, jurisdictional eligibility, provider approval, signed API/webhook verification, reconciliation and compliance review are evidenced. Naming a provider in a design is not evidence of a partnership or connection.
