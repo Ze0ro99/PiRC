@@ -374,6 +374,8 @@ Use standardized, maintained implementations and versioned cryptographic profile
 - ML-DSA under NIST FIPS 204 for post-quantum digital signatures where the verifier and protocol support it.
 - SLH-DSA under NIST FIPS 205 as an alternative hash-based signature profile for use cases where its larger signatures and performance costs are acceptable.
 
+Official references: [NIST FIPS 203 (ML-KEM)](https://csrc.nist.gov/pubs/fips/203/final), [NIST FIPS 204 (ML-DSA)](https://csrc.nist.gov/pubs/fips/204/final), and [NIST FIPS 205 (SLH-DSA)](https://csrc.nist.gov/pubs/fips/205/final). Check each publication's current errata before implementation. Stellar CAP-0087 describes ML-DSA host verification at protocol version 30, but that does not establish support on Pi Network or Pi Testnet1; verify the target network's actual protocol and host-function set independently.
+
 The application must inventory existing keys and signature dependencies, support crypto-agile key identifiers and versioned envelopes, define rotation/revocation and recovery, and use hybrid classical/PQC transport during migration where appropriate. Never implement cryptographic primitives from scratch or treat a repository class name as proof of a secure implementation. Require known-answer tests, interoperability tests, dependency review, side-channel review and an independent security audit.
 
 **Repository security finding — current PQ-labeled modules are not production PQC.** The reviewed Unity Sphere sources contain placeholder or misleading implementations:
