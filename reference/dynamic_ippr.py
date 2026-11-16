@@ -94,6 +94,8 @@ def _nonnegative_int(name: str, value: int) -> None:
 def median_int(values: Sequence[int]) -> int:
     if not values:
         raise IPPRValidationError("at least one value is required")
+    for i, value in enumerate(values):
+        _nonnegative_int(f"median value[{i}]", value)
     ordered = sorted(values)
     middle = len(ordered) // 2
     if len(ordered) % 2:
@@ -107,11 +109,21 @@ def aggregate_oracle(
     policy: OraclePolicy = OraclePolicy(),
 ) -> OracleResult:
     _nonnegative_int("now_ts", now_ts)
-    if policy.min_sources < 3 or policy.max_age_seconds <= 0:
+    if not isinstance(policy, OraclePolicy):
+        raise IPPRValidationError("policy must be an OraclePolicy")
+    _nonnegative_int("policy.min_sources", policy.min_sources)
+    _nonnegative_int("policy.max_age_seconds", policy.max_age_seconds)
+    _nonnegative_int("policy.max_deviation_bps", policy.max_deviation_bps)
+    if policy.min_sources < 3 or policy.max_age_seconds == 0:
         raise IPPRValidationError("oracle policy requires >=3 sources and positive freshness")
+    if policy.max_deviation_bps > 10_000:
+        raise IPPRValidationError("oracle max deviation cannot exceed 10,000 bps")
     if not observations:
         raise IPPRValidationError("oracle observations are required")
-    venues = [o.venue_id.strip() for o in observations]
+    for i, obs in enumerate(observations):
+        if not isinstance(obs, PriceObservation):
+            raise IPPRValidationError(f"observation[{i}] must be a PriceObservation")
+    venues = [o.venue_id.strip() if isinstance(o.venue_id, str) else "" for o in observations]
     if any(not v for v in venues) or len(set(venues)) != len(venues):
         raise IPPRValidationError("oracle venues must be non-empty and independent")
     for i, obs in enumerate(observations):

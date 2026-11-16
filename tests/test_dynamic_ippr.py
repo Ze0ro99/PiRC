@@ -3,6 +3,7 @@ import unittest
 from reference.dynamic_ippr import (
     EconomicGates,
     IPPRValidationError,
+    OraclePolicy,
     PriceObservation,
     aggregate_oracle,
     calculate_ippr,
@@ -123,6 +124,29 @@ class DynamicIPPRTests(unittest.TestCase):
 
     def test_median_integer_rounding(self):
         self.assertEqual(median_int([1, 2, 4, 5]), 3)
+
+    def test_median_rejects_boolean_and_negative_values(self):
+        for values in ([True, 2, 3], [-1, 2, 3]):
+            with self.subTest(values=values):
+                with self.assertRaises(IPPRValidationError):
+                    median_int(values)
+
+    def test_oracle_rejects_invalid_policy_bounds(self):
+        invalid_policies = (
+            OraclePolicy(min_sources=2),
+            OraclePolicy(max_age_seconds=0),
+            OraclePolicy(max_deviation_bps=-1),
+            OraclePolicy(max_deviation_bps=10_001),
+            OraclePolicy(min_sources=True),
+        )
+        for policy in invalid_policies:
+            with self.subTest(policy=policy):
+                with self.assertRaises(IPPRValidationError):
+                    aggregate_oracle(observations(), 1_000, policy)
+
+    def test_oracle_rejects_untyped_observation(self):
+        with self.assertRaisesRegex(IPPRValidationError, "PriceObservation"):
+            aggregate_oracle([None, *observations()[1:]], 1_000)
 
 
 if __name__ == "__main__":
