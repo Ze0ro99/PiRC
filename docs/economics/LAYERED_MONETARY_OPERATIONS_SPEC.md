@@ -19,19 +19,19 @@ PiGold is the coordinator/route registry. It is not a fungible token, issuer, cu
 
 ## 2. Layer map and functional boundaries
 
-The source proposal currently describes these seven color roles. The universal accounting scale defined in Section 3 applies to every fungible layer, independently of each layer's economic value:
+The source proposal currently describes these seven color roles. The universal accounting scale defined in Section 3 applies to every fungible layer, independently of each layer's economic value. The PiGold ratios in the layer table are separate conversion-policy parameters, not CAS denominations:
 
 | Layer | Proposed role | Monetary treatment |
 |---|---|---|
 | Red / Governance | Governance and policy | Prefer governance registry/voting rights; do not assume a transferable reward token |
-| Orange | Mid-tier utility | Independent utility asset if approved |
-| Yellow | High-tier utility | Independent utility asset if approved |
-| Green / PiCash | Daily payments and commerce | Daily-use payment asset; independent supply and merchant acceptance |
-| Blue / PiBank | Banking/institutional workflows | Service/ledger gateway by default; a token requires a separate decision and custody/legal boundary |
+| Orange | Exchange/market access | Proposed baseline 100 Orange per 1 PiGold reference unit; independent pool and market-depth checks |
+| Yellow | Internal/external balancing utility | Proposed baseline 1,000 Yellow per 1 PiGold reference unit; independent pool and oracle checks |
+| Green / PiCash | Daily payments and commerce | Daily-use payment asset; proposed baseline 100,000 PiCash per 1 PiGold reference unit |
+| Blue / PiBank | Banking/institutional workflows | Service/ledger gateway by default; proposed baseline 10,000 PiBank per 1 PiGold reference unit if tokenized; separate custody/legal boundary |
 | Indigo | Premium reserve | Independent asset and reserve accounting; never mix with Purple |
-| Purple | Mined Pi and fractions | Pi-denominated unit rail; 10,000,000 subunits per 1 Pi under this proposal |
+| Purple | Mined-Pi provenance and external bridge | Proposed baseline: 10,000,000 Purple subunits per mined-Pi unit and 10 PiGold reference units; expansion tier requires escrowed migration and approval |
 
-OUSD remains a separate test asset. It has no implied USD backing, peg, redemption or reserve. PiDEX is the exchange execution module. PiGold coordinates route discovery and policy checks. Neither replaces the per-asset ledger.
+Red/Governance has no fixed PiGold conversion: governance weight is earned from verified pioneer contribution under a capped policy. OUSD remains a separate test asset. It has no implied USD backing, peg, redemption or reserve. The proposed layer ratios and escrow-gated Purple expansion schedule are detailed in [LAYER_RATIO_ESCROW_AND_STABILITY_POLICY.md](LAYER_RATIO_ESCROW_AND_STABILITY_POLICY.md). PiDEX is the exchange execution module. PiGold coordinates route discovery and policy checks. Neither replaces the per-asset ledger.
 
 The existing source mapping contains legacy unit statements (including 10,000 or 10,000,000 subunits per Pi) and incomplete conversion rules for several layers. This specification supersedes those conventions for the common accounting interface: **1 whole unit of every fungible ecosystem asset = 10,000,000 canonical accounting subunits.** This is a denomination and precision rule only; it does not give the assets equal prices, equal purchasing power, parity, collateral, or redemption rights. Legacy constants such as 3.14, 314, 3,141, 31,140 and 314,159 are algorithm inputs/reference labels only until a canonical versioned registry defines their units and semantics. No automatic value conversion is inferred.
 
