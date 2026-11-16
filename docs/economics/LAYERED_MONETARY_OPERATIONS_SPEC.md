@@ -361,3 +361,37 @@ This inequality is a conservative release invariant, not proof of legal redempti
 PiGold is the route graph/coordinator across independently managed pools and payment rails. It may compare route cost, depth, latency, settlement certainty and risk, but MUST NOT represent all pools as one fungible balance sheet. A route such as Pi -> PiCash -> OUSD -> fiat is valid only when every conversion edge has an active pool/provider, independent reserves or settlement capacity, a fresh quote, and a defined failure/compensation path. No route may count the same reserve twice or assume that a bank or exchange will accept an asset.
 
 Bank cards, Visa/Mastercard, Banxa, Onramper or any other named provider remain disabled until an actual commercial integration, jurisdictional eligibility, provider approval, signed API/webhook verification, reconciliation and compliance review are evidenced. Naming a provider in a design is not evidence of a partnership or connection.
+
+
+## 15. Advanced capability integration: cryptography, AI, physical and operational metrics
+
+Advanced capabilities are integrated only where they have a defined security or operational purpose. They do not alter the monetary invariants or create value by themselves.
+
+### 15.1 Post-quantum cryptography (PQC)
+
+Use standardized, maintained implementations and versioned cryptographic profiles:
+- ML-KEM under NIST FIPS 203 for post-quantum key establishment; select and benchmark an approved parameter set for the actual service threat model.
+- ML-DSA under NIST FIPS 204 for post-quantum digital signatures where the verifier and protocol support it.
+- SLH-DSA under NIST FIPS 205 as an alternative hash-based signature profile for use cases where its larger signatures and performance costs are acceptable.
+
+The application must inventory existing keys and signature dependencies, support crypto-agile key identifiers and versioned envelopes, define rotation/revocation and recovery, and use hybrid classical/PQC transport during migration where appropriate. Never implement cryptographic primitives from scratch or treat a repository class name as proof of a secure implementation. Require known-answer tests, interoperability tests, dependency review, side-channel review and an independent security audit.
+
+PQC support in an off-chain service, API gateway or encrypted data channel does not automatically change Soroban or Pi Network transaction authorization. Before using a PQ signature on-chain, verify that the exact target network protocol and host functions support it and that wallet, SDK, RPC and validator paths agree. If not supported, retain the chain's native authorization scheme and protect off-chain data/signing workflows separately; do not wrap a PQ signature in a field that the chain does not verify.
+
+### 15.2 AI and autonomous agents
+
+AI may forecast inventory, route depth, risk, liquidity stress, settlement latency and anomalous behavior. Every recommendation must expose input provenance, model/version, confidence, policy hash and reproducible calculation inputs. AI output is advisory and cannot authorize mint/burn, unlock escrow, rotate issuer roles, change policy, sign transactions, or move funds. Deterministic rules and explicit user/governance authorization remain authoritative.
+
+### 15.3 Physical, energy and compute measurements
+
+Use SI units and dimensional analysis for measurable operational quantities: joules and kilowatt-hours for energy, watts for power, bytes for storage, operations/second for throughput, and milliseconds for latency. Convert measured energy/compute costs into operating-cost inputs only when supported by metering, time window, tariff/source, device boundary and audit evidence.
+
+Physical constants, quantum terminology, theoretical energy values or simulated measurements MUST NOT be used as arbitrary token prices, collateral, mint multipliers, exchange ratios or proof of purchasing power. Any proposed physical/economic coupling requires a separately reviewed model, dimensional consistency, independently measured inputs, uncertainty bounds and governance approval.
+
+### 15.4 OUSD test-asset boundary
+
+The current OUSD test-token contract is a permissioned token with a fixed test supply cap and admin-controlled mint. It does not itself verify bank deposits, reserve balances, custodial title, payout settlement or redemption. Therefore the token remains TEST_ONLY and its mint authority must remain operationally disabled for any claim of USD backing until a separate reserve/liability controller, independent reconciliation, issuer approval and failure-safe payout lifecycle are implemented and tested. A contract admin signature alone is not reserve evidence.
+
+### 15.5 Build, release and observability controls
+
+For every service and contract release, publish pinned dependencies, SBOM, reproducible build instructions, test vectors, audit findings, artifact hashes, protocol/network compatibility and rollback procedure. Monitor per-layer supply, locked/escrowed balances, liabilities, reserve haircuts, quote age, route failures, latency, energy/compute cost and incident state. All dashboards must distinguish VERIFIED, OBSERVED, SIMULATED, UNKNOWN and BLOCKED evidence.
