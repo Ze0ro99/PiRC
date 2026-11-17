@@ -27,7 +27,7 @@ The current default-branch trees contain approximately 35,835 entries in PiRC, 6
 
 ### PiRC
 
-- PR #386 — Next.js 16.4.6 dependency update. Merged by squash after both workspace build and documentation/Netlify checks passed; merge commit cc f53a50d11db6d7e6a2ed73d4a8c706af611090 (without the space: ccf53a50d11db6d7e6a2ed73d4a8c706af611090). Post-merge Workspace Build, Documentation/Netlify and GitHub Pages deployment checks are running.
+- PR #386 — Next.js 16.4.6 dependency update. Merged by squash after workspace build and documentation/Netlify checks passed; merge commit ccf53a50d11db6d7e6a2ed73d4a8c706af611090. Post-merge Workspace Build, Documentation/Netlify and GitHub Pages deployment checks are running.
 - PR #384 — layered monetary operations Testnet1 specification. Current head 2335f04e24930fe84f5e068ba98c0ae41cc80edd; documentation validation and Netlify build passed. The Vercel check for project pi-rc failed because the deployment is subject to the Verified Commits policy; this is a platform protection gate, not evidence of an application build failure. The pirc-zero and pi-rc-rfnx Vercel checks and Netlify preview passed. Do not bypass Verified Commits.
 - PR #380 — grouped web dependency updates; workspace/API/documentation builds passed on its head, but GitHub reports mergeable=false (merge conflict). Resolve against current main and rerun checks before consideration.
 - PR #328 — sharp update; workspace and documentation builds passed on its head, but GitHub reports mergeable=false (merge conflict). Resolve against current main and rerun checks before consideration.
