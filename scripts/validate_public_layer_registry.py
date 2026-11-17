@@ -10,6 +10,7 @@ PRIMARY = ROOT / "artifacts/pirc-wealth-core/public/data/LIVE_MATRIX_REGISTRY.cs
 CONTAINER_COPY = ROOT / "artifacts/pirc-wealth-core/public/data/containers/LIVE_MATRIX_REGISTRY.csv"
 EXPECTED_HEADER = ["Layer", "Contract ID", "Color", "Status", "Deployed Date", "PIRC Standard"]
 STRKEY_ALPHABET = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567")
+EXPECTED_HEADER = ["Layer", "Contract ID", "Color", "Status", "Deployed Date", "PIRC Standard"]
 
 
 def validate() -> list[str]:
@@ -19,7 +20,10 @@ def validate() -> list[str]:
     if primary != container_copy:
         errors.append("served public registry copies must be byte-identical")
 
-    rows = list(csv.DictReader(primary.decode("utf-8").splitlines()))
+    reader = csv.DictReader(primary.decode("utf-8").splitlines())
+    if reader.fieldnames != EXPECTED_HEADER:
+        errors.append("public layer registry header mismatch")
+    rows = list(reader)
     if len(rows) != 8:
         errors.append(f"expected 8 preserved source references, found {len(rows)}")
 
