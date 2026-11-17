@@ -27,11 +27,11 @@ The current default-branch trees contain approximately 35,835 entries in PiRC, 6
 
 ### PiRC
 
-- PR #386 — Next.js 16.4.6 dependency update. Current PR head 8ea6a4b9dcdcee27f3ee9c5bef5ea460c669f504; current pull-request workspace build and documentation/Netlify validation passed on the inspected head.
+- PR #386 — Next.js 16.4.6 dependency update. Merged by squash after both workspace build and documentation/Netlify checks passed; merge commit cc f53a50d11db6d7e6a2ed73d4a8c706af611090 (without the space: ccf53a50d11db6d7e6a2ed73d4a8c706af611090). Post-merge Workspace Build, Documentation/Netlify and GitHub Pages deployment checks are running.
 - PR #384 — layered monetary operations Testnet1 specification. Current head 2335f04e24930fe84f5e068ba98c0ae41cc80edd; documentation validation and Netlify build passed. The Vercel check for project pi-rc failed because the deployment is subject to the Verified Commits policy; this is a platform protection gate, not evidence of an application build failure. The pirc-zero and pi-rc-rfnx Vercel checks and Netlify preview passed. Do not bypass Verified Commits.
 - PR #380 — grouped web dependency updates; workspace/API/documentation builds passed on its head, but GitHub reports mergeable=false (merge conflict). Resolve against current main and rerun checks before consideration.
 - PR #328 — sharp update; workspace and documentation builds passed on its head, but GitHub reports mergeable=false (merge conflict). Resolve against current main and rerun checks before consideration.
-- PR #325 — source-map-js update; workspace and documentation/Netlify checks passed and GitHub reports mergeable=true. It remains unmerged pending explicit approval.
+- PR #325 — source-map-js update; workspace and documentation/Netlify workflow runs passed, but combined commit status still reports Vercel pi-rc, pirc-zero, pi-rc-rfnx and Netlify preview failures. It remains unmerged until those failed contexts are reconciled.
 
 Main after merge commit 16bba2731072ddc71d4b9e42f5593581e0ddcf43 had successful PiRC Workspace Build and Documentation/Netlify Build Validation runs 44066536951 and 44066536836.
 
