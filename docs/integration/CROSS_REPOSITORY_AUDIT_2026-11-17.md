@@ -72,9 +72,9 @@ The PiRC acceptance harness and Unity read-only workflow explicitly do not sign,
 
 ### PiDEX AMM
 
-The SmartContracts source implements a two-asset constant-product pool, 30 bps fee, integer output calculation, minimum-output protection, pause control, share accounting and reserve checks. The AMM is pair-specific; it is not a multi-asset settlement network. Source and unit tests do not establish a deployed pool or funded liquidity.
+The SmartContracts source implements a two-asset constant-product pool, 30 bps fee, integer output calculation, minimum-output protection, pause control, share accounting and reserve checks. Its quote_amount_out already uses floor(reserve_out * amount_in_after_fee / (reserve_in + amount_in_after_fee)). The AMM is pair-specific; it is not a multi-asset settlement network. Source and unit tests do not establish a deployed pool or funded liquidity.
 
-Unity PR #89 corrects an output-rounding issue by using floor(reserve_out * amount_in_after_fee / (reserve_in + amount_in_after_fee)). Its current CI did not get past rustfmt, so the fix is not yet build-verified on that PR head.
+Unity Sphere also contains a separate pidex_amm source copy (445 lines versus 550 lines in SmartContracts main); the two files are not identical. Unity PR #89 corrects the Unity copy's output-rounding formula to match the floor calculation already present in SmartContracts. Its current CI did not get past rustfmt, so that Unity copy is not yet build-verified on the PR head. Establish SmartContracts as the canonical contract source and require a pinned source commit/WASM hash before any deployment; do not deploy both copies independently.
 
 ### PiGold coordinator
 
