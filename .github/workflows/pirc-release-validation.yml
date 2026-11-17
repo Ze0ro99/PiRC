@@ -7,6 +7,9 @@ on:
       - "README.md"
       - "CHANGELOG.md"
       - "docs/**"
+      - "artifacts/pirc-wealth-core/public/data/LIVE_MATRIX_REGISTRY.csv"
+      - "artifacts/pirc-wealth-core/public/data/containers/LIVE_MATRIX_REGISTRY.csv"
+      - "scripts/validate_public_layer_registry.py"
       - "fixtures/**"
       - "schemas/**"
       - "reference/**"
@@ -22,6 +25,9 @@ on:
       - "README.md"
       - "CHANGELOG.md"
       - "docs/**"
+      - "artifacts/pirc-wealth-core/public/data/LIVE_MATRIX_REGISTRY.csv"
+      - "artifacts/pirc-wealth-core/public/data/containers/LIVE_MATRIX_REGISTRY.csv"
+      - "scripts/validate_public_layer_registry.py"
       - "schemas/**"
       - "reference/**"
       - "tests/**"
@@ -50,6 +56,8 @@ jobs:
           python-version: "3.12"
       - name: Validate JSON schemas and local Markdown links
         run: python scripts/validate_release.py
+      - name: Validate public layer registry claims
+        run: python scripts/validate_public_layer_registry.py
       - name: Validate read-only branch audit tool
         run: |
           python -m py_compile scripts/audit_branch_inventory.py
