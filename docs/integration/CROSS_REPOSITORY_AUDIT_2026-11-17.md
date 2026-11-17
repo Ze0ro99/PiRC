@@ -49,7 +49,7 @@ PR #1121 is still Draft. Green CI does not close the contract-level gaps in sect
 - PR #91 — Black dev-dependency update; secret scan passed, but no Python test/build workflow was triggered by the changed paths, so only limited CI evidence exists.
 - PR #70 and #69 — Go dependency updates; both failed the read-only Go modules validation because go vet reported many unkeyed struct literals across existing Stellar Horizon source/tests. The job also logged missing key_value_store and duplicate-key database errors during test setup. Do not merge until the Go validation baseline is repaired and rerun.
 
-Historical Unity Sphere secret-scan failure on run 43951634033 was caused by Gitleaks receiving an invalid Git revision range and scanning approximately zero bytes. It is not evidence that no secret exists, nor is it a confirmed secret finding. The later PR #92 secret scan passed. A full-history scan and separate credential-exposure review remain prudent because historical audit notes flagged tracked environment files and secret/environment review cases.
+Historical Unity Sphere secret-scan failures on runs 43951634033, 44077549993, 44077609093 and 44077676531 were caused by Gitleaks receiving an invalid Git revision range and scanning approximately zero bytes. They are not confirmed secret findings. Unity PR #93 changes checkout to fetch full Git history; its latest Gitleaks run 44078041951 passed and scanned approximately 5.60 KB of changed commits with no leaks. This is a valid PR-range scan, not a full-repository-history attestation. A separate full-history credential-exposure review remains prudent because historical audit notes flagged tracked environment templates and key-file paths.
 
 ## 3. Pi Testnet1 deployment evidence
 
