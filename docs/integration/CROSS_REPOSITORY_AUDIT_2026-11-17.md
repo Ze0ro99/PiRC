@@ -21,6 +21,8 @@ The earlier 2026-11-04 census recorded 604 refs. The current inventory is 95 ref
 
 The PiRC default tree contains a very large .migration-backup subtree with copied repositories, dependency caches and nested historical workspaces. Treat it as archived input, not a live build workspace. Do not delete it without a separate content-hash, dependency, provenance and retention audit.
 
+The current default-branch trees contain approximately 35,835 entries in PiRC, 696 in SmartContracts and 22,301 in Unity Sphere. The PiRC .migration-backup subtree alone accounts for 26,478 entries. A filename-only environment/key inventory found 24 .env.example templates in PiRC, zero matching paths in SmartContracts, and 17 .env.example templates plus two empty PEM placeholder files in Unity Sphere. No non-example .env file was found by that path filter. This is not a full content/history secret attestation; the Gitleaks workflow's invalid-range issue is being corrected in Unity PR #93 by switching to a full-history checkout.
+
 ## 2. Current open pull-request and CI snapshot
 
 ### PiRC
