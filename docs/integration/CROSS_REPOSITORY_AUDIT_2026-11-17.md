@@ -78,7 +78,7 @@ Unity Sphere also contains a separate pidex_amm source copy (445 lines versus 55
 
 ### PiGold coordinator
 
-The source registers pool metadata and route constraints, including unique pool and reserve-accounting identifiers. Its own source comments state that it does not custody tokens, aggregate balances, execute swaps or mint assets. It is a metadata/route-validation coordinator, not a custodian or liquidity pool. Each pool must retain independent reserves and accounting; do not double-count reserve balances across routes.
+The source registers pool metadata and route constraints, including unique pool and reserve-accounting identifiers. Its own source comments state that it does not custody tokens, aggregate balances, execute swaps or mint assets. It is a metadata/route-validation coordinator, not a custodian or liquidity pool. Each pool must retain independent reserves and accounting; do not double-count reserve balances across routes. Its pool records use persistent storage but the inspected source has no explicit extend_ttl call; add a tested TTL renewal/expiry and recovery policy before treating the registry as long-lived.
 
 ### OUSD token and reserve controller
 
@@ -86,7 +86,7 @@ The source registers pool metadata and route constraints, including unique pool 
 - PR #1121 adds a test-only reserve/liability accounting controller. It records verifier attestations and evidence hashes; it does not inspect banks, prove external funds, mint/burn OUSD or execute payouts.
 - The current controller has one happy-path lifecycle test. Before it can be considered safe even for a controlled test deployment, add negative tests for duplicate reserve evidence, duplicate payout evidence, unauthorized roles, mismatched payout amount, wrong beneficiary, replay, overflow, state transitions and storage/TTL behavior.
 - The current source does not maintain a uniqueness key for reserve evidence or payout evidence, so the same evidence hash can be presented again under a new record. This is a replay/double-counting gap.
-- Reserve and liability records currently use contract instance storage. Evaluate persistent storage, TTL extension, growth limits and migration behavior before using it for a long-lived ledger.
+- Reserve and liability records currently use contract instance storage, with no explicit extend_ttl policy. The inspected PiDEX and PiGold sources also have no extend_ttl calls (PiDEX shares and PiGold pool metadata use persistent storage; AMM reserves/configuration use instance storage). Evaluate persistent storage, TTL renewal/expiry, growth limits and migration/recovery behavior across all three contracts before treating any of them as a long-lived ledger.
 - Burn eligibility is only an accounting flag; there is no atomic cross-contract token burn or reconciliation proof.
 
 ### Layer economics
