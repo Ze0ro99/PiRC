@@ -94,7 +94,7 @@ The seven-layer purchasing-power constants and PiGold weights remain project ref
 
 ## 5. Supabase event ingestion state
 
-The connected Supabase project is active and healthy. The remote migration history contains six migrations dated 2026-11-14. The Unity Sphere main tree currently contains only three migration files, including the older 20261108130000_pirc_soroban_event_inbox.sql; it does not contain the six migration versions reported by the remote project. Reconcile this remote/local migration-history drift before further schema changes or production deployment.
+The connected Supabase project is active and healthy. The remote migration history contains six migrations dated 2026-11-14: 20261114130949 create_pirc_testnet_event_ingestion; 20261114133347 add_service_role_only_policies_to_private_event_tables; 20261114133420 add_safe_read_only_portal_feed_rpc; 20261114133505 restrict_portal_feed_rpc_to_service_role; 20261114134217 add_idempotent_testnet_event_ingestion_rpc; and 20261114134235 remove_definer_privileges_from_portal_feed. The Unity Sphere main tree currently contains only three migration files (20260702104857, 20260720111150 and 20261108130000_pirc_soroban_event_inbox.sql); it does not contain the six migration versions reported by the remote project. The tracked 2026-11-08 migration creates public inbox/cursor tables, while the live database has differently shaped private inbox/cursor tables and a private service-role-only RLS policy. Reconcile this remote/local migration-history drift before further schema changes or production deployment.
 
 Observed database state:
 
