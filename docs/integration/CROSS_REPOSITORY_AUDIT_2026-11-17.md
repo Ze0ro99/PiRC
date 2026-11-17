@@ -29,9 +29,9 @@ The current default-branch trees contain approximately 35,835 entries in PiRC, 6
 
 - PR #386 — Next.js 16.4.6 dependency update. Current PR head 8ea6a4b9dcdcee27f3ee9c5bef5ea460c669f504; current pull-request workspace build and documentation/Netlify validation passed on the inspected head.
 - PR #384 — layered monetary operations Testnet1 specification. Current head 2335f04e24930fe84f5e068ba98c0ae41cc80edd; documentation validation and Netlify build passed. The Vercel check for project pi-rc failed because the deployment is subject to the Verified Commits policy; this is a platform protection gate, not evidence of an application build failure. The pirc-zero and pi-rc-rfnx Vercel checks and Netlify preview passed. Do not bypass Verified Commits.
-- PR #380 — grouped web dependency updates; not approved by this audit.
-- PR #328 — sharp update; not approved by this audit.
-- PR #325 — source-map-js update; not approved by this audit.
+- PR #380 — grouped web dependency updates; workspace/API/documentation builds passed on its head, but GitHub reports mergeable=false (merge conflict). Resolve against current main and rerun checks before consideration.
+- PR #328 — sharp update; workspace and documentation builds passed on its head, but GitHub reports mergeable=false (merge conflict). Resolve against current main and rerun checks before consideration.
+- PR #325 — source-map-js update; workspace and documentation/Netlify checks passed and GitHub reports mergeable=true. It remains unmerged pending explicit approval.
 
 Main after merge commit 16bba2731072ddc71d4b9e42f5593581e0ddcf43 had successful PiRC Workspace Build and Documentation/Netlify Build Validation runs 44066536951 and 44066536836.
 
@@ -46,7 +46,8 @@ PR #1121 is still Draft. Green CI does not close the contract-level gaps in sect
 
 - PR #92 — versioned PiGold purchasing-power reference adapter, head 45627dd9929b058b204a36c9d522a85b1470f144. Frontend build, layer-math tests, secret scan, static-site build and proposal-table validation all passed: 44063252763, 44063252822, 44063252804, 44063252825 and 44063253010.
 - PR #89 — PiDEX AMM rounding correction, head 54e5d66ec9392cd2822345ef1e84b69398aa17d9. The dedicated contract CI failed at cargo fmt -- --check; unit tests and Wasm build were skipped. The failure is formatting, not a demonstrated arithmetic-test failure. It remains unapproved until formatting is fixed and the tests/build run.
-- PR #91, #70 and #69 — dependency updates; not approved by this audit.
+- PR #91 — Black dev-dependency update; secret scan passed, but no Python test/build workflow was triggered by the changed paths, so only limited CI evidence exists.
+- PR #70 and #69 — Go dependency updates; both failed the read-only Go modules validation because go vet reported many unkeyed struct literals across existing Stellar Horizon source/tests. The job also logged missing key_value_store and duplicate-key database errors during test setup. Do not merge until the Go validation baseline is repaired and rerun.
 
 Historical Unity Sphere secret-scan failure on run 43951634033 was caused by Gitleaks receiving an invalid Git revision range and scanning approximately zero bytes. It is not evidence that no secret exists, nor is it a confirmed secret finding. The later PR #92 secret scan passed. A full-history scan and separate credential-exposure review remain prudent because historical audit notes flagged tracked environment files and secret/environment review cases.
 
