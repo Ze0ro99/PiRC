@@ -35,6 +35,8 @@ The current default-branch trees contain approximately 35,835 entries in PiRC, 6
 
 Main after merge commit 16bba2731072ddc71d4b9e42f5593581e0ddcf43 had successful PiRC Workspace Build and Documentation/Netlify Build Validation runs 44066536951 and 44066536836.
 
+For this audit branch, the latest pi-rc Vercel preview is BLOCKED by the project's Verified Commits setting (deployment dpl_Gz6J7qJURJva3WFuxwfZ4pKxsS1J); the latest pi-rc-rfnx preview is QUEUED (dpl_WNDN1sDbvyMLxFhYwi1utPtRtLE9). Both have target=null, so neither is a production deployment. A previous preview for an earlier audit commit reached READY, but that does not supersede the latest head.
+
 ### SmartContracts
 
 - PR #1121 — test-only OUSD reserve/liability controller, head 072f6db1b83da436848b95e90503b08a841a5e0e. The inspected runs passed: OMNI SmartContracts Pipeline 44063672532, read-only Rust CI 44063672547, CodeQL 44063672620, Economic Contract Validation 44063672580, and PiRC reference contract checks 44063672582.
