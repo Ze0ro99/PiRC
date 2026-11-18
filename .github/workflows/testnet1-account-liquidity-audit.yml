@@ -1,0 +1,76 @@
+name: Pi Testnet 1 Account Liquidity Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        description: Public Pi Testnet account address (G...)
+        required: true
+        type: string
+        default: GB7EKKXHOCCMVN5SQNJ6IVILY53KSVH2DPMJ66P6272CWCJO7DUJMFVZ
+      max_pools:
+        description: Maximum LP pools to inspect
+        required: true
+        type: number
+        default: 50
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/testnet1-account-liquidity-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testnet1-liquidity-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Read-only Horizon account and LP audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Fetch account and inspect liquidity pools
+        env:
+          AUDIT_ACCOUNT: ${{ inputs.account || 'GB7EKKXHOCCMVN5SQNJ6IVILY53KSVH2DPMJ66P6272CWCJO7DUJMFVZ' }}
+          MAX_POOLS: ${{ inputs.max_pools || 50 }}
+        run: |
+          python scripts/audit_testnet1_liquidity.py \
+            --account "$AUDIT_ACCOUNT" \
+            --max-pools "$MAX_POOLS" \
+            --timeout 12 \
+            --json > testnet1-liquidity-report.json
+      - name: Print audit summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("testnet1-liquidity-report.json").read_text())
+          print("Network:", report["network"])
+          print("Account:", report["account_id"])
+          print("Sequence ledger:", report["sequence_ledger"])
+          print("Native balance:", report["native_balance"])
+          print("Credit assets:", report["credit_asset_count"])
+          print("LP positions:", report["liquidity_pool_share_count"])
+          print("Pools fetched:", report["liquidity_pools_fetched"])
+          print("Pools not inspected:", report["liquidity_pools_not_inspected"])
+          print("Pool lookup errors:", len(report["liquidity_pool_fetch_errors"]))
+          print("OUSD result:", report["ousd_status"])
+          print("OUSD pools:", len(report["ousd_pools"]))
+          PY
+      - name: Upload read-only audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pi-testnet1-liquidity-audit
+          path: testnet1-liquidity-report.json
+          retention-days: 7
+          if-no-files-found: error
+
+# This workflow performs public Horizon GET requests only. It never signs or submits transactions.
