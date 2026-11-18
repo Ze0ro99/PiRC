@@ -35,8 +35,9 @@ class TestTestnetLiquidityAudit(unittest.TestCase):
                     ],
                 }
             },
+            ousd_issuer="GOUSDISSUER",
         )
-        self.assertEqual(report["ousd_status"], "OUSD_LIQUIDITY_POOL_FOUND")
+        self.assertEqual(report["ousd_status"], "EXPECTED_OUSD_ISSUER_LIQUIDITY_POOL_FOUND")
         self.assertEqual(report["liquidity_pools"][0]["share_percent"], "20.0")
         self.assertEqual(
             Decimal(report["liquidity_pools"][0]["reserves"][0]["estimated_account_underlying"]),
@@ -51,8 +52,20 @@ class TestTestnetLiquidityAudit(unittest.TestCase):
             ]
         }
         report = build_report("G" + "A" * 55, account, lambda _pool_id: {})
-        self.assertEqual(report["ousd_status"], "NO_OUSD_ASSET_FOUND_IN_ACCOUNT_OR_INSPECTED_POOLS")
+        self.assertEqual(report["ousd_status"], "NO_OUSD_ASSET_CODE_FOUND_IN_ACCOUNT_OR_INSPECTED_POOLS")
         self.assertEqual(report["liquidity_pool_share_count"], 0)
+
+    def test_ousd_code_without_expected_issuer_is_not_verified(self):
+        account = {"balances": [{"asset_type": "credit_alphanum4", "asset_code": "OUSD", "asset_issuer": "GOTHER", "balance": "5"}]}
+        report = build_report("G" + "A" * 55, account, lambda _pool_id: {}, ousd_issuer="GOUSDISSUER")
+        self.assertEqual(report["ousd_status"], "OUSD_CODE_FOUND_ISSUER_MISMATCH")
+        self.assertEqual(report["ousd_account_balances"], [])
+
+    def test_invalid_pool_payload_is_unknown_not_empty_pool(self):
+        account = {"balances": [{"asset_type": "liquidity_pool_shares", "liquidity_pool_id": "POOL-BAD", "balance": "1"}]}
+        report = build_report("G" + "A" * 55, account, lambda _pool_id: {"title": "Not Found"}, ousd_issuer="GOUSDISSUER")
+        self.assertEqual(report["ousd_status"], "OUSD_NOT_FOUND_BUT_LIQUIDITY_AUDIT_INCOMPLETE")
+        self.assertEqual(len(report["liquidity_pool_fetch_errors"]), 1)
 
     def test_pool_lookup_failure_is_unknown_not_no_ousd_proof(self):
         account = {
