@@ -1,0 +1,24 @@
+name: Testnet1 Liquidity Audit Tests
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_testnet1_liquidity.py"
+      - "scripts/test_audit_testnet1_liquidity.py"
+      - "docs/integration/OUSD_TESTNET1_LIQUIDITY_DISCOVERY.md"
+      - ".github/workflows/testnet1-liquidity-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run read-only audit unit tests
+        run: python scripts/test_audit_testnet1_liquidity.py
