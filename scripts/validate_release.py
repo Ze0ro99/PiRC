@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -97,11 +98,25 @@ def validate_layer_registry() -> bool:
     print("Seven-layer registry: OK (Gold/Indigo conflict preserved)")
     return True
 
+
+def validate_testnet_liquidity_audit() -> bool:
+    test_dir = ROOT / "tests"
+    suite = unittest.defaultTestLoader.discover(
+        str(test_dir),
+        pattern="test_testnet1_liquidity_audit.py",
+        top_level_dir=str(ROOT),
+    )
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    ok = result.wasSuccessful() and result.testsRun > 0
+    print(f"Testnet1 liquidity/OUSD audit tests: {'OK' if ok else 'FAILED'}")
+    return ok
+
 def main() -> int:
     schema_ok = validate_schemas()
     links_ok = validate_markdown_links()
     registry_ok = validate_layer_registry()
-    if schema_ok and links_ok and registry_ok:
+    liquidity_tests_ok = validate_testnet_liquidity_audit()
+    if schema_ok and links_ok and registry_ok and liquidity_tests_ok:
         print("PiRC release documentation validation passed.")
         return 0
     return 1
