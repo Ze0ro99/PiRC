@@ -15,7 +15,7 @@ No third-party Python packages, API keys, wallet secrets, signing, or transactio
 ## What it checks
 
 - Account sequence and ledger metadata.
-- Native and issued-asset balances, including an exact OUSD asset-code match.
+- Native and issued-asset balances, including OUSD asset-code candidates and, when supplied, an exact issuer match.
 - All liquidity-pool share balances.
 - Each pool's two reserve assets, reserve amounts, total shares and fee.
 - Estimated underlying reserve share from the account's LP share fraction.
@@ -25,7 +25,7 @@ No third-party Python packages, API keys, wallet secrets, signing, or transactio
 
 An LP share balance proves a position in a pool, not the identity of the pool's reserves until the pool endpoint is read. The estimated underlying amounts are read-time estimates and may change with swaps or deposits/withdrawals.
 
-A PGOLD, GOLD, GCV, BLUE, GREEN, ORANGE, PURPLE, RED, or YELLOW balance is not an OUSD balance. An OUSD asset must be identified by its exact asset code and issuer. A pool lookup error is reported as unknown and must never be interpreted as proof that OUSD is absent.
+A PGOLD, GOLD, GCV, BLUE, GREEN, ORANGE, PURPLE, RED, or YELLOW balance is not an OUSD balance. An OUSD asset must be identified by the exact asset code **and the expected issuer public key**. Without `--ousd-issuer`, the tool reports an OUSD code candidate as issuer-unverified; it does not call it the project's OUSD. A code with a different issuer is reported as an issuer mismatch. A pool lookup error or malformed pool response is reported as unknown and must never be interpreted as proof that OUSD is absent. Pool responses must contain exactly two reserves and a positive total-share amount.
 
 Even an OUSD asset or OUSD-containing pool does not prove USD backing, a $1 peg, redemption rights, issuer authority, or off-chain settlement. Those require independent reserve attestations and a separately reviewed redemption process.
 
