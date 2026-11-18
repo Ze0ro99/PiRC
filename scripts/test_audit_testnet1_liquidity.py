@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from audit_testnet1_liquidity import asset_details, build_report
+from scripts.audit_testnet1_liquidity import asset_details, build_report
 
 
 class TestTestnetLiquidityAudit(unittest.TestCase):
@@ -51,7 +51,7 @@ class TestTestnetLiquidityAudit(unittest.TestCase):
             ]
         }
         report = build_report("G" + "A" * 55, account, lambda _pool_id: {})
-        self.assertEqual(report["ousd_status"], "NO_OUSD_ASSET_FOUND_IN_ACCOUNT_OR_FETCHED_POOLS")
+        self.assertEqual(report["ousd_status"], "OUSD_NOT_FOUND_BUT_LIQUIDITY_AUDIT_INCOMPLETE")
         self.assertEqual(report["liquidity_pool_share_count"], 0)
 
     def test_pool_lookup_failure_is_unknown_not_no_ousd_proof(self):
@@ -63,7 +63,7 @@ class TestTestnetLiquidityAudit(unittest.TestCase):
         def fail(_pool_id):
             raise RuntimeError("temporary Horizon failure")
         report = build_report("G" + "A" * 55, account, fail)
-        self.assertEqual(report["ousd_status"], "NO_OUSD_ASSET_FOUND_IN_ACCOUNT_OR_FETCHED_POOLS")
+        self.assertEqual(report["ousd_status"], "OUSD_NOT_FOUND_BUT_LIQUIDITY_AUDIT_INCOMPLETE")
         self.assertEqual(len(report["liquidity_pool_fetch_errors"]), 1)
 
 
