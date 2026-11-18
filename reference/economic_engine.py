@@ -11,7 +11,15 @@ from typing import Iterable, Mapping
 
 
 class EconomicInvariantError(ValueError):
-    """Raised when an input would violate a declared accounting invariant."""
+    """Raised when an input violates an accounting invariant.
+
+    The stable code supports cross-language parity while the message remains
+    suitable for developer logs.
+    """
+
+    def __init__(self, message: str, *, code: str = "ECONOMIC_INVARIANT_VIOLATION") -> None:
+        super().__init__(message)
+        self.code = code
 
 
 @dataclass(frozen=True)
@@ -45,7 +53,10 @@ class PeriodLedger:
             + self.committed_distributions_and_capex
         )
         if deductions > self.collected_revenue:
-            raise EconomicInvariantError("period is underfunded: distributable resources are negative")
+            raise EconomicInvariantError(
+                "period is underfunded: distributable resources are negative",
+                code="UNDERFUNDED_PERIOD",
+            )
         return self.collected_revenue - deductions
 
 
