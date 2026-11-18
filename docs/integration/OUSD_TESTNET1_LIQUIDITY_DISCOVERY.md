@@ -12,6 +12,18 @@ python scripts/audit_testnet1_liquidity.py \
 
 No third-party Python packages, API keys, wallet secrets, signing, or transaction submission are required.
 
+When a Testnet OUSD issuer has been independently verified, pass its public address to require an exact asset-code **and issuer** match:
+
+```bash
+export OUSD_TESTNET_ISSUER="G..."
+python scripts/audit_testnet1_liquidity.py \
+  --account GB7EKKXHOCCMVN5SQNJ6IVILY53KSVH2DPMJ66P6272CWCJO7DUJMFVZ \
+  --ousd-issuer "$OUSD_TESTNET_ISSUER" \
+  --json
+```
+
+Until the issuer is known, omit `--ousd-issuer`; OUSD code candidates will be reported as unverified rather than as the project's OUSD.
+
 ## What it checks
 
 - Account sequence and ledger metadata.
