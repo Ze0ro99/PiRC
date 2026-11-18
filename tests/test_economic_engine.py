@@ -19,8 +19,9 @@ class EconomicEngineTests(unittest.TestCase):
 
     def test_underfunded_period_fails_closed(self):
         ledger = PeriodLedger("2026-10", "PI-ATOMIC", 100, 50, 20, 20, 10, 10)
-        with self.assertRaises(EconomicInvariantError):
+        with self.assertRaises(EconomicInvariantError) as raised:
             _ = ledger.distributable
+        self.assertEqual(raised.exception.code, "UNDERFUNDED_PERIOD")
 
     def test_largest_remainder_conserves_every_atomic_unit(self):
         allocation = allocate_largest_remainder(10, {"bob": 1, "alice": 1, "carol": 1})
