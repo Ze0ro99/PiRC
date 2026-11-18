@@ -34,7 +34,7 @@ Even an OUSD asset or OUSD-containing pool does not prove USD backing, a $1 peg,
 Run:
 
 ```bash
-python -m unittest scripts/test_audit_testnet1_liquidity.py
+python scripts/test_audit_testnet1_liquidity.py
 ```
 
 The script is strictly read-only and has no Mainnet fallback.
